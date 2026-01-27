@@ -1,0 +1,39 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close"
+  },
+  "editor": {
+    "sidebar": {
+      "menu": "Menu",
+      "sections": "Sections",
+      "templates": "Templates",
+      "settings": "Settings",
+      "user": "User Profile",
+      "collapse": "Collapse sidebar",
+      "expand": "Expand sidebar"
+    },
+    "formEditor": {
+      "title": "Form Editor",
+      "personal": "Personal Information",
+      "addSection": "Add Section",
+      "experience": "Experience",
+      "education": "Education",
+      "skills": "Skills",
+      "summary": "Professional Summary",
+      "custom": "Custom Section"
+    },
+    "preview": {
+      "title": "Live Preview",
+      "loading": "Loading preview...",
+      "download": "Download PDF",
+      "zoom": "Zoom",
+      "fitToWidth": "Fit to width"
+    }
+  }
+}

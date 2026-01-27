@@ -1,0 +1,39 @@
+{
+  "common": {
+    "loading": "جار التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "close": "إغلاق"
+  },
+  "editor": {
+    "sidebar": {
+      "menu": "القائمة",
+      "sections": "الأقسام",
+      "templates": "القوالب",
+      "settings": "الإعدادات",
+      "user": "الملف الشخصي",
+      "collapse": "طي الشريط الجانبي",
+      "expand": "توسيع الشريط الجانبي"
+    },
+    "formEditor": {
+      "title": "محرر النموذج",
+      "personal": "المعلومات الشخصية",
+      "addSection": "إضافة قسم",
+      "experience": "الخبرة",
+      "education": "التعليم",
+      "skills": "المهارات",
+      "summary": "الملخص المهني",
+      "custom": "قسم مخصص"
+    },
+    "preview": {
+      "title": "معاينة مباشرة",
+      "loading": "جار تحميل المعاينة...",
+      "download": "تحميل PDF",
+      "zoom": "تكبير",
+      "fitToWidth": "ملاءمة العرض"
+    }
+  }
+}
