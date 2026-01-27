@@ -1,30 +1,10 @@
 "use client";
 
 import { useResumeStore } from "@/stores/useResumeStore";
-import type { Item, StringItem } from "@/types/resume";
+import { isStringItem, getItemTypeLabel } from "@/lib/resume-helpers";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-function isStringItem(item: Item): item is StringItem {
-  return "value" in item && typeof item.value === "string";
-}
-
-function getItemLabel(type: StringItem["type"]): string {
-  const labels: Record<StringItem["type"], string> = {
-    heading: "Heading",
-    "sub-heading": "Sub-heading",
-    text: "Text",
-    bullet: "Bullet",
-    number: "Number",
-    date: "Date",
-    location: "Location",
-    phone: "Phone",
-    email: "Email",
-    tag: "Tag",
-  };
-  return labels[type] || type;
-}
 
 export function PersonalInfoForm() {
   const personal = useResumeStore((state) => state.resume.personal);
@@ -79,12 +59,12 @@ export function PersonalInfoForm() {
 
           return (
             <div key={item.id} className="space-y-2">
-              <Label htmlFor={item.id}>{getItemLabel(item.type)}</Label>
+              <Label htmlFor={item.id}>{getItemTypeLabel(item.type)}</Label>
               <Input
                 id={item.id}
                 value={item.value}
                 onChange={(e) => handleDetailChange(item.id, e.target.value)}
-                placeholder={getItemLabel(item.type)}
+                placeholder={getItemTypeLabel(item.type)}
               />
             </div>
           );
