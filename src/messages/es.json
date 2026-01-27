@@ -1,0 +1,39 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "close": "Cerrar"
+  },
+  "editor": {
+    "sidebar": {
+      "menu": "Menú",
+      "sections": "Secciones",
+      "templates": "Plantillas",
+      "settings": "Configuración",
+      "user": "Perfil de Usuario",
+      "collapse": "Contraer barra lateral",
+      "expand": "Expandir barra lateral"
+    },
+    "formEditor": {
+      "title": "Editor de Formulario",
+      "personal": "Información Personal",
+      "addSection": "Agregar Sección",
+      "experience": "Experiencia",
+      "education": "Educación",
+      "skills": "Habilidades",
+      "summary": "Resumen Profesional",
+      "custom": "Sección Personalizada"
+    },
+    "preview": {
+      "title": "Vista Previa en Vivo",
+      "loading": "Cargando vista previa...",
+      "download": "Descargar PDF",
+      "zoom": "Zoom",
+      "fitToWidth": "Ajustar al ancho"
+    }
+  }
+}
