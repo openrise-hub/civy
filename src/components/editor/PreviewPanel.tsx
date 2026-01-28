@@ -6,7 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { UniversalPdf } from "@/components/pdf/UniversalPdf";
-import { DownloadIcon, ZoomInIcon, ZoomOutIcon } from "lucide-react";
+import { DownloadButton } from "@/components/editor/DownloadButton";
+import { ZoomInIcon, ZoomOutIcon } from "lucide-react";
 
 // Dynamic import for PDFViewer to avoid SSR issues, maybe I can figure out a better solution for this, could there be a library to handle this?
 const PDFViewer = dynamic(
@@ -40,10 +41,7 @@ export function PreviewPanel() {
           <Button size="icon-sm" variant="ghost" aria-label={t("zoom")}>
             <ZoomInIcon />
           </Button>
-          <Button size="sm" variant="outline">
-            <DownloadIcon className="size-4" />
-            <span>{t("download")}</span>
-          </Button>
+          <DownloadButton variant="outline" size="sm" />
         </div>
       </div>
 
