@@ -29,11 +29,19 @@
       "custom": "Sección Personalizada"
     },
     "preview": {
-      "title": "Vista Previa en Vivo",
-      "loading": "Cargando vista previa...",
+      "title": "Vista Previa",
+      "loading": "Cargando...",
       "download": "Descargar PDF",
       "zoom": "Zoom",
-      "fitToWidth": "Ajustar al ancho"
+      "fitToWidth": "Ajustar ancho"
     }
+  },
+  "resume": {
+    "present": "Actualidad",
+    "phone": "Teléfono",
+    "email": "Correo",
+    "image": "Imagen",
+    "location": "Ubicación",
+    "website": "Sitio web"
   }
 }

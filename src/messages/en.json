@@ -35,5 +35,13 @@
       "zoom": "Zoom",
       "fitToWidth": "Fit to width"
     }
+  },
+  "resume": {
+    "present": "Present",
+    "phone": "Phone",
+    "email": "Email",
+    "image": "Image",
+    "location": "Location",
+    "website": "Website"
   }
 }
