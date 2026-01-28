@@ -38,12 +38,15 @@ import {
   TrashIcon,
 } from "lucide-react";
 import { useResumeStore, SECTION_TEMPLATES } from "@/stores/useResumeStore";
+import { RESUME_LIMITS } from "@/constants/limits";
 
 export function EditorSidebar() {
   const t = useTranslations("editor.sidebar");
   const tForm = useTranslations("editor.formEditor");
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+  const sectionCount = useResumeStore((state) => state.resume.sections.length);
+  const atSectionLimit = sectionCount >= RESUME_LIMITS.MAX_SECTIONS;
 
   return (
     <TooltipProvider>
@@ -100,7 +103,7 @@ export function EditorSidebar() {
               {/* Add Section Buttons */}
               {!isCollapsed && (
                 <div className="space-y-1">
-                  {Object.entries(SECTION_TEMPLATES).map(([key, template]) => {
+              {Object.entries(SECTION_TEMPLATES).map(([key, template]) => {
                     const iconMap = {
                       experience: BriefcaseIcon,
                       education: GraduationCapIcon,
@@ -115,6 +118,7 @@ export function EditorSidebar() {
                         variant="ghost"
                         size="sm"
                         onClick={() => useResumeStore.getState().addSection(key)}
+                        disabled={atSectionLimit}
                         className="justify-start w-full"
                       >
                         <Icon className="size-4 mr-2" />
@@ -122,6 +126,11 @@ export function EditorSidebar() {
                       </Button>
                     );
                   })}
+                  {atSectionLimit && (
+                    <p className="text-xs text-muted-foreground px-2 py-1">
+                      Maximum {RESUME_LIMITS.MAX_SECTIONS} sections
+                    </p>
+                  )}
                 </div>
               )}
 

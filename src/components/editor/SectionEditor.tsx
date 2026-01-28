@@ -10,6 +10,7 @@ import {
   isImageItem, 
   isSeparatorItem 
 } from "@/lib/resume-helpers";
+import { RESUME_LIMITS } from "@/constants/limits";
 import { Card, CardHeader, CardContent, CardAction } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusIcon, TrashIcon, TypeIcon, CalendarIcon, LinkIcon, StarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SectionEditorProps {
   section: Section;
@@ -55,15 +57,19 @@ function StringItemEditor({ item, onUpdate, onRemove }: ItemEditorProps) {
 
   const isTextarea = item.type === 'text' || item.type === 'bullet';
   const isLarge = item.type === 'heading' || item.type === 'sub-heading';
+  const charCount = item.value.length;
+  const maxChars = RESUME_LIMITS.MAX_TEXT_FIELD;
+  const isNearLimit = charCount >= maxChars * 0.9;
 
   return (
     <div className="flex items-start gap-2 p-3 rounded-lg border bg-card">
-      <div className="flex-1 space-y-2">
+      <div className="flex-1 space-y-1">
         {isTextarea ? (
           <Textarea
             value={item.value}
             onChange={(e) => onUpdate({ value: e.target.value })}
             placeholder={`Enter ${item.type}...`}
+            maxLength={maxChars}
             className="resize-none"
             rows={item.type === 'bullet' ? 2 : 3}
           />
@@ -72,9 +78,16 @@ function StringItemEditor({ item, onUpdate, onRemove }: ItemEditorProps) {
             value={item.value}
             onChange={(e) => onUpdate({ value: e.target.value })}
             placeholder={`Enter ${item.type}...`}
+            maxLength={maxChars}
             size={isLarge ? "default" : "sm"}
           />
         )}
+        <div className={cn(
+          "text-xs text-right",
+          isNearLimit ? "text-amber-500" : "text-muted-foreground"
+        )}>
+          {charCount.toLocaleString()} / {maxChars.toLocaleString()}
+        </div>
       </div>
       <Button
         variant="ghost"
@@ -384,7 +397,15 @@ function SeparatorItemEditor({ onRemove }: { onRemove: () => void }) {
   );
 }
 
-function AddItemToolbar({ onAdd }: { onAdd: (type: ItemType) => void }) {
+function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; disabled?: boolean }) {
+  if (disabled) {
+    return (
+      <div className="p-3 rounded-lg border border-dashed bg-muted/30 text-center text-sm text-muted-foreground">
+        Maximum {RESUME_LIMITS.MAX_ITEMS_PER_SECTION} items reached
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-wrap gap-2 p-3 rounded-lg border border-dashed bg-muted/30">
       <Button
@@ -455,6 +476,9 @@ export function SectionEditor({ section }: SectionEditorProps) {
   const updateItem = useResumeStore((state) => state.updateItem);
   const removeItem = useResumeStore((state) => state.removeItem);
 
+  const itemCount = section.content.items.length;
+  const canAdd = itemCount < RESUME_LIMITS.MAX_ITEMS_PER_SECTION;
+
   const handleAddItem = (type: ItemType) => {
     addItem(section.id, type);
   };
@@ -468,7 +492,11 @@ export function SectionEditor({ section }: SectionEditorProps) {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 p-3">
+      <div className="text-xs text-muted-foreground">
+        Items: {itemCount} / {RESUME_LIMITS.MAX_ITEMS_PER_SECTION}
+      </div>
+      
       {section.content.items.map((item) => (
         <ItemEditor
           key={item.id}
@@ -478,7 +506,7 @@ export function SectionEditor({ section }: SectionEditorProps) {
         />
       ))}
       
-      <AddItemToolbar onAdd={handleAddItem} />
+      <AddItemToolbar onAdd={handleAddItem} disabled={!canAdd} />
     </div>
   );
 }

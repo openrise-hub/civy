@@ -2,6 +2,8 @@
 
 import { useResumeStore } from "@/stores/useResumeStore";
 import { Section } from "@/types/resume";
+import { RESUME_LIMITS } from "@/constants/limits";
+import { useIsMounted } from "@/hooks/useIsMounted";
 import { Card, CardHeader, CardTitle, CardContent, CardAction } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -96,10 +98,13 @@ function SortableSectionCard({ section, onUpdateTitle, onRemove }: SortableSecti
 }
 
 export function SectionManager() {
+  const isMounted = useIsMounted();
   const sections = useResumeStore((state) => state.resume.sections);
   const removeSection = useResumeStore((state) => state.removeSection);
   const updateSection = useResumeStore((state) => state.updateSection);
   const reorderSections = useResumeStore((state) => state.reorderSections);
+
+  const sectionCount = sections.length;
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -126,11 +131,46 @@ export function SectionManager() {
     removeSection(sectionId);
   };
 
+  // Render static content during SSR to avoid hydration mismatch with dnd-kit
+  if (!isMounted) {
+    return (
+      <div>
+        <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground px-1">
+          <span>Sections: {sectionCount} / {RESUME_LIMITS.MAX_SECTIONS}</span>
+        </div>
+        <div className="space-y-4">
+          {sections.map((section) => (
+            <Card key={section.id}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="text-muted-foreground p-1">
+                    <GripVertical className="size-4" />
+                  </div>
+                  <Input
+                    value={section.title}
+                    readOnly
+                    className="text-base font-semibold border-none bg-transparent px-0"
+                  />
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <SectionEditor section={section} />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <DndContext
       sensors={sensors}
       onDragEnd={handleDragEnd}
     >
+      <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground px-1">
+        <span>Sections: {sectionCount} / {RESUME_LIMITS.MAX_SECTIONS}</span>
+      </div>
       <SortableContext
         items={sections.map(section => ({ id: section.id }))}
         strategy={verticalListSortingStrategy}

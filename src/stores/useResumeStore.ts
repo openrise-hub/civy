@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid'; 
 import { Resume, Section, Item, PersonalInfo, ItemType, SectionContent } from '@/types/resume';
+import { RESUME_LIMITS } from '@/constants/limits';
 
 // --- Default Templates ---
 // Used when creating new sections. 
@@ -117,6 +118,12 @@ export const useResumeStore = create<ResumeStore>((set) => ({
 
   addSection: (type = 'custom') =>
     set((state) => {
+      // Check section limit
+      if (state.resume.sections.length >= RESUME_LIMITS.MAX_SECTIONS) {
+        console.warn(`Cannot add section: maximum ${RESUME_LIMITS.MAX_SECTIONS} sections reached`);
+        return {};
+      }
+
       const template = SECTION_TEMPLATES[type] || SECTION_TEMPLATES.custom;
       return {
         resume: {
@@ -174,6 +181,13 @@ export const useResumeStore = create<ResumeStore>((set) => ({
 
   addItem: (sectionId, type) =>
     set((state) => {
+      // Check item limit for this section
+      const section = state.resume.sections.find((s) => s.id === sectionId);
+      if (section && section.content.items.length >= RESUME_LIMITS.MAX_ITEMS_PER_SECTION) {
+        console.warn(`Cannot add item: maximum ${RESUME_LIMITS.MAX_ITEMS_PER_SECTION} items per section reached`);
+        return {};
+      }
+
       let newItem: Partial<Item> = { id: uuidv4(), visible: true, type };
       
       // Initialize 'value' based on ItemType interface
