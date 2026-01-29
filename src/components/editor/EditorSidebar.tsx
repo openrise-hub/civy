@@ -61,9 +61,9 @@ export function EditorSidebar() {
                     {user?.email ? getInitials(user.email) : "??"}
                   </div>
                 </Avatar>
-                <div className="flex flex-col gap-0.5 leading-none">
+                <div className="flex flex-col gap-0.5 leading-none overflow-hidden">
                   <span className="font-semibold">{t("user")}</span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground truncate max-w-32">
                     {user?.email ?? "Unknown"}
                   </span>
                 </div>

@@ -26,7 +26,8 @@ export function PdfCanvasPreview({
 }: PdfCanvasPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const offscreenCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pdfDoc, setPdfDoc] = useState<pdfjs.PDFDocumentProxy | null>(null);
   const renderTaskRef = useRef<pdfjs.RenderTask | null>(null);
@@ -49,12 +50,11 @@ export function PdfCanvasPreview({
     }
   }, [resume, templateName, translations]);
 
-  // Load PDF document
+  // Load PDF document - debounced to prevent blinking
   useEffect(() => {
     let cancelled = false;
 
     const loadPdf = async () => {
-      setIsLoading(true);
       setError(null);
 
       try {
@@ -77,20 +77,22 @@ export function PdfCanvasPreview({
           setError(err instanceof Error ? err.message : "Failed to load PDF");
         }
       } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
+        setIsInitialLoad(false);
       }
     };
 
-    loadPdf();
+    // Debounce PDF generation by 500ms to prevent blinking while typing
+    const debounceTimeout = setTimeout(() => {
+      loadPdf();
+    }, 500);
 
     return () => {
       cancelled = true;
+      clearTimeout(debounceTimeout);
     };
   }, [generatePdfBlob]);
 
-  // Render PDF page to canvas - responsive to container width
+  // Render PDF page to canvas using double buffering
   const renderPage = useCallback(async () => {
     if (!pdfDoc || !canvasRef.current || !containerRef.current) return;
 
@@ -101,11 +103,8 @@ export function PdfCanvasPreview({
 
     try {
       const page = await pdfDoc.getPage(1);
-      const canvas = canvasRef.current;
+      const visibleCanvas = canvasRef.current;
       const container = containerRef.current;
-      const context = canvas.getContext("2d");
-
-      if (!context) return;
 
       // Get container width for responsive scaling
       const containerWidth = container.clientWidth;
@@ -121,18 +120,37 @@ export function PdfCanvasPreview({
       // Apply scale
       const scaledViewport = page.getViewport({ scale });
 
-      // Set canvas dimensions
-      canvas.width = scaledViewport.width;
-      canvas.height = scaledViewport.height;
+      // Create offscreen canvas for double buffering
+      if (!offscreenCanvasRef.current) {
+        offscreenCanvasRef.current = document.createElement("canvas");
+      }
+      const offscreenCanvas = offscreenCanvasRef.current;
+      const offscreenContext = offscreenCanvas.getContext("2d");
 
-      // Render
+      if (!offscreenContext) return;
+
+      // Set offscreen canvas dimensions
+      offscreenCanvas.width = scaledViewport.width;
+      offscreenCanvas.height = scaledViewport.height;
+
+      // Render to offscreen canvas
       renderTaskRef.current = page.render({
-        canvasContext: context,
+        canvasContext: offscreenContext,
         viewport: scaledViewport,
-        canvas: canvas,
+        canvas: offscreenCanvas,
       });
 
       await renderTaskRef.current.promise;
+
+      // Now copy to visible canvas (this is instant, no flicker)
+      const visibleContext = visibleCanvas.getContext("2d");
+      if (visibleContext) {
+        // Only resize visible canvas after offscreen render is complete
+        visibleCanvas.width = scaledViewport.width;
+        visibleCanvas.height = scaledViewport.height;
+        // Immediately draw the offscreen content
+        visibleContext.drawImage(offscreenCanvas, 0, 0);
+      }
     } catch (err) {
       // Ignore cancelled renders
       if (err instanceof Error && err.message.includes("cancelled")) {
@@ -211,7 +229,7 @@ export function PdfCanvasPreview({
           backgroundSize: '12px 12px',
         }}
       >
-        {isLoading && (
+        {isInitialLoad && (
           <div className="flex items-center justify-center py-8">
             <p className="text-muted-foreground">Generating preview...</p>
           </div>
@@ -220,7 +238,7 @@ export function PdfCanvasPreview({
           ref={canvasRef} 
           className="my-4 shadow-lg"
           style={{ 
-            display: isLoading ? 'none' : 'block',
+            display: isInitialLoad ? 'none' : 'block',
             maxWidth: '100%',
           }}
         />

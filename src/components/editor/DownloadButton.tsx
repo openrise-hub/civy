@@ -1,76 +1,88 @@
 "use client";
 
-import React from "react";
-import dynamic from "next/dynamic";
+import { useState, useCallback } from "react";
+import { pdf } from "@react-pdf/renderer";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { UniversalPdf } from "@/components/pdf/UniversalPdf";
-import { DownloadIcon } from "lucide-react";
+import { DownloadIcon, LoaderIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { useIsMounted } from "@/hooks/useIsMounted";
-
-// Dynamically import PDFDownloadLink to avoid SSR issues with react-pdf
-const PDFDownloadLink = dynamic(
-  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
-  { ssr: false }
-);
-
-import { ButtonProps } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
 
 interface DownloadButtonProps extends ButtonProps {
   fileName?: string;
 }
 
-export const DownloadButton = ({ className, variant = "default", size = "sm", ...props }: DownloadButtonProps) => {
-  const { resume } = useResumeStore();
+export const DownloadButton = ({ 
+  className, 
+  variant = "default", 
+  size = "sm",
+  fileName,
+  ...props 
+}: DownloadButtonProps) => {
   const t = useTranslations("editor.preview");
   const tResume = useTranslations("resume");
-  const isMounted = useIsMounted();
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  // Construct translations object for the PDF Engine
-  const translations = {
-    present: tResume("present"),
-    phone: tResume("phone"),
-    email: tResume("email"),
-    image: tResume("image"),
-    location: tResume("location"),
-    website: tResume("website"),
-  };
+  // Only access store when clicked, not on every render
+  const handleDownload = useCallback(async () => {
+    setIsGenerating(true);
+    
+    try {
+      // Get current resume data at click time
+      const resume = useResumeStore.getState().resume;
+      
+      const translations = {
+        present: tResume("present"),
+        phone: tResume("phone"),
+        email: tResume("email"),
+        image: tResume("image"),
+        location: tResume("location"),
+        website: tResume("website"),
+      };
 
-  if (!isMounted) {
-    return (
-      <Button disabled variant={variant} size={size} className={className} {...props}>
-        <DownloadIcon className="size-4 mr-2" />
-        {t("download")}
-      </Button>
-    );
-  }
-
-  const fileName = props.fileName || `${resume.personal.fullName || "resume"}.pdf`;
-
-  return (
-    <PDFDownloadLink
-      document={
+      const pdfDocument = (
         <UniversalPdf 
           resume={resume} 
           templateName="modern" 
           translations={translations} 
         />
-      }
-      fileName={fileName}
+      );
+
+      const blob = await pdf(pdfDocument).toBlob();
+      const url = URL.createObjectURL(blob);
+      
+      // Create download link
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName || `${resume.personal.fullName || "resume"}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Cleanup
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to generate PDF:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [fileName, tResume]);
+
+  return (
+    <Button 
+      disabled={isGenerating} 
+      variant={variant}
+      size={size}
+      className={className}
+      onClick={handleDownload}
+      {...props}
     >
-      {({ loading }) => (
-        <Button 
-          disabled={loading} 
-          variant={variant}
-          size={size}
-          className={className}
-          {...props}
-        >
-          <DownloadIcon className="size-4" />
-          {loading ? "Generating..." : t("download")}
-        </Button>
+      {isGenerating ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <DownloadIcon className="size-4" />
       )}
-    </PDFDownloadLink>
+      {isGenerating ? "Generating..." : t("download")}
+    </Button>
   );
 };

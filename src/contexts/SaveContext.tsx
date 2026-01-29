@@ -24,8 +24,9 @@ export function SaveProvider({
 
 export function useSave() {
   const context = useContext(SaveContext);
+  // Return noop if context not available (prevents hook order issues)
   if (context === undefined) {
-    throw new Error("useSave must be used within a SaveProvider");
+    return { saveNow: async () => {} };
   }
   return context;
 }
