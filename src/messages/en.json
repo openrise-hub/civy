@@ -61,8 +61,15 @@
     "signOut": "Sign Out"
   },
   "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Welcome, {email}",
-    "goToEditor": "Go to Editor"
+    "title": "My Resumes",
+    "createNew": "Create New",
+    "empty": "No resumes yet",
+    "emptyDescription": "Create your first resume to get started",
+    "editedAgo": "Edited {time}",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete this resume?",
+    "untitled": "Untitled Resume",
+    "deleting": "Deleting..."
   }
 }

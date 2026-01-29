@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
   Sidebar,
@@ -16,17 +17,10 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
-  UserIcon,
   SettingsIcon,
   LayoutTemplateIcon,
   FileTextIcon,
@@ -35,7 +29,7 @@ import {
   WrenchIcon,
   TextIcon,
   PlusIcon,
-  TrashIcon,
+  HomeIcon,
 } from "lucide-react";
 import { useResumeStore, SECTION_TEMPLATES } from "@/stores/useResumeStore";
 import { RESUME_LIMITS } from "@/constants/limits";
@@ -66,6 +60,15 @@ export function EditorSidebar() {
                     john@example.com
                   </span>
                 </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip={isCollapsed ? "Dashboard" : undefined}
+                render={<Link href="/dashboard" />}
+              >
+                <HomeIcon className="size-4" />
+                <span>Dashboard</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

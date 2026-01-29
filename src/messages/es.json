@@ -61,8 +61,15 @@
     "signOut": "Cerrar sesión"
   },
   "dashboard": {
-    "title": "Panel",
-    "welcome": "Bienvenido, {email}",
-    "goToEditor": "Ir al Editor"
+    "title": "Mis Currículums",
+    "createNew": "Crear Nuevo",
+    "empty": "Aún no tienes currículums",
+    "emptyDescription": "Crea tu primer currículum para comenzar",
+    "editedAgo": "Editado {time}",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este currículum?",
+    "untitled": "Currículum sin título",
+    "deleting": "Eliminando..."
   }
 }
