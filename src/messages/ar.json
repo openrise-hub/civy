@@ -43,5 +43,26 @@
     "image": "صورة",
     "location": "موقع",
     "website": "موقع إلكتروني"
+  },
+  "auth": {
+    "welcome": "مرحباً",
+    "signInToAccount": "سجل دخولك إلى حسابك",
+    "orContinueWithEmail": "أو تابع بالبريد الإلكتروني",
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "signingIn": "جار تسجيل الدخول...",
+    "creatingAccount": "جار إنشاء الحساب...",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "signInWith": "تسجيل الدخول باستخدام {provider}",
+    "checkEmail": "تحقق من بريدك الإلكتروني لتأكيد حسابك.",
+    "signOut": "تسجيل الخروج"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "welcome": "مرحباً، {email}",
+    "goToEditor": "الذهاب إلى المحرر"
   }
 }

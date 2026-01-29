@@ -43,5 +43,26 @@
     "image": "छवि",
     "location": "स्थान",
     "website": "वेबसाइट"
+  },
+  "auth": {
+    "welcome": "स्वागत है",
+    "signInToAccount": "अपने खाते में साइन इन करें",
+    "orContinueWithEmail": "या ईमेल से जारी रखें",
+    "signIn": "साइन इन",
+    "signUp": "साइन अप",
+    "signingIn": "साइन इन हो रहा है...",
+    "creatingAccount": "खाता बनाया जा रहा है...",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "signInWith": "{provider} से साइन इन करें",
+    "checkEmail": "अपने खाते की पुष्टि के लिए अपना ईमेल देखें।",
+    "signOut": "साइन आउट"
+  },
+  "dashboard": {
+    "title": "डैशबोर्ड",
+    "welcome": "स्वागत है, {email}",
+    "goToEditor": "संपादक पर जाएं"
   }
 }

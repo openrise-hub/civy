@@ -43,5 +43,26 @@
     "image": "Image",
     "location": "Location",
     "website": "Website"
+  },
+  "auth": {
+    "welcome": "Welcome",
+    "signInToAccount": "Sign in to your account",
+    "orContinueWithEmail": "Or continue with email",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signingIn": "Signing in...",
+    "creatingAccount": "Creating account...",
+    "email": "Email",
+    "password": "Password",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "signInWith": "Sign in with {provider}",
+    "checkEmail": "Check your email to confirm your account.",
+    "signOut": "Sign Out"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome, {email}",
+    "goToEditor": "Go to Editor"
   }
 }

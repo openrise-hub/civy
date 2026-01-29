@@ -43,5 +43,26 @@
     "image": "Imagen",
     "location": "Ubicación",
     "website": "Sitio web"
+  },
+  "auth": {
+    "welcome": "Bienvenido",
+    "signInToAccount": "Inicia sesión en tu cuenta",
+    "orContinueWithEmail": "O continúa con correo",
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "signingIn": "Iniciando sesión...",
+    "creatingAccount": "Creando cuenta...",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "emailPlaceholder": "tu@ejemplo.com",
+    "passwordPlaceholder": "••••••••",
+    "signInWith": "Iniciar sesión con {provider}",
+    "checkEmail": "Revisa tu correo para confirmar tu cuenta.",
+    "signOut": "Cerrar sesión"
+  },
+  "dashboard": {
+    "title": "Panel",
+    "welcome": "Bienvenido, {email}",
+    "goToEditor": "Ir al Editor"
   }
 }
