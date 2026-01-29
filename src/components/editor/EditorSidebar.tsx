@@ -33,6 +33,12 @@ import {
 } from "lucide-react";
 import { useResumeStore, SECTION_TEMPLATES } from "@/stores/useResumeStore";
 import { RESUME_LIMITS } from "@/constants/limits";
+import { useUser } from "@/contexts/UserContext";
+
+function getInitials(email: string): string {
+  const name = email.split("@")[0];
+  return name.slice(0, 2).toUpperCase();
+}
 
 export function EditorSidebar() {
   const t = useTranslations("editor.sidebar");
@@ -41,6 +47,7 @@ export function EditorSidebar() {
   const isCollapsed = state === "collapsed";
   const sectionCount = useResumeStore((state) => state.resume.sections.length);
   const atSectionLimit = sectionCount >= RESUME_LIMITS.MAX_SECTIONS;
+  const user = useUser();
 
   return (
     <TooltipProvider>
@@ -51,13 +58,13 @@ export function EditorSidebar() {
               <SidebarMenuButton size="lg" isActive={false}>
                 <Avatar className="size-8">
                   <div className="flex size-full items-center justify-center bg-primary text-primary-foreground text-sm font-medium">
-                    JD
+                    {user?.email ? getInitials(user.email) : "??"}
                   </div>
                 </Avatar>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">{t("user")}</span>
                   <span className="text-xs text-muted-foreground">
-                    john@example.com
+                    {user?.email ?? "Unknown"}
                   </span>
                 </div>
               </SidebarMenuButton>

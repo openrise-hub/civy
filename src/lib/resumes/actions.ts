@@ -109,3 +109,64 @@ export async function deleteResume(id: string): Promise<{ error?: string }> {
   revalidatePath("/dashboard");
   return {};
 }
+
+export type ResumeData = {
+  id: string;
+  title: string;
+  data: Record<string, unknown>;
+};
+
+export async function getResume(id: string): Promise<ResumeData | null> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("resumes")
+    .select("id, title, data")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .is("deleted_at", null)
+    .single();
+
+  if (error) {
+    console.error("Failed to fetch resume:", error.message);
+    return null;
+  }
+
+  return data;
+}
+
+export async function saveResume(
+  id: string,
+  updates: { title?: string; data?: Record<string, unknown> }
+): Promise<{ error?: string }> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const { error } = await supabase
+    .from("resumes")
+    .update(updates)
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error("Failed to save resume:", error.message);
+    return { error: error.message };
+  }
+
+  return {};
+}
