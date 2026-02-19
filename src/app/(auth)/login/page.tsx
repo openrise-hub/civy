@@ -12,8 +12,10 @@ import {
   signInWithOAuth, 
   signInWithEmail, 
   signUpWithEmail,
+  resendVerification,
   type OAuthProvider 
 } from "@/lib/auth/actions";
+import Link from "next/link";
 
 // Brand SVG Icons - grayscale by default, colored on hover
 const GoogleIcon = () => (
@@ -83,6 +85,8 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(errorParam);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [showResend, setShowResend] = useState(false);
 
   const handleOAuth = async (provider: OAuthProvider) => {
     setLoading(true);
@@ -103,8 +107,26 @@ function LoginForm() {
     const result = await signInWithEmail(email, password, next);
     if (result?.error) {
       setError(result.error);
+      // Detect unconfirmed email to show resend option
+      if (result.error.toLowerCase().includes("email not confirmed")) {
+        setShowResend(true);
+      }
       setLoading(false);
     }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email) return;
+    setResending(true);
+    setError(null);
+    const result = await resendVerification(email);
+    if (result.error) {
+      setError(result.error);
+    } else {
+      setMessage(t("verificationResent"));
+      setShowResend(false);
+    }
+    setResending(false);
   };
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
@@ -201,6 +223,25 @@ function LoginForm() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? t("signingIn") : t("signIn")}
             </Button>
+            <div className="flex items-center justify-between text-sm">
+              <Button
+                variant="link"
+                className="h-auto p-0 text-sm"
+                render={<Link href="/reset-password" />}
+              >
+                {t("forgotPassword")}
+              </Button>
+              {showResend && (
+                <Button
+                  variant="link"
+                  className="h-auto p-0 text-sm"
+                  onClick={handleResendVerification}
+                  disabled={resending}
+                >
+                  {resending ? t("sending") : t("resendVerification")}
+                </Button>
+              )}
+            </div>
           </form>
         </TabsPanel>
 

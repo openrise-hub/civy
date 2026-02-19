@@ -58,7 +58,22 @@
     "passwordPlaceholder": "••••••••",
     "signInWith": "Iniciar sesión con {provider}",
     "checkEmail": "Revisa tu correo para confirmar tu cuenta.",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "sendResetLink": "Enviar enlace de restablecimiento",
+    "resetPassword": "Restablecer contraseña",
+    "resetPasswordDescription": "Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.",
+    "enterNewPassword": "Ingresa tu nueva contraseña a continuación.",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "passwordResetSent": "Revisa tu correo para el enlace de restablecimiento.",
+    "passwordResetSuccess": "¡Contraseña actualizada! Redirigiendo al inicio de sesión...",
+    "backToLogin": "Volver al inicio de sesión",
+    "sending": "Enviando...",
+    "saving": "Guardando...",
+    "resendVerification": "Reenviar correo de verificación",
+    "verificationResent": "¡Correo de verificación enviado! Revisa tu bandeja de entrada."
   },
   "dashboard": {
     "title": "Mis Currículums",
@@ -88,7 +103,10 @@
     "restoreSuccess": "Currículum restaurado",
     "restoreError": "No se pudo restaurar el currículum",
     "deletedAgo": "Eliminado {time}",
-    "autoDeleteWarning": "Se elimina en {time}"
+    "autoDeleteWarning": "Se elimina en {time}",
+    "rename": "Doble clic para renombrar",
+    "renameSuccess": "Currículum renombrado",
+    "renameError": "No se pudo renombrar el currículum"
   },
   "share": {
     "title": "Compartir",

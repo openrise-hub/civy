@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toastManager } from "@/components/ui/toast";
-import { deleteResume, duplicateResume, type ResumeListItem } from "@/lib/resumes/actions";
+import { deleteResume, duplicateResume, saveResume, type ResumeListItem } from "@/lib/resumes/actions";
 
 function formatRelativeTime(dateString: string): string {
   const date = new Date(dateString);
@@ -47,6 +47,48 @@ export function ResumeCard({ resume, onDeleted }: ResumeCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [editTitle, setEditTitle] = useState(resume.title);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleRenameStart = () => {
+    setEditTitle(resume.title);
+    setIsRenaming(true);
+    setTimeout(() => inputRef.current?.select(), 0);
+  };
+
+  const handleRenameSubmit = () => {
+    const trimmed = editTitle.trim();
+    setIsRenaming(false);
+    if (!trimmed || trimmed === resume.title) return;
+
+    startTransition(async () => {
+      const result = await saveResume(resume.id, { title: trimmed });
+      if (result.error) {
+        toastManager.add({
+          type: "error",
+          title: t("renameError") || "Error",
+          description: result.error,
+        });
+      } else {
+        toastManager.add({
+          type: "success",
+          title: t("renameSuccess") || "Renamed",
+        });
+        router.refresh();
+      }
+    });
+  };
+
+  const handleRenameKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleRenameSubmit();
+    } else if (e.key === "Escape") {
+      setIsRenaming(false);
+      setEditTitle(resume.title);
+    }
+  };
 
   const handleDuplicate = () => {
     startTransition(async () => {
@@ -101,9 +143,25 @@ export function ResumeCard({ resume, onDeleted }: ResumeCardProps) {
             <FileText className="size-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <CardTitle className="truncate text-base">
-              {resume.title || t("untitled")}
-            </CardTitle>
+            {isRenaming ? (
+              <input
+                ref={inputRef}
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                onBlur={handleRenameSubmit}
+                onKeyDown={handleRenameKeyDown}
+                className="w-full rounded border border-input bg-background px-1.5 py-0.5 text-base font-semibold outline-none ring-ring/24 focus-visible:ring-2"
+                maxLength={100}
+              />
+            ) : (
+              <CardTitle
+                className="truncate text-base cursor-pointer"
+                onDoubleClick={handleRenameStart}
+                title={t("rename")}
+              >
+                {resume.title || t("untitled")}
+              </CardTitle>
+            )}
             <CardDescription>
               {t("editedAgo", { time: formatRelativeTime(resume.updated_at) })}
             </CardDescription>

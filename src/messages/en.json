@@ -58,7 +58,22 @@
     "passwordPlaceholder": "••••••••",
     "signInWith": "Sign in with {provider}",
     "checkEmail": "Check your email to confirm your account.",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "forgotPassword": "Forgot password?",
+    "sendResetLink": "Send Reset Link",
+    "resetPassword": "Reset Password",
+    "resetPasswordDescription": "Enter your email and we'll send you a reset link.",
+    "enterNewPassword": "Enter your new password below.",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "passwordMismatch": "Passwords do not match",
+    "passwordResetSent": "Check your email for a password reset link.",
+    "passwordResetSuccess": "Password updated! Redirecting to login...",
+    "backToLogin": "Back to login",
+    "sending": "Sending...",
+    "saving": "Saving...",
+    "resendVerification": "Resend verification email",
+    "verificationResent": "Verification email sent! Check your inbox."
   },
   "dashboard": {
     "title": "My Resumes",
@@ -88,7 +103,10 @@
     "restoreSuccess": "Resume restored",
     "restoreError": "Could not restore resume",
     "deletedAgo": "Deleted {time}",
-    "autoDeleteWarning": "Auto-deletes in {time}"
+    "autoDeleteWarning": "Auto-deletes in {time}",
+    "rename": "Double-click to rename",
+    "renameSuccess": "Resume renamed",
+    "renameError": "Could not rename resume"
   },
   "share": {
     "title": "Share",
