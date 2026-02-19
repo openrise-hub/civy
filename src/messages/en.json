@@ -106,7 +106,8 @@
     "autoDeleteWarning": "Auto-deletes in {time}",
     "rename": "Double-click to rename",
     "renameSuccess": "Resume renamed",
-    "renameError": "Could not rename resume"
+    "renameError": "Could not rename resume",
+    "settings": "Settings"
   },
   "share": {
     "title": "Share",
@@ -143,5 +144,34 @@
     "subscribe": "Subscribe",
     "currentPlan": "Current Plan",
     "freePlan": "Free Plan"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "profileDescription": "Manage your display name and account information.",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Your name",
+    "emailReadOnly": "Email (read-only)",
+    "security": "Security",
+    "securityDescription": "Update your password.",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "changePassword": "Change Password",
+    "passwordMismatch": "Passwords do not match",
+    "passwordChanged": "Password changed successfully",
+    "subscription": "Subscription",
+    "currentPlan": "Current Plan",
+    "freePlan": "Free",
+    "renewsOn": "Renews on",
+    "cancelSubscription": "Cancel Subscription",
+    "cancelConfirm": "Are you sure? This cannot be undone.",
+    "confirmCancel": "Yes, Cancel",
+    "canceling": "Canceling...",
+    "subscriptionCanceled": "Subscription canceled",
+    "upgradeToPro": "Upgrade to Pro",
+    "dangerZone": "Danger Zone",
+    "deleteAccountPlaceholder": "Account deletion will be available in a future update.",
+    "savedSuccess": "Settings saved",
+    "saving": "Saving..."
   }
 }

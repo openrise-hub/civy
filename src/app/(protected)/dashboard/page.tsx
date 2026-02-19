@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Plus, FileText, Lock, Trash2 } from "lucide-react";
+import { Plus, FileText, Lock, Trash2, Settings } from "lucide-react";
 import Link from "next/link";
 import { getResumes, createResume } from "@/lib/resumes/actions";
 import { getUser } from "@/lib/auth/actions";
@@ -41,6 +41,14 @@ export default async function DashboardPage() {
             >
               <Trash2 className="size-4" />
               {t("trash")}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              render={<Link href="/dashboard/settings" />}
+              aria-label={t("settings")}
+            >
+              <Settings className="size-4" />
             </Button>
             <form action={createResume}>
               <Button type="submit" disabled={isAtLimit}>

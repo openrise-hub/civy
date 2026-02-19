@@ -117,3 +117,66 @@ export async function cancelPremium(userId: string): Promise<{ error?: string }>
   revalidatePath("/", "layout");
   return {};
 }
+
+/**
+ * Update the user's display name in Supabase user metadata.
+ */
+export async function updateDisplayName(
+  name: string
+): Promise<{ error?: string }> {
+  const trimmed = name.trim();
+  if (!trimmed || trimmed.length > 100) {
+    return { error: "Display name must be between 1 and 100 characters" };
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.updateUser({
+    data: { display_name: trimmed },
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/", "layout");
+  return {};
+}
+
+/**
+ * User-initiated subscription cancellation.
+ */
+export async function cancelSubscription(): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const profile = await getProfile();
+  if (!profile?.paypal_subscription_id) {
+    return { error: "No active subscription found" };
+  }
+
+  // Cancel via PayPal API
+  const { cancelPayPalSubscription } = await import("@/lib/paypal");
+  const paypalResult = await cancelPayPalSubscription(
+    profile.paypal_subscription_id
+  );
+
+  if (paypalResult.error) {
+    return { error: paypalResult.error };
+  }
+
+  // Update local DB
+  const dbResult = await cancelPremium(user.id);
+  if (dbResult.error) {
+    return { error: dbResult.error };
+  }
+
+  revalidatePath("/", "layout");
+  return {};
+}

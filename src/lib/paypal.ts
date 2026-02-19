@@ -119,3 +119,43 @@ export async function verifyWebhookSignature(
     return false;
   }
 }
+
+// --- Subscription Management ---
+
+/**
+ * Cancel a PayPal subscription via the Billing API.
+ */
+export async function cancelPayPalSubscription(
+  subscriptionId: string,
+  reason?: string
+): Promise<{ error?: string }> {
+  try {
+    const accessToken = await getPayPalAccessToken();
+
+    const response = await fetch(
+      `${PAYPAL_API_URL}/v1/billing/subscriptions/${subscriptionId}/cancel`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          reason: reason || "User requested cancellation",
+        }),
+      }
+    );
+
+    // PayPal returns 204 No Content on success
+    if (!response.ok && response.status !== 204) {
+      const text = await response.text();
+      console.error("PayPal cancel subscription error:", response.status, text);
+      return { error: `PayPal API error: ${response.status}` };
+    }
+
+    return {};
+  } catch (error) {
+    console.error("PayPal cancel subscription error:", error);
+    return { error: "Failed to cancel subscription with PayPal" };
+  }
+}

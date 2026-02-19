@@ -106,7 +106,8 @@
     "autoDeleteWarning": "Se elimina en {time}",
     "rename": "Doble clic para renombrar",
     "renameSuccess": "Currículum renombrado",
-    "renameError": "No se pudo renombrar el currículum"
+    "renameError": "No se pudo renombrar el currículum",
+    "settings": "Configuración"
   },
   "share": {
     "title": "Compartir",
@@ -143,5 +144,34 @@
     "subscribe": "Suscribirse",
     "currentPlan": "Plan Actual",
     "freePlan": "Plan Gratuito"
+  },
+  "settings": {
+    "title": "Configuración",
+    "profile": "Perfil",
+    "profileDescription": "Administra tu nombre y la información de tu cuenta.",
+    "displayName": "Nombre para mostrar",
+    "displayNamePlaceholder": "Tu nombre",
+    "emailReadOnly": "Correo (solo lectura)",
+    "security": "Seguridad",
+    "securityDescription": "Actualiza tu contraseña.",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "changePassword": "Cambiar contraseña",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "passwordChanged": "Contraseña cambiada con éxito",
+    "subscription": "Suscripción",
+    "currentPlan": "Plan actual",
+    "freePlan": "Gratuito",
+    "renewsOn": "Se renueva el",
+    "cancelSubscription": "Cancelar suscripción",
+    "cancelConfirm": "¿Estás seguro? Esta acción no se puede deshacer.",
+    "confirmCancel": "Sí, cancelar",
+    "canceling": "Cancelando...",
+    "subscriptionCanceled": "Suscripción cancelada",
+    "upgradeToPro": "Pasarse a Pro",
+    "dangerZone": "Zona de peligro",
+    "deleteAccountPlaceholder": "La eliminación de cuenta estará disponible en una futura actualización.",
+    "savedSuccess": "Configuración guardada",
+    "saving": "Guardando..."
   }
 }
