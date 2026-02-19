@@ -76,7 +76,19 @@
     "upgradeDescription": "Upgrade to Pro to create unlimited resumes and access premium templates.",
     "upgradeButton": "Upgrade to Pro",
     "deleteError": "Could not delete resume",
-    "deleteSuccess": "Resume deleted successfully"
+    "deleteSuccess": "Resume deleted successfully",
+    "duplicate": "Duplicate",
+    "duplicateSuccess": "Resume duplicated",
+    "duplicateError": "Could not duplicate resume",
+    "trash": "Trash",
+    "trashEmpty": "Trash is empty",
+    "trashEmptyDescription": "Deleted resumes appear here for 3 days before being permanently removed.",
+    "backToDashboard": "Back to My Resumes",
+    "restore": "Restore",
+    "restoreSuccess": "Resume restored",
+    "restoreError": "Could not restore resume",
+    "deletedAgo": "Deleted {time}",
+    "autoDeleteWarning": "Auto-deletes in {time}"
   },
   "share": {
     "title": "Share",

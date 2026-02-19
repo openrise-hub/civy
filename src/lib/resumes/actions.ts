@@ -220,6 +220,175 @@ export async function saveResume(
 }
 
 // ============================================
+// RESUME MANAGEMENT ACTIONS
+// ============================================
+
+/**
+ * Duplicate a resume. Creates a new row with "Copy of {title}" and a deep copy of the data.
+ */
+export async function duplicateResume(
+  id: string
+): Promise<{ id?: string; error?: string }> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  // Fetch the source resume
+  const { data: source, error: fetchError } = await supabase
+    .from("resumes")
+    .select("title, data")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .is("deleted_at", null)
+    .single();
+
+  if (fetchError || !source) {
+    return { error: "Resume not found" };
+  }
+
+  // Check resume limit
+  const [countResult, profile] = await Promise.all([
+    supabase
+      .from("resumes")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .is("deleted_at", null),
+    getProfile(),
+  ]);
+
+  const resumeCount = countResult.count ?? 0;
+  const isPremium = profile?.is_premium ?? false;
+  const maxResumes = isPremium
+    ? RESUME_LIMITS.PRO_MAX_RESUMES
+    : RESUME_LIMITS.FREE_MAX_RESUMES;
+
+  if (resumeCount >= maxResumes) {
+    return { error: "Resume limit reached. Please upgrade to Pro." };
+  }
+
+  // Insert the duplicate
+  const { data: newResume, error: insertError } = await supabase
+    .from("resumes")
+    .insert({
+      user_id: user.id,
+      title: `Copy of ${source.title}`,
+      data: JSON.parse(JSON.stringify(source.data)), // deep copy
+    })
+    .select("id")
+    .single();
+
+  if (insertError) {
+    console.error("Failed to duplicate resume:", insertError.message);
+    return { error: insertError.message };
+  }
+
+  revalidatePath("/dashboard");
+  return { id: newResume.id };
+}
+
+/**
+ * Get soft-deleted resumes within the 3-day recovery window.
+ */
+export type DeletedResumeItem = {
+  id: string;
+  title: string;
+  deleted_at: string;
+};
+
+export async function getDeletedResumes(): Promise<DeletedResumeItem[]> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return [];
+  }
+
+  const admin = createAdminClient();
+
+  const threeDaysAgo = new Date(
+    Date.now() - 3 * 24 * 60 * 60 * 1000
+  ).toISOString();
+
+  const { data, error } = await admin
+    .from("resumes")
+    .select("id, title, deleted_at")
+    .eq("user_id", user.id)
+    .not("deleted_at", "is", null)
+    .gte("deleted_at", threeDaysAgo)
+    .order("deleted_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to fetch deleted resumes:", error.message);
+    return [];
+  }
+
+  return data ?? [];
+}
+
+/**
+ * Restore a soft-deleted resume by setting deleted_at back to NULL.
+ */
+export async function restoreResume(
+  id: string
+): Promise<{ error?: string }> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  // Check resume limit before restoring
+  const [countResult, profile] = await Promise.all([
+    supabase
+      .from("resumes")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .is("deleted_at", null),
+    getProfile(),
+  ]);
+
+  const resumeCount = countResult.count ?? 0;
+  const isPremium = profile?.is_premium ?? false;
+  const maxResumes = isPremium
+    ? RESUME_LIMITS.PRO_MAX_RESUMES
+    : RESUME_LIMITS.FREE_MAX_RESUMES;
+
+  if (resumeCount >= maxResumes) {
+    return { error: "Resume limit reached. Please upgrade to Pro." };
+  }
+
+  const admin = createAdminClient();
+
+  const { error } = await admin
+    .from("resumes")
+    .update({ deleted_at: null })
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error("Failed to restore resume:", error.message);
+    return { error: error.message };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/trash");
+  return {};
+}
+
+// ============================================
 // PUBLIC SHARING ACTIONS
 // ============================================
 

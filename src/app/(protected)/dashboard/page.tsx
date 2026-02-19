@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Plus, FileText, Lock } from "lucide-react";
+import { Plus, FileText, Lock, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { getResumes, createResume } from "@/lib/resumes/actions";
 import { getUser } from "@/lib/auth/actions";
 import { getProfile } from "@/lib/profile/actions";
@@ -32,12 +33,22 @@ export default async function DashboardPage() {
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold">{t("title")}</h1>
-          <form action={createResume}>
-            <Button type="submit" disabled={isAtLimit}>
-              {isAtLimit ? <Lock className="size-4" /> : <Plus className="size-4" />}
-              {isAtLimit ? t("limitReached") : t("createNew")}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              render={<Link href="/dashboard/trash" />}
+            >
+              <Trash2 className="size-4" />
+              {t("trash")}
             </Button>
-          </form>
+            <form action={createResume}>
+              <Button type="submit" disabled={isAtLimit}>
+                {isAtLimit ? <Lock className="size-4" /> : <Plus className="size-4" />}
+                {isAtLimit ? t("limitReached") : t("createNew")}
+              </Button>
+            </form>
+          </div>
         </div>
 
         {/* Content */}

@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { FileText, Pencil, Trash2 } from "lucide-react";
+import { FileText, Pencil, Trash2, Copy } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toastManager } from "@/components/ui/toast";
-import { deleteResume, type ResumeListItem } from "@/lib/resumes/actions";
+import { deleteResume, duplicateResume, type ResumeListItem } from "@/lib/resumes/actions";
 
 function formatRelativeTime(dateString: string): string {
   const date = new Date(dateString);
@@ -47,6 +47,25 @@ export function ResumeCard({ resume, onDeleted }: ResumeCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleDuplicate = () => {
+    startTransition(async () => {
+      const result = await duplicateResume(resume.id);
+      if (result.error) {
+        toastManager.add({
+          type: "error",
+          title: t("duplicateError") || "Error",
+          description: result.error,
+        });
+      } else {
+        toastManager.add({
+          type: "success",
+          title: t("duplicateSuccess") || "Resume duplicated",
+        });
+        router.refresh();
+      }
+    });
+  };
 
   const handleDelete = () => {
     if (!showConfirm) {
@@ -125,14 +144,25 @@ export function ResumeCard({ resume, onDeleted }: ResumeCardProps) {
             </Button>
           </>
         ) : (
-          <Button
-            size="sm"
-            variant="outline"
-            render={<Link href={`/editor/${resume.id}`} />}
-          >
-            <Pencil className="size-4" />
-            {t("edit")}
-          </Button>
+          <>
+            <Button
+              size="sm"
+              variant="outline"
+              render={<Link href={`/editor/${resume.id}`} />}
+            >
+              <Pencil className="size-4" />
+              {t("edit")}
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleDuplicate}
+              disabled={isPending}
+              aria-label={t("duplicate")}
+            >
+              <Copy className="size-4" />
+            </Button>
+          </>
         )}
       </CardFooter>
     </Card>

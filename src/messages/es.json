@@ -76,7 +76,19 @@
     "upgradeDescription": "Pásate a Pro para crear currículums ilimitados y acceder a plantillas premium.",
     "upgradeButton": "Pasarse a Pro",
     "deleteError": "No se pudo eliminar el currículum",
-    "deleteSuccess": "Currículum eliminado con éxito"
+    "deleteSuccess": "Currículum eliminado con éxito",
+    "duplicate": "Duplicar",
+    "duplicateSuccess": "Currículum duplicado",
+    "duplicateError": "No se pudo duplicar el currículum",
+    "trash": "Papelera",
+    "trashEmpty": "La papelera está vacía",
+    "trashEmptyDescription": "Los currículums eliminados aparecen aquí durante 3 días antes de ser eliminados permanentemente.",
+    "backToDashboard": "Volver a Mis Currículums",
+    "restore": "Restaurar",
+    "restoreSuccess": "Currículum restaurado",
+    "restoreError": "No se pudo restaurar el currículum",
+    "deletedAgo": "Eliminado {time}",
+    "autoDeleteWarning": "Se elimina en {time}"
   },
   "share": {
     "title": "Compartir",
