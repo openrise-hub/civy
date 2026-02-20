@@ -14,6 +14,7 @@
       "sections": "Secciones",
       "templates": "Plantillas",
       "settings": "Configuración",
+      "versionHistory": "Historial de versiones",
       "user": "Perfil de Usuario",
       "collapse": "Contraer barra lateral",
       "expand": "Expandir barra lateral"
@@ -143,7 +144,22 @@
     },
     "subscribe": "Suscribirse",
     "currentPlan": "Plan Actual",
-    "freePlan": "Plan Gratuito"
+    "freePlan": "Plan Gratuito",
+    "changePlan": "Cambiar plan",
+    "planChanged": "Plan cambiado con éxito",
+    "currentTier": "Actual"
+  },
+  "versionHistory": {
+    "title": "Historial de versiones",
+    "description": "Ver y restaurar versiones anteriores de tu currículum.",
+    "restore": "Restaurar",
+    "confirm": "Confirmar",
+    "restoreSuccess": "Versión restaurada con éxito",
+    "empty": "No se encontraron versiones anteriores. Las versiones se guardan automáticamente al editar.",
+    "loading": "Cargando versiones...",
+    "proOnly": "Función Pro",
+    "proOnlyDescription": "El historial de versiones está disponible para usuarios Pro. Mejora tu plan para acceder a versiones anteriores.",
+    "versionLabel": "Versión {version}"
   },
   "settings": {
     "title": "Configuración",

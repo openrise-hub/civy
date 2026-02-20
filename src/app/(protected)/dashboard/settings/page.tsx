@@ -150,7 +150,7 @@ export default function SettingsPage() {
             </form>
           </Card>
 
-          {/* Security Section — only for email/password users */}
+          {/* Security Section, only for email/password users */}
           {isEmailUser && (
             <Card>
               <CardHeader>

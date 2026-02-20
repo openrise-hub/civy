@@ -14,6 +14,7 @@
       "sections": "Sections",
       "templates": "Templates",
       "settings": "Settings",
+      "versionHistory": "Version History",
       "user": "User Profile",
       "collapse": "Collapse sidebar",
       "expand": "Expand sidebar"
@@ -143,7 +144,22 @@
     },
     "subscribe": "Subscribe",
     "currentPlan": "Current Plan",
-    "freePlan": "Free Plan"
+    "freePlan": "Free Plan",
+    "changePlan": "Change Plan",
+    "planChanged": "Plan changed successfully",
+    "currentTier": "Current"
+  },
+  "versionHistory": {
+    "title": "Version History",
+    "description": "View and restore previous versions of your resume.",
+    "restore": "Restore",
+    "confirm": "Confirm",
+    "restoreSuccess": "Version restored successfully",
+    "empty": "No previous versions found. Versions are saved automatically when you edit.",
+    "loading": "Loading versions...",
+    "proOnly": "Pro Feature",
+    "proOnlyDescription": "Version history is available for Pro users. Upgrade to access past versions of your resumes.",
+    "versionLabel": "Version {version}"
   },
   "settings": {
     "title": "Settings",

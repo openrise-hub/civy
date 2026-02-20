@@ -159,3 +159,48 @@ export async function cancelPayPalSubscription(
     return { error: "Failed to cancel subscription with PayPal" };
   }
 }
+
+/**
+ * Revise a PayPal subscription to switch to a different plan.
+ * Returns an approval URL that the user must visit to confirm the change.
+ */
+export async function revisePayPalSubscription(
+  subscriptionId: string,
+  newPlanId: string
+): Promise<{ approvalUrl?: string; error?: string }> {
+  try {
+    const accessToken = await getPayPalAccessToken();
+
+    const response = await fetch(
+      `${PAYPAL_API_URL}/v1/billing/subscriptions/${subscriptionId}/revise`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          plan_id: newPlanId,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("PayPal revise subscription error:", response.status, text);
+      return { error: `PayPal API error: ${response.status}` };
+    }
+
+    const data = await response.json();
+
+    // PayPal returns HATEOAS links — find the approval URL
+    const approvalLink = data.links?.find(
+      (link: { rel: string; href: string }) => link.rel === "approve"
+    );
+
+    return { approvalUrl: approvalLink?.href };
+  } catch (error) {
+    console.error("PayPal revise subscription error:", error);
+    return { error: "Failed to revise subscription with PayPal" };
+  }
+}
