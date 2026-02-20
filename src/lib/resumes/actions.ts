@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { trackEvent } from "@/lib/analytics/actions";
 
 export type ResumeListItem = {
   id: string;
@@ -102,6 +103,8 @@ export async function createResume(): Promise<void> {
     console.error("Failed to create resume:", error.message);
     throw new Error(error.message);
   }
+
+  trackEvent("create", data.id).catch(() => {});
 
   redirect(`/editor/${data.id}`);
 }
@@ -289,6 +292,7 @@ export async function duplicateResume(
   }
 
   revalidatePath("/dashboard");
+  trackEvent("duplicate", newResume.id, { sourceId: id }).catch(() => {});
   return { id: newResume.id };
 }
 
@@ -476,6 +480,7 @@ export async function toggleResumeVisibility(
   }
 
   revalidatePath("/dashboard");
+  trackEvent("toggle_visibility", id, { isPublic: newIsPublic }).catch(() => {});
   return { isPublic: newIsPublic, slug };
 }
 
@@ -523,7 +528,7 @@ export type HistoryEntry = {
 };
 
 /**
- * Get version history for a resume. RLS ensures owner-only access.
+ * Get version history for a resume.
  */
 export async function getResumeHistory(
   resumeId: string
@@ -596,5 +601,6 @@ export async function restoreVersion(
 
   revalidatePath(`/editor/${resumeId}`);
   revalidatePath("/dashboard");
+  trackEvent("restore_version", resumeId, { historyId }).catch(() => {});
   return {};
 }

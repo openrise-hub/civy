@@ -108,7 +108,8 @@
     "rename": "Double-click to rename",
     "renameSuccess": "Resume renamed",
     "renameError": "Could not rename resume",
-    "settings": "Settings"
+    "settings": "Settings",
+    "analytics": "Analytics"
   },
   "share": {
     "title": "Share",
@@ -189,5 +190,19 @@
     "deleteAccountPlaceholder": "Account deletion will be available in a future update.",
     "savedSuccess": "Settings saved",
     "saving": "Saving..."
+  },
+  "analytics": {
+    "title": "Analytics",
+    "backToDashboard": "Back to My Resumes",
+    "proOnly": "Pro Feature",
+    "proOnlyDescription": "Upgrade to Pro to access detailed analytics and insights for your resumes.",
+    "totalViews": "Total Views",
+    "totalDownloads": "Total Downloads",
+    "perResume": "Per Resume",
+    "resumeName": "Resume",
+    "views": "Views",
+    "downloads": "Downloads",
+    "noData": "No analytics data yet. Share your resume to start tracking views.",
+    "untitled": "Untitled Resume"
   }
 }

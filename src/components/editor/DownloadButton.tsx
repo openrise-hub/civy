@@ -7,6 +7,7 @@ import { UniversalPdf } from "@/components/pdf/UniversalPdf";
 import { DownloadIcon, LoaderIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button, ButtonProps } from "@/components/ui/button";
+import { trackEvent } from "@/lib/analytics/actions";
 
 interface DownloadButtonProps extends ButtonProps {
   fileName?: string;
@@ -58,6 +59,9 @@ export const DownloadButton = ({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      
+      // Track download event
+      trackEvent("download", resume.id).catch(() => {});
       
       // Cleanup
       URL.revokeObjectURL(url);

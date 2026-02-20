@@ -108,7 +108,8 @@
     "rename": "Doble clic para renombrar",
     "renameSuccess": "Currículum renombrado",
     "renameError": "No se pudo renombrar el currículum",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "analytics": "Analíticas"
   },
   "share": {
     "title": "Compartir",
@@ -189,5 +190,19 @@
     "deleteAccountPlaceholder": "La eliminación de cuenta estará disponible en una futura actualización.",
     "savedSuccess": "Configuración guardada",
     "saving": "Guardando..."
+  },
+  "analytics": {
+    "title": "Analíticas",
+    "backToDashboard": "Volver a Mis Currículums",
+    "proOnly": "Función Pro",
+    "proOnlyDescription": "Pásate a Pro para acceder a analíticas detalladas de tus currículums.",
+    "totalViews": "Vistas Totales",
+    "totalDownloads": "Descargas Totales",
+    "perResume": "Por Currículum",
+    "resumeName": "Currículum",
+    "views": "Vistas",
+    "downloads": "Descargas",
+    "noData": "Aún no hay datos. Comparte tu currículum para empezar a rastrear vistas.",
+    "untitled": "Currículum sin título"
   }
 }

@@ -39,7 +39,7 @@ const stringItemTypes = [
 ] as const;
 
 const stringItemSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().min(1).max(50),
   visible: z.boolean(),
   type: z.enum(stringItemTypes),
   metadata: itemMetadataSchema,
@@ -47,7 +47,7 @@ const stringItemSchema = z.object({
 });
 
 const dateRangeItemSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().min(1).max(50),
   visible: z.boolean(),
   type: z.literal("date-range"),
   metadata: itemMetadataSchema,
@@ -59,7 +59,7 @@ const dateRangeItemSchema = z.object({
 });
 
 const linkItemSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().min(1).max(50),
   visible: z.boolean(),
   type: z.literal("link"),
   metadata: itemMetadataSchema,
@@ -70,7 +70,7 @@ const linkItemSchema = z.object({
 });
 
 const socialItemSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().min(1).max(50),
   visible: z.boolean(),
   type: z.literal("social"),
   metadata: itemMetadataSchema,
@@ -81,7 +81,7 @@ const socialItemSchema = z.object({
 });
 
 const ratingItemSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().min(1).max(50),
   visible: z.boolean(),
   type: z.literal("rating"),
   metadata: itemMetadataSchema,
@@ -94,7 +94,7 @@ const ratingItemSchema = z.object({
 });
 
 const imageItemSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().min(1).max(50),
   visible: z.boolean(),
   type: z.literal("image"),
   metadata: itemMetadataSchema,
@@ -106,7 +106,7 @@ const imageItemSchema = z.object({
 });
 
 const separatorItemSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().min(1).max(50),
   visible: z.boolean(),
   type: z.literal("separator"),
   metadata: itemMetadataSchema,
@@ -126,14 +126,14 @@ const itemSchema = z.discriminatedUnion("type", [
 // --- Section Schema ---
 
 const sectionContentSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().min(1).max(50),
   layout: z.enum(["list", "grid", "inline"]),
   columns: z.number().int().min(1).max(4).optional(),
   items: z.array(itemSchema).max(RESUME_LIMITS.MAX_ITEMS_PER_SECTION),
 });
 
 const sectionSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().min(1).max(50),
   title: z.string().max(RESUME_LIMITS.MAX_SECTION_TITLE),
   visible: z.boolean(),
   content: sectionContentSchema,
