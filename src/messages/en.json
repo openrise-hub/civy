@@ -211,7 +211,16 @@
     "exporting": "Exporting...",
     "exportSuccess": "Data exported successfully",
     "savedSuccess": "Settings saved",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "preferences": "Preferences",
+    "preferencesDescription": "Customize your experience.",
+    "language": "Language",
+    "english": "English",
+    "spanish": "Spanish",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "systemTheme": "System"
   },
   "analytics": {
     "title": "Analytics",

@@ -10,6 +10,8 @@ export type Profile = {
   premium_tier: "monthly" | "quarterly" | "yearly" | null;
   premium_until: string | null;
   paypal_subscription_id: string | null;
+  locale: string;
+  theme: string;
 };
 
 /**
@@ -36,6 +38,8 @@ export async function getProfile(): Promise<Profile | null> {
         premium_tier: null,
         premium_until: null,
         paypal_subscription_id: null,
+        locale: "en",
+        theme: "system",
       };
     }
     console.error("Error fetching profile:", error);
@@ -226,4 +230,41 @@ export async function changeSubscriptionTier(
   }
 
   return { approvalUrl: result.approvalUrl };
+}
+
+/**
+ * Update user preferences (locale and theme)
+ */
+export async function updatePreferences(updates: {
+  locale?: string;
+  theme?: string;
+}): Promise<{ error?: string }> {
+  if (!updates.locale && !updates.theme) {
+    return {};
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      ...updates,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", user.id);
+
+  if (error) {
+    console.error("Error updating preferences:", error);
+    return { error: error.message };
+  }
+
+  revalidatePath("/", "layout");
+  return {};
 }

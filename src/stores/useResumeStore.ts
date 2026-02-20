@@ -40,6 +40,7 @@ interface ResumeStore {
   // Actions
   setResume: (resume: Resume) => void;
   updatePersonal: (personal: Partial<PersonalInfo>) => void;
+  updateMetadata: (metadata: Partial<Resume['metadata']>) => void;
   
   addSection: (type?: string) => void; 
   removeSection: (sectionId: string) => void;
@@ -115,6 +116,15 @@ export const useResumeStore = create<ResumeStore>((set) => ({
         personal: { ...state.resume.personal, ...data },
       },
     })),
+
+  updateMetadata: (data) =>
+    set((state) => ({
+      resume: {
+        ...state.resume,
+        metadata: { ...state.resume.metadata, ...data },
+      },
+    })),
+
 
   addSection: (type = 'custom') =>
     set((state) => {

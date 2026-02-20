@@ -166,4 +166,10 @@
   body {
     @apply bg-background text-foreground overflow-x-hidden;
   }
+  button,
+  a,
+  [role="button"],
+  select {
+    cursor: pointer;
+  }
 }

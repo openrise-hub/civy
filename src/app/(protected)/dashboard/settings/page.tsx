@@ -247,6 +247,95 @@ export default function SettingsPage() {
             </form>
           </Card>
 
+          {/* Preferences Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("preferences")}</CardTitle>
+              <CardDescription>{t("preferencesDescription")}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Language Selector */}
+              <div className="space-y-3">
+                <FieldLabel>{t("language")}</FieldLabel>
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    variant={profile?.locale === "en" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_LOCALE=en; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ locale: "en" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    {t("english")} {profile?.locale === "en" && "✓"}
+                  </Button>
+                  <Button
+                    variant={profile?.locale === "es" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_LOCALE=es; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ locale: "es" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    {t("spanish")} {profile?.locale === "es" && "✓"}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Theme Selector */}
+              <div className="space-y-3">
+                <FieldLabel>{t("theme")}</FieldLabel>
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    variant={profile?.theme === "light" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_THEME=light; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ theme: "light" })
+                      );
+                      // ThemeProvider handles class update, but a reload ensures everything syncs cleanly
+                      window.location.reload();
+                    }}
+                  >
+                    {t("light")} {profile?.theme === "light" && "✓"}
+                  </Button>
+                  <Button
+                    variant={profile?.theme === "dark" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_THEME=dark; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ theme: "dark" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    {t("dark")} {profile?.theme === "dark" && "✓"}
+                  </Button>
+                  <Button
+                    variant={
+                      profile?.theme === "system" || !profile?.theme
+                        ? "default"
+                        : "outline"
+                    }
+                    onClick={async () => {
+                      document.cookie = `NEXT_THEME=system; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ theme: "system" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    {t("systemTheme")}{" "}
+                    {(profile?.theme === "system" || !profile?.theme) && "✓"}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Security Section, only for email/password users */}
           {isEmailUser && (
             <Card>

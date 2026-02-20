@@ -21,7 +21,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  SettingsIcon,
   LayoutTemplateIcon,
   FileTextIcon,
   BriefcaseIcon,
@@ -36,6 +35,7 @@ import { useResumeStore, SECTION_TEMPLATES } from "@/stores/useResumeStore";
 import { RESUME_LIMITS } from "@/constants/limits";
 import { useUser } from "@/contexts/UserContext";
 import { VersionHistory } from "@/components/editor/VersionHistory";
+import { ResumeSettingsDialog } from "@/components/editor/ResumeSettingsDialog";
 
 function getInitials(email: string): string {
   const name = email.split("@")[0];
@@ -175,10 +175,7 @@ export function EditorSidebar() {
               />
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip={isCollapsed ? t("settings") : undefined}>
-                <SettingsIcon />
-                <span>{t("settings")}</span>
-              </SidebarMenuButton>
+              <ResumeSettingsDialog isCollapsed={isCollapsed} />
             </SidebarMenuItem>
           </SidebarMenu>
 
