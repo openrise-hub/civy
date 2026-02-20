@@ -30,10 +30,12 @@ import {
   TextIcon,
   PlusIcon,
   HomeIcon,
+  HistoryIcon,
 } from "lucide-react";
 import { useResumeStore, SECTION_TEMPLATES } from "@/stores/useResumeStore";
 import { RESUME_LIMITS } from "@/constants/limits";
 import { useUser } from "@/contexts/UserContext";
+import { VersionHistory } from "@/components/editor/VersionHistory";
 
 function getInitials(email: string): string {
   const name = email.split("@")[0];
@@ -46,6 +48,7 @@ export function EditorSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
   const sectionCount = useResumeStore((state) => state.resume.sections.length);
+  const resumeId = useResumeStore((state) => state.resume.id);
   const atSectionLimit = sectionCount >= RESUME_LIMITS.MAX_SECTIONS;
   const { user } = useUser();
 
@@ -160,6 +163,17 @@ export function EditorSidebar() {
 
         <SidebarFooter className="p-2">
           <SidebarMenu>
+            <SidebarMenuItem>
+              <VersionHistory
+                resumeId={resumeId}
+                trigger={
+                  <SidebarMenuButton tooltip={isCollapsed ? t("versionHistory") : undefined}>
+                    <HistoryIcon />
+                    <span>{t("versionHistory")}</span>
+                  </SidebarMenuButton>
+                }
+              />
+            </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton tooltip={isCollapsed ? t("settings") : undefined}>
                 <SettingsIcon />

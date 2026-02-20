@@ -511,3 +511,90 @@ export async function regenerateSlug(
   return { slug: newSlug };
 }
 
+// ============================================
+// VERSION HISTORY ACTIONS (Pro Feature)
+// ============================================
+
+export type HistoryEntry = {
+  id: string;
+  version: number;
+  data: Record<string, unknown>;
+  created_at: string;
+};
+
+/**
+ * Get version history for a resume. RLS ensures owner-only access.
+ */
+export async function getResumeHistory(
+  resumeId: string
+): Promise<HistoryEntry[]> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("resume_history")
+    .select("id, version, data, created_at")
+    .eq("resume_id", resumeId)
+    .eq("user_id", user.id)
+    .order("version", { ascending: false })
+    .limit(50);
+
+  if (error) {
+    console.error("Failed to fetch resume history:", error.message);
+    return [];
+  }
+
+  return data ?? [];
+}
+
+/**
+ * Restore a resume to a previous version from history.
+ */
+export async function restoreVersion(
+  resumeId: string,
+  historyId: string
+): Promise<{ error?: string }> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  // Fetch the history entry (RLS ensures owner-only)
+  const { data: snapshot, error: fetchError } = await supabase
+    .from("resume_history")
+    .select("data")
+    .eq("id", historyId)
+    .eq("resume_id", resumeId)
+    .eq("user_id", user.id)
+    .single();
+
+  if (fetchError || !snapshot) {
+    return { error: "Version not found" };
+  }
+
+  // Overwrite the live resume with the historical data
+  const { error: updateError } = await supabase
+    .from("resumes")
+    .update({ data: snapshot.data })
+    .eq("id", resumeId)
+    .eq("user_id", user.id);
+
+  if (updateError) {
+    console.error("Failed to restore version:", updateError.message);
+    return { error: updateError.message };
+  }
+
+  revalidatePath(`/editor/${resumeId}`);
+  revalidatePath("/dashboard");
+  return {};
+}

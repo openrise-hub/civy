@@ -180,3 +180,50 @@ export async function cancelSubscription(): Promise<{ error?: string }> {
   revalidatePath("/", "layout");
   return {};
 }
+
+type PricingTier = "monthly" | "quarterly" | "yearly";
+
+const PLAN_IDS: Record<PricingTier, string> = {
+  monthly: process.env.NEXT_PUBLIC_PAYPAL_PLAN_MONTHLY || "",
+  quarterly: process.env.NEXT_PUBLIC_PAYPAL_PLAN_QUARTERLY || "",
+  yearly: process.env.NEXT_PUBLIC_PAYPAL_PLAN_YEARLY || "",
+};
+
+/**
+ * Change subscription to a different tier.
+ * Returns an approval URL the user must visit to confirm.
+ */
+export async function changeSubscriptionTier(
+  newTier: PricingTier
+): Promise<{ approvalUrl?: string; error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const profile = await getProfile();
+  if (!profile?.paypal_subscription_id) {
+    return { error: "No active subscription found" };
+  }
+
+  const newPlanId = PLAN_IDS[newTier];
+  if (!newPlanId) {
+    return { error: "Invalid plan tier" };
+  }
+
+  const { revisePayPalSubscription } = await import("@/lib/paypal");
+  const result = await revisePayPalSubscription(
+    profile.paypal_subscription_id,
+    newPlanId
+  );
+
+  if (result.error) {
+    return { error: result.error };
+  }
+
+  return { approvalUrl: result.approvalUrl };
+}
