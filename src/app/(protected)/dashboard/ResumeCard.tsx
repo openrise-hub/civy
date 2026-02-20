@@ -4,7 +4,7 @@ import { useState, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { FileText, Pencil, Trash2, Copy } from "lucide-react";
+import { FileText, Pencil, Trash2, Copy, EyeIcon } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -39,10 +39,11 @@ function formatRelativeTime(dateString: string): string {
 
 type ResumeCardProps = {
   resume: ResumeListItem;
+  viewCount?: number;
   onDeleted?: () => void;
 };
 
-export function ResumeCard({ resume, onDeleted }: ResumeCardProps) {
+export function ResumeCard({ resume, viewCount, onDeleted }: ResumeCardProps) {
   const t = useTranslations("dashboard");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -164,6 +165,12 @@ export function ResumeCard({ resume, onDeleted }: ResumeCardProps) {
             )}
             <CardDescription>
               {t("editedAgo", { time: formatRelativeTime(resume.updated_at) })}
+              {resume.is_public && viewCount !== undefined && viewCount > 0 && (
+                <span className="ml-2 inline-flex items-center gap-1">
+                  <EyeIcon className="size-3" />
+                  {viewCount.toLocaleString()}
+                </span>
+              )}
             </CardDescription>
           </div>
         </div>

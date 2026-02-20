@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 // Routes that don't require authentication
-const publicRoutes = ["/", "/login", "/callback"];
+const publicRoutes = ["/", "/login", "/callback", "/reset-password"];
 
 // Routes that should be ignored by proxy
 const ignoredPrefixes = ["/_next", "/api", "/favicon.ico"];
@@ -53,7 +53,7 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Skip auth check for public routes
-  if (publicRoutes.includes(pathname)) {
+  if (publicRoutes.includes(pathname) || pathname.startsWith("/p/")) {
     return response;
   }
 

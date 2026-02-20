@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import type { Resume } from "@/types/resume";
 import type { PublicResumeData } from "@/lib/resumes/actions";
-import { DownloadIcon } from "lucide-react";
+import { DownloadIcon, EyeIcon } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { UniversalPdf } from "@/components/pdf/UniversalPdf";
 
@@ -26,9 +26,10 @@ const PdfCanvasPreview = dynamic(
 
 type Props = {
   resume: PublicResumeData;
+  viewCount?: number;
 };
 
-export function PublicResumeViewer({ resume }: Props) {
+export function PublicResumeViewer({ resume, viewCount }: Props) {
   const tResume = useTranslations("resume");
 
   const translations = useMemo(() => ({
@@ -93,6 +94,12 @@ export function PublicResumeViewer({ resume }: Props) {
         <div className="container flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <span className="font-semibold">{resume.title}</span>
+            {viewCount !== undefined && viewCount > 0 && (
+              <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                <EyeIcon className="size-3" />
+                {viewCount.toLocaleString()}
+              </span>
+            )}
           </div>
           <Button size="sm" variant="outline" onClick={handleDownload}>
             <DownloadIcon className="size-4" />

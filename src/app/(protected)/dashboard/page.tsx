@@ -1,10 +1,11 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Plus, FileText, Lock, Trash2, Settings } from "lucide-react";
+import { Plus, FileText, Lock, Trash2, Settings, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { getResumes, createResume } from "@/lib/resumes/actions";
 import { getUser } from "@/lib/auth/actions";
 import { getProfile } from "@/lib/profile/actions";
+import { getAllResumeViewCounts } from "@/lib/analytics/actions";
 import { Button } from "@/components/ui/button";
 import { ResumeCard } from "./ResumeCard";
 import { RESUME_LIMITS } from "@/constants/limits";
@@ -18,9 +19,10 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const [resumes, profile] = await Promise.all([
+  const [resumes, profile, viewCounts] = await Promise.all([
     getResumes(),
     getProfile(),
+    getAllResumeViewCounts(),
   ]);
 
   const isPremium = profile?.is_premium ?? false;
@@ -41,6 +43,14 @@ export default async function DashboardPage() {
             >
               <Trash2 className="size-4" />
               {t("trash")}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              render={<Link href="/dashboard/analytics" />}
+            >
+              <BarChart3 className="size-4" />
+              {t("analytics")}
             </Button>
             <Button
               variant="ghost"
@@ -79,7 +89,7 @@ export default async function DashboardPage() {
           // Resume Grid
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {resumes.map((resume) => (
-              <ResumeCard key={resume.id} resume={resume} />
+              <ResumeCard key={resume.id} resume={resume} viewCount={viewCounts[resume.id] ?? 0} />
             ))}
           </div>
         )}
