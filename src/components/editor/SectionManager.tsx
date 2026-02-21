@@ -4,14 +4,14 @@ import { useResumeStore } from "@/stores/useResumeStore";
 import { Section } from "@/types/resume";
 import { RESUME_LIMITS } from "@/constants/limits";
 import { useIsMounted } from "@/hooks/useIsMounted";
-import { Card, CardHeader, CardTitle, CardContent, CardAction } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardAction } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SectionEditor } from "@/components/editor/SectionEditor";
 import { TrashIcon, GripVertical } from "lucide-react";
 import { DndContext, DragEndEvent, PointerSensor, KeyboardSensor, useSensor, useSensors, type DraggableAttributes } from '@dnd-kit/core';
 import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
-import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { SortableContext, verticalListSortingStrategy, useSortable, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cn } from "@/lib/utils";
 
@@ -38,7 +38,7 @@ function DragHandle({ attributes, listeners }: DragHandleProps) {
 interface SortableSectionCardProps {
   section: Section;
   onUpdateTitle: (sectionId: string, title: string) => void;
-  onRemove: (sectionId: string) => void;
+  onRemove: (sectionId: string, e: React.MouseEvent) => void;
 }
 
 function SortableSectionCard({ section, onUpdateTitle, onRemove }: SortableSectionCardProps) {
@@ -63,7 +63,7 @@ function SortableSectionCard({ section, onUpdateTitle, onRemove }: SortableSecti
       ref={setNodeRef}
       style={style}
       className={cn(
-        "relative", 
+        "relative section-container", 
         isDragging && "shadow-lg"
       )}
     >
@@ -81,7 +81,7 @@ function SortableSectionCard({ section, onUpdateTitle, onRemove }: SortableSecti
               <Button
                 variant="ghost"
                 size="icon-sm"
-                onClick={() => onRemove(section.id)}
+                onClick={(e) => onRemove(section.id, e)}
                 className="text-muted-foreground hover:text-destructive"
               >
                 <TrashIcon className="size-4" />
@@ -112,7 +112,9 @@ export function SectionManager() {
         distance: 8,
       },
     }),
-    useSensor(KeyboardSensor, {})
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -127,7 +129,29 @@ export function SectionManager() {
     updateSection(sectionId, { title: newTitle });
   };
 
-  const handleRemoveSection = (sectionId: string) => {
+  const handleRemoveSection = (sectionId: string, e: React.MouseEvent) => {
+    // focus restoration logic
+    const target = e.currentTarget as HTMLElement;
+    const container = target.closest('.section-container');
+    
+    if (container) {
+      const nextFocus = container.nextElementSibling || container.previousElementSibling;
+      
+      if (nextFocus) {
+        // Find a focusable element within the sibling section
+        const focusable = nextFocus.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') as HTMLElement;
+        if (focusable) {
+          setTimeout(() => focusable.focus(), 0);
+        }
+      } else {
+        // Fallback to the add section button if no sections remain
+        const addSectionBtn = document.querySelector('.add-section-btn') as HTMLElement;
+        if (addSectionBtn) {
+          setTimeout(() => addSectionBtn.focus(), 0);
+        }
+      }
+    }
+
     removeSection(sectionId);
   };
 

@@ -95,7 +95,7 @@ export function FormEditor({ resumeId, initialIsPublic, initialSlug }: FormEdito
             <SaveIcon className="size-4" />
             <span>Save</span>
           </Button>
-          <Button size="sm" variant="outline" onClick={() => addSection("custom")}>
+          <Button size="sm" variant="outline" onClick={() => addSection("custom")} className="add-section-btn">
             <PlusIcon className="size-4" />
             <span>{t("addSection")}</span>
           </Button>

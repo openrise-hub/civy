@@ -11,13 +11,12 @@ import {
   isSeparatorItem 
 } from "@/lib/resume-helpers";
 import { RESUME_LIMITS } from "@/constants/limits";
-import { Card, CardHeader, CardContent, CardAction } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PlusIcon, TrashIcon, TypeIcon, CalendarIcon, LinkIcon, StarIcon } from "lucide-react";
+import { TrashIcon, TypeIcon, CalendarIcon, LinkIcon, StarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SectionEditorProps {
@@ -27,7 +26,7 @@ interface SectionEditorProps {
 interface ItemEditorProps {
   item: Item;
   onUpdate: (data: Partial<Item>) => void;
-  onRemove: () => void;
+  onRemove: (e: React.MouseEvent) => void;
 }
 
 function ItemEditor({ item, onUpdate, onRemove }: ItemEditorProps) {
@@ -62,7 +61,7 @@ function StringItemEditor({ item, onUpdate, onRemove }: ItemEditorProps) {
   const isNearLimit = charCount >= maxChars * 0.9;
 
   return (
-    <div className="flex items-start gap-2 p-3 rounded-lg border bg-card">
+    <div className="flex items-start gap-2 p-3 rounded-lg border bg-card item-container">
       <div className="flex-1 space-y-1">
         {isTextarea ? (
           <Textarea
@@ -117,7 +116,7 @@ function DateRangeItemEditor({ item, onUpdate, onRemove }: ItemEditorProps) {
   };
 
   return (
-    <div className="space-y-3 p-3 rounded-lg border bg-card">
+    <div className="space-y-3 p-3 rounded-lg border bg-card item-container">
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">Date Range</Label>
         <Button
@@ -182,7 +181,7 @@ function LinkItemEditor({ item, onUpdate, onRemove }: ItemEditorProps) {
   };
 
   return (
-    <div className="space-y-3 p-3 rounded-lg border bg-card">
+    <div className="space-y-3 p-3 rounded-lg border bg-card item-container">
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">
           {item.type === 'social' ? 'Social Link' : 'Link'}
@@ -235,7 +234,7 @@ function RatingItemEditor({ item, onUpdate, onRemove }: ItemEditorProps) {
   };
 
   return (
-    <div className="space-y-3 p-3 rounded-lg border bg-card">
+    <div className="space-y-3 p-3 rounded-lg border bg-card item-container">
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">Skill Rating</Label>
         <Button
@@ -321,7 +320,7 @@ function ImageItemEditor({ item, onUpdate, onRemove }: ItemEditorProps) {
   };
 
   return (
-    <div className="space-y-3 p-3 rounded-lg border bg-card">
+    <div className="space-y-3 p-3 rounded-lg border bg-card item-container">
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">Image</Label>
         <Button
@@ -379,9 +378,9 @@ function ImageItemEditor({ item, onUpdate, onRemove }: ItemEditorProps) {
   );
 }
 
-function SeparatorItemEditor({ onRemove }: { onRemove: () => void }) {
+function SeparatorItemEditor({ onRemove }: { onRemove: (e: React.MouseEvent) => void }) {
   return (
-    <div className="flex items-center justify-between p-3 rounded-lg border bg-card">
+    <div className="flex items-center justify-between p-3 rounded-lg border bg-card item-container">
       <div className="flex-1">
         <div className="h-px bg-border w-full"></div>
       </div>
@@ -407,7 +406,7 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
   }
 
   return (
-    <div className="flex flex-wrap gap-2 p-3 rounded-lg border border-dashed bg-muted/30">
+    <div className="flex flex-wrap gap-2 p-3 rounded-lg border border-dashed bg-muted/30 add-item-toolbar">
       <Button
         variant="outline"
         size="sm"
@@ -487,7 +486,28 @@ export function SectionEditor({ section }: SectionEditorProps) {
     updateItem(section.id, itemId, data);
   };
 
-  const handleRemoveItem = (itemId: string) => {
+  const handleRemoveItem = (itemId: string, e: React.MouseEvent) => {
+    const target = e.currentTarget as HTMLElement;
+    const container = target.closest('.item-container');
+    
+    if (container) {
+      const nextFocus = container.nextElementSibling || container.previousElementSibling;
+      
+      if (nextFocus && nextFocus.classList.contains('item-container')) {
+        const focusable = nextFocus.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') as HTMLElement;
+        if (focusable) {
+          setTimeout(() => focusable.focus(), 0);
+        }
+      } else {
+        // Fallback to toolbar
+        const toolbar = container.parentElement?.querySelector('.add-item-toolbar') as HTMLElement;
+        if (toolbar) {
+          const focusable = toolbar.querySelector('button') as HTMLElement;
+          if (focusable) setTimeout(() => focusable.focus(), 0);
+        }
+      }
+    }
+
     removeItem(section.id, itemId);
   };
 
@@ -502,7 +522,7 @@ export function SectionEditor({ section }: SectionEditorProps) {
           key={item.id}
           item={item}
           onUpdate={(data) => handleUpdateItem(item.id, data)}
-          onRemove={() => handleRemoveItem(item.id)}
+          onRemove={(e) => handleRemoveItem(item.id, e)}
         />
       ))}
       
