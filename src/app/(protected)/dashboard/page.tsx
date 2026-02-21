@@ -7,11 +7,11 @@ import { getUser } from "@/lib/auth/actions";
 import { getProfile } from "@/lib/profile/actions";
 import { getAllResumeViewCounts } from "@/lib/analytics/actions";
 import { Button } from "@/components/ui/button";
-import { ResumeGrid } from "./ResumeGrid";
 import { RESUME_LIMITS } from "@/constants/limits";
 import { UpgradePrompt } from "./UpgradePrompt";
 import { UserNav } from "@/components/UserNav";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { ResumeDashboardClient } from "./ResumeDashboardClient";
 
 export default async function DashboardPage() {
   const user = await getUser();
@@ -79,24 +79,24 @@ export default async function DashboardPage() {
         {resumes.length === 0 ? (
           // Empty State
           <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed bg-muted/30 py-16">
-            <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted">
-              <FileText className="size-8 text-muted-foreground" />
-            </div>
-            <h2 className="text-lg font-semibold">{t("empty")}</h2>
-            <p className="mb-6 text-muted-foreground">{t("emptyDescription")}</p>
-            <form action={createResume}>
-              <Button type="submit">
-                <Plus className="size-4" />
-                {t("createNew")}
-              </Button>
-            </form>
+          <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted">
+            <FileText className="size-8 text-muted-foreground" />
           </div>
-        ) : (
-          // Resume Grid
-          <ResumeGrid resumes={resumes} viewCounts={viewCounts} />
-        )}
+          <h2 className="text-lg font-semibold">{t("empty")}</h2>
+          <p className="mb-6 text-muted-foreground">{t("emptyDescription")}</p>
+          <form action={createResume}>
+            <Button type="submit">
+              <Plus className="size-4" />
+              {t("createNew")}
+            </Button>
+          </form>
+        </div>
+      ) : (
+        // Client Wrapper for Search, Sort, and Grid
+        <ResumeDashboardClient resumes={resumes} viewCounts={viewCounts} />
+      )}
 
-        {/* Upgrade Prompt */}
+      {/* Upgrade Prompt */}
         {isAtLimit && !isPremium && <UpgradePrompt />}
       </div>
     </div>

@@ -115,7 +115,15 @@
     "deselectAll": "Deselect All",
     "deleteSelected": "Delete ({count})",
     "cancelSelection": "Cancel",
-    "bulkDeleteSuccess": "{count} resume(s) deleted"
+    "bulkDeleteSuccess": "{count} resume(s) deleted",
+    "searchPlaceholder": "Search resumes...",
+    "sortBy": "Sort by:",
+    "sortLastEdited": "Last edited",
+    "sortOldest": "Oldest first",
+    "sortTitleAsc": "Title (A-Z)",
+    "sortTitleDesc": "Title (Z-A)",
+    "noSearchResults": "No resumes found",
+    "noSearchResultsDesc": "Try adjusting your search query."
   },
   "share": {
     "title": "Share",

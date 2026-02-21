@@ -115,7 +115,15 @@
     "deselectAll": "Deseleccionar todo",
     "deleteSelected": "Eliminar ({count})",
     "cancelSelection": "Cancelar",
-    "bulkDeleteSuccess": "{count} currículum(s) eliminado(s)"
+    "bulkDeleteSuccess": "{count} currículum(s) eliminado(s)",
+    "searchPlaceholder": "Buscar currículums...",
+    "sortBy": "Ordenar por:",
+    "sortLastEdited": "Última edición",
+    "sortOldest": "Más antiguos primero",
+    "sortTitleAsc": "Título (A-Z)",
+    "sortTitleDesc": "Título (Z-A)",
+    "noSearchResults": "No se encontraron currículums",
+    "noSearchResultsDesc": "Intenta ajustar tu búsqueda."
   },
   "share": {
     "title": "Compartir",
