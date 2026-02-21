@@ -103,9 +103,17 @@ export default async function AnalyticsPage() {
           </CardHeader>
           <div className="px-6 pb-6">
             {analytics.resumes.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
-                {t("noData")}
-              </p>
+              <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-muted/5 py-16 text-center">
+                <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-primary/10">
+                  <BarChart3 className="size-7 text-primary/70" />
+                </div>
+                <p className="text-base font-medium text-foreground">
+                  {t("noData")}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {t("noDataDescription")}
+                </p>
+              </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">

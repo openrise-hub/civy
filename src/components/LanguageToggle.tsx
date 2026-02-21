@@ -13,8 +13,8 @@ import { Button } from "@/components/ui/button";
 
 export function LanguageToggle() {
   const { profile } = useUser();
-  const t = useTranslations("settings"); // Reuses "english", "spanish" translations
-
+  const t = useTranslations("settings");
+  
   const handleLanguageChange = async (locale: "en" | "es") => {
     document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000`;
     await import("@/lib/profile/actions").then((m) =>

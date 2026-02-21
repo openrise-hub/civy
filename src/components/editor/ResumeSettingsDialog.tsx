@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { SettingsIcon } from "lucide-react";
+import { SettingsIcon, Trash2, Check, Save, Loader2 } from "lucide-react";
 import { useResumeStore } from "@/stores/useResumeStore";
+import { getCustomTemplates, saveCustomTemplate, deleteCustomTemplate, type CustomTemplate } from "@/lib/templates/actions";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -18,12 +21,83 @@ import { Field, FieldLabel } from "@/components/ui/field";
 export function ResumeSettingsDialog({ isCollapsed }: { isCollapsed: boolean }) {
   const t = useTranslations("editor.sidebar");
   const [open, setOpen] = useState(false);
+  const [newTemplateName, setNewTemplateName] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [templates, setTemplates] = useState<CustomTemplate[]>([]);
+  const [isPending, startTransition] = useTransition();
+  const [isFetching, setIsFetching] = useState(false);
   
   const metadata = useResumeStore((state) => state.resume.metadata);
   const updateMetadata = useResumeStore((state) => state.updateMetadata);
 
+  // Fetch templates when dialog opens
+  useEffect(() => {
+    let isMounted = true;
+    
+    const fetchTemplates = async () => {
+      setIsFetching(true);
+      try {
+        const data = await getCustomTemplates();
+        if (isMounted) setTemplates(data);
+      } catch (err) {
+        console.error("Failed to load templates", err);
+      } finally {
+        if (isMounted) setIsFetching(false);
+      }
+    };
 
+    if (open) {
+      fetchTemplates();
+    }
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [open]);
 
+  const handleSaveTemplate = () => {
+    if (!newTemplateName.trim() || isPending) return;
+    setErrorMsg(null);
+    
+    startTransition(async () => {
+      try {
+        const res = await saveCustomTemplate(newTemplateName.trim(), metadata);
+        
+        if (res.error) {
+          if (res.error === "LIMIT_FREE") {
+            setErrorMsg(t("limitFree"));
+          } else if (res.error === "LIMIT_PRO") {
+            setErrorMsg(t("limitPro"));
+          } else {
+            setErrorMsg(t("saveError"));
+          }
+          return;
+        }
+
+        if (res.data) {
+          setTemplates((prev) => [res.data as CustomTemplate, ...prev]);
+          setNewTemplateName("");
+        }
+      } catch (error) {
+        console.error("Failed to save template", error);
+        setErrorMsg(t("saveError"));
+      }
+    });
+  };
+
+  const handleDeleteTemplate = (id: string) => {
+    if (isPending) return;
+    
+    startTransition(async () => {
+      try {
+        await deleteCustomTemplate(id);
+        setTemplates((prev) => prev.filter((t) => t.id !== id));
+      } catch (error) {
+        console.error("Failed to delete template", error);
+      }
+    });
+  };
+  
   const handleBackgroundChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateMetadata({
       colors: { ...metadata.colors, background: e.target.value },
@@ -54,7 +128,7 @@ export function ResumeSettingsDialog({ isCollapsed }: { isCollapsed: boolean }) 
         <DialogHeader>
           <DialogTitle>{t("settings")}</DialogTitle>
           <DialogDescription>
-            Customize the appearance of your resume.
+            {t("appearanceDesc")}
           </DialogDescription>
         </DialogHeader>
 
@@ -94,6 +168,79 @@ export function ResumeSettingsDialog({ isCollapsed }: { isCollapsed: boolean }) 
                   />
                 </div>
               </div>
+            </Field>
+
+            <Field>
+              <FieldLabel>{t("savedTemplates")}</FieldLabel>
+              <div className="flex gap-2">
+                <Input
+                  value={newTemplateName}
+                  onChange={(e) => {
+                    setNewTemplateName(e.target.value);
+                    if (errorMsg) setErrorMsg(null);
+                  }}
+                  placeholder={t("templateName")}
+                  className="flex-1"
+                  disabled={isPending}
+                />
+                <Button 
+                  onClick={handleSaveTemplate} 
+                  disabled={!newTemplateName.trim() || isPending}
+                  variant="secondary"
+                >
+                  {isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+                  {t("save")}
+                </Button>
+              </div>
+
+              {errorMsg && (
+                <p className="mt-2 text-sm font-medium text-destructive">
+                  {errorMsg}
+                </p>
+              )}
+              
+              {isFetching ? (
+                <div className="mt-4 flex justify-center py-4 text-muted-foreground">
+                  <Loader2 className="size-6 animate-spin" />
+                </div>
+              ) : templates.length > 0 ? (
+                <div className="mt-4 flex flex-col gap-2">
+                  {templates.map((tmpl) => (
+                    <div 
+                      key={tmpl.id} 
+                      className="flex items-center justify-between rounded-md border p-2 text-sm"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="flex gap-1">
+                          <div className="size-4 rounded-full border border-border" style={{ backgroundColor: tmpl.metadata.colors.background }} />
+                          <div className="size-4 rounded-full border border-border" style={{ backgroundColor: tmpl.metadata.colors.accents[0] }} />
+                        </div>
+                        <span className="font-medium truncate max-w-[150px]">{tmpl.name}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => updateMetadata(tmpl.metadata)}
+                          title={t("apply")}
+                          disabled={isPending}
+                        >
+                          <Check className="size-4 text-green-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteTemplate(tmpl.id)}
+                          title={t("deleteTemplate")}
+                          disabled={isPending}
+                        >
+                          <Trash2 className="size-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </Field>
           </div>
         </DialogPanel>

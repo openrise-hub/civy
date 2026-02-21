@@ -37,16 +37,16 @@ export default async function TrashPage() {
 
         {/* Content */}
         {deletedResumes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed bg-muted/30 py-16">
-            <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted">
-              <Trash2 className="size-8 text-muted-foreground" />
+          <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed bg-muted/10 py-24 px-6 text-center">
+            <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-muted/50">
+              <Trash2 className="size-10 text-muted-foreground/50" />
             </div>
-            <h2 className="text-lg font-semibold">{t("trashEmpty")}</h2>
-            <p className="mb-6 max-w-md text-center text-muted-foreground">
+            <h2 className="mb-2 text-2xl font-bold tracking-tight">{t("trashEmpty")}</h2>
+            <p className="mb-8 max-w-sm text-center text-muted-foreground">
               {t("trashEmptyDescription")}
             </p>
-            <Button variant="outline" render={<Link href="/dashboard" />}>
-              <ArrowLeft className="size-4" />
+            <Button variant="outline" size="lg" className="rounded-full px-8" render={<Link href="/dashboard" />}>
+              <ArrowLeft className="mr-2 size-4" />
               {t("backToDashboard")}
             </Button>
           </div>
