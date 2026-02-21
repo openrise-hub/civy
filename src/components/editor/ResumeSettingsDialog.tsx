@@ -2,9 +2,10 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { SettingsIcon, Trash2, Check, Save, Loader2 } from "lucide-react";
+import { SettingsIcon, Trash2, Check, Save, Loader2, TriangleAlert } from "lucide-react";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { getCustomTemplates, saveCustomTemplate, deleteCustomTemplate, type CustomTemplate } from "@/lib/templates/actions";
+import { getContrastRatio } from "@/lib/color-utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +30,9 @@ export function ResumeSettingsDialog({ isCollapsed }: { isCollapsed: boolean }) 
   
   const metadata = useResumeStore((state) => state.resume.metadata);
   const updateMetadata = useResumeStore((state) => state.updateMetadata);
+
+  const contrastRatio = getContrastRatio(metadata.colors.background, metadata.colors.text);
+  const isLowContrast = contrastRatio < 4.5;
 
   // Fetch templates when dialog opens
   useEffect(() => {
@@ -168,6 +172,13 @@ export function ResumeSettingsDialog({ isCollapsed }: { isCollapsed: boolean }) 
                   />
                 </div>
               </div>
+              
+              {isLowContrast && (
+                <div className="flex items-center gap-2 mt-2 text-amber-500 bg-amber-50 dark:bg-amber-950/30 p-2 rounded border border-amber-200 dark:border-amber-900/50">
+                  <TriangleAlert className="size-4 shrink-0" />
+                  <p className="text-xs font-medium">{t("lowContrast", { ratio: contrastRatio.toFixed(1) })}</p>
+                </div>
+              )}
             </Field>
 
             <Field>

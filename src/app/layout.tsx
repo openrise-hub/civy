@@ -6,6 +6,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { getProfile } from "@/lib/profile/actions";
 import { cookies } from "next/headers";
+import { AriaLiveRegion } from "@/components/AriaLiveRegion";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -71,6 +72,7 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages}>
             <ToastProvider>
               {children}
+              <AriaLiveRegion />
             </ToastProvider>
           </NextIntlClientProvider>
         </ThemeProvider>

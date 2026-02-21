@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { saveResume } from "@/lib/resumes/actions";
 import { toastManager } from "@/components/ui/toast";
+import { useAriaLive } from "@/components/AriaLiveRegion";
 
 const DEBOUNCE_MS = 300000; // 5 minutes
 
 export function useAutoSave(resumeId: string) {
+  const t = useTranslations("editor.a11y");
   const resume = useResumeStore((state) => state.resume);
+  const announce = useAriaLive((state) => state.announce);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastSavedRef = useRef<string>("");
   const isSavingRef = useRef(false);
@@ -43,10 +47,11 @@ export function useAutoSave(resumeId: string) {
         }
       } else {
         lastSavedRef.current = serialized;
+        announce(t("autosaved"));
         if (showToast) {
           toastManager.add({
             type: "success",
-            title: "CV Autosaved",
+            title: t("autosaved"),
           });
         }
       }
@@ -60,7 +65,7 @@ export function useAutoSave(resumeId: string) {
     } finally {
       isSavingRef.current = false;
     }
-  }, [resumeId, resume]);
+  }, [resumeId, resume, announce, t]);
 
   // Manual save function (for save button)
   const saveNow = useCallback(async () => {
@@ -102,9 +107,10 @@ export function useAutoSave(resumeId: string) {
         });
       } else {
         lastSavedRef.current = serialized;
+        announce(t("saved"));
         toastManager.add({
           type: "success",
-          title: "CV Saved",
+          title: t("saved"),
         });
       }
     } catch {
@@ -115,7 +121,7 @@ export function useAutoSave(resumeId: string) {
     } finally {
       isSavingRef.current = false;
     }
-  }, [resumeId, resume]);
+  }, [resumeId, resume, announce, t]);
 
   // Auto-save debounce
   useEffect(() => {

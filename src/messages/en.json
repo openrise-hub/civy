@@ -27,7 +27,16 @@
       "appearanceDesc": "Customize the appearance of your resume.",
       "limitFree": "Free users can only save 2 templates. Upgrade to Pro for unlimited templates.",
       "limitPro": "You have reached the maximum limit of 50 custom templates.",
-      "saveError": "Failed to save template. Please try again."
+      "saveError": "Failed to save template. Please try again.",
+      "lowContrast": "Low contrast ({ratio}:1). Consider adjusting colors for readability."
+    },
+    "a11y": {
+      "autosaved": "CV Autosaved",
+      "saved": "CV Saved",
+      "dragStart": "Picked up section {title}.",
+      "dragMove": "{title} moved to position {position} of {total}.",
+      "dragDrop": "{title} dropped at position {position}.",
+      "dragCancel": "Section drag canceled."
     },
     "formEditor": {
       "title": "Form Editor",

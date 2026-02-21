@@ -156,9 +156,18 @@ export function ResumeCard({ resume, viewCount, onDeleted }: ResumeCardProps) {
               />
             ) : (
               <CardTitle
-                className="truncate text-base cursor-pointer"
+                className="truncate text-base cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring rounded px-1 -ml-1 transition-shadow"
                 onDoubleClick={handleRenameStart}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleRenameStart();
+                  }
+                }}
                 title={t("rename")}
+                aria-label={`${resume.title || t("untitled")}. ${t("rename")}`}
               >
                 {resume.title || t("untitled")}
               </CardTitle>

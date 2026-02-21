@@ -27,7 +27,16 @@
       "appearanceDesc": "Personaliza la apariencia de tu currículum.",
       "limitFree": "Los usuarios gratuitos solo pueden guardar 2 plantillas. Pásate a Pro para tener plantillas ilimitadas.",
       "limitPro": "Has alcanzado el límite máximo de 50 plantillas personalizadas.",
-      "saveError": "Error al guardar la plantilla. Por favor, inténtalo de nuevo."
+      "saveError": "Error al guardar la plantilla. Por favor, inténtalo de nuevo.",
+      "lowContrast": "Bajo contraste ({ratio}:1). Considera ajustar los colores para mayor legibilidad."
+    },
+    "a11y": {
+      "autosaved": "CV autoguardado",
+      "saved": "CV guardado",
+      "dragStart": "Sección {title} recogida.",
+      "dragMove": "{title} movida a la posición {position} de {total}.",
+      "dragDrop": "{title} soltada en la posición {position}.",
+      "dragCancel": "Arrastre de sección cancelado."
     },
     "formEditor": {
       "title": "Editor de Formulario",
