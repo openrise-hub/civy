@@ -36,27 +36,32 @@ export function isSeparatorItem(item: Item): item is SeparatorItem {
 
 // --- Formatters ---
 
-export function formatDateRange(value: DateRangeItem["value"]): string {
+export function formatDateRange(
+  value: DateRangeItem["value"],
+  t: (key: string) => string
+): string {
   const start = value.startDate;
-  const end = value.endDate || "Present"; // TODO: i18n
+  const end = value.endDate || t("present");
   return `${start} - ${end}`;
 }
 
 // --- Label Helpers ---
 
-export function getItemTypeLabel(type: StringItem["type"]): string {
-  // TODO: Move to i18n
+export function getItemTypeLabel(
+  type: StringItem["type"],
+  t: (key: string) => string
+): string {
   const labels: Record<StringItem["type"], string> = {
-    heading: "Heading",
-    "sub-heading": "Sub-heading",
-    text: "Text",
-    bullet: "Bullet",
-    number: "Number",
-    date: "Date",
-    location: "Location",
-    phone: "Phone",
-    email: "Email",
-    tag: "Tag",
+    heading: t("types.heading"),
+    "sub-heading": t("types.sub-heading"),
+    text: t("types.text"),
+    bullet: t("types.bullet"),
+    number: t("types.number"),
+    date: t("types.date"),
+    location: t("types.location"),
+    phone: t("types.phone"),
+    email: t("types.email"),
+    tag: t("types.tag"),
   };
   return labels[type] || type;
 }

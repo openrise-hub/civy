@@ -15,6 +15,7 @@ import {
   LinkIcon,
   StarIcon,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 /**
  * ItemColors - The color palette passed from the template.
@@ -38,6 +39,8 @@ interface SectionItemProps {
  * Responsibility: Renders WHAT the content is based on semantic type.
  */
 export function SectionItem({ item, colors }: SectionItemProps) {
+  const t = useTranslations("editor");
+
   if (!item.visible) return null;
 
   // --- String Items ---
@@ -123,7 +126,7 @@ export function SectionItem({ item, colors }: SectionItemProps) {
   if (isDateRangeItem(item)) {
     return (
       <span className="text-sm italic" style={{ color: colors.muted }}>
-        {formatDateRange(item.value)}
+        {formatDateRange(item.value, t)}
       </span>
     );
   }

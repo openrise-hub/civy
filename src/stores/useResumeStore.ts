@@ -56,9 +56,9 @@ interface ResumeStore {
 
 // --- Initial State ---
 const initialResume: Resume = {
-  id: 'mock-id-1',
-  userId: 'user-123',
-  title: 'My Resume',
+  id: '',
+  userId: '',
+  title: '',
   isPublic: false,
   metadata: {
     template: 'modern',
@@ -70,37 +70,10 @@ const initialResume: Resume = {
     },
   },
   personal: {
-    fullName: 'John Doe',
-    details: [
-      // StringItems (Phone, Location, Email)
-      { id: 'p-1', visible: true, type: 'email', value: 'john@example.com' },
-      { id: 'p-2', visible: true, type: 'phone', value: '+1 234 567 890' },
-      { id: 'p-3', visible: true, type: 'location', value: 'New York, USA' }
-    ],
+    fullName: '',
+    details: [],
   },
-  sections: [
-    {
-      id: 'sec-1',
-      title: 'Experience',
-      visible: true,
-      content: {
-        id: 'cont-1',
-        layout: 'list',
-        items: [
-          // Mixed Item Types
-          { id: 'i-1', visible: true, type: 'heading', value: 'Senior Developer' },
-          { id: 'i-2', visible: true, type: 'sub-heading', value: 'Tech Corp' },
-          { 
-            id: 'i-3', 
-            visible: true, 
-            type: 'date-range', 
-            value: { startDate: '2020-01', endDate: 'Present' } 
-          },
-          { id: 'i-4', visible: true, type: 'bullet', value: 'Led migration to Next.js' }
-        ]
-      }
-    }
-  ],
+  sections: [],
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };

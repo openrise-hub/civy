@@ -9,6 +9,18 @@
     "close": "Close"
   },
   "editor": {
+    "types": {
+      "heading": "Heading",
+      "sub-heading": "Sub-heading",
+      "text": "Text",
+      "bullet": "Bullet List",
+      "number": "Numbered List",
+      "date": "Date",
+      "location": "Location",
+      "phone": "Phone",
+      "email": "Email",
+      "tag": "Tag"
+    },
     "sidebar": {
       "menu": "Menu",
       "sections": "Sections",

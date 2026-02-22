@@ -7,8 +7,10 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export function PersonalInfoForm() {
+  const t = useTranslations("editor");
   const personal = useResumeStore((state) => state.resume.personal);
   const updatePersonal = useResumeStore((state) => state.updatePersonal);
 
@@ -78,12 +80,12 @@ export function PersonalInfoForm() {
 
           return (
             <div key={item.id} className="space-y-2">
-              <Label htmlFor={item.id}>{getItemTypeLabel(item.type)}</Label>
+              <Label htmlFor={item.id}>{getItemTypeLabel(item.type, t)}</Label>
               <Input
                 id={item.id}
                 value={item.value}
                 onChange={(e) => handleDetailChange(item.id, e.target.value)}
-                placeholder={getItemTypeLabel(item.type)}
+                placeholder={getItemTypeLabel(item.type, t)}
                 maxLength={RESUME_LIMITS.MAX_TEXT_FIELD}
               />
             </div>
