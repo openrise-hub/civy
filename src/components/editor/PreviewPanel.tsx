@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { DownloadButton } from "@/components/editor/DownloadButton";
-import { ZoomInIcon, ZoomOutIcon } from "lucide-react";
+import { ZoomInIcon, ZoomOutIcon, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 // Dynamic import to avoid SSR issues with pdfjs
@@ -15,7 +15,8 @@ const PdfCanvasPreview = dynamic(
   { 
     ssr: false, 
     loading: () => (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex flex-col items-center justify-center h-full gap-3">
+        <Loader2 className="size-8 animate-spin text-muted-foreground/50" />
         <p className="text-muted-foreground">Loading preview...</p>
       </div>
     )

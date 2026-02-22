@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import * as pdfjs from "pdfjs-dist";
 import { pdf } from "@react-pdf/renderer";
 import type { Resume } from "@/types/resume";
+import { Loader2 } from "lucide-react";
 import { UniversalPdf } from "@/components/pdf/UniversalPdf";
 import { PdfTranslations } from "@/components/pdf/engine/ItemRenderers";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -231,7 +232,8 @@ export function PdfCanvasPreview({
           }}
         >
           {isInitialLoad && (
-            <div className="flex items-center justify-center py-8 absolute inset-0">
+            <div className="flex flex-col items-center justify-center py-8 absolute inset-0 gap-2">
+              <Loader2 className="size-8 animate-spin text-muted-foreground/50" />
               <p className="text-muted-foreground bg-background/80 px-4 py-2 rounded-full shadow-sm backdrop-blur-sm">Generating preview...</p>
             </div>
           )}
