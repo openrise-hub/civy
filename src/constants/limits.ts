@@ -16,6 +16,8 @@ export const RESUME_LIMITS = {
   // Tier limits
   FREE_MAX_RESUMES: 1,
   PRO_MAX_RESUMES: 50,
+  FREE_MAX_FOLDERS: 1,
+  PRO_MAX_FOLDERS: 25,
 
   // Rate limiting (ms)
   MIN_SAVE_INTERVAL_MS: 2000,

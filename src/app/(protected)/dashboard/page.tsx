@@ -12,6 +12,7 @@ import { UpgradePrompt } from "./UpgradePrompt";
 import { UserNav } from "@/components/UserNav";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { ResumeDashboardClient } from "./ResumeDashboardClient";
+import { getFolders } from "@/lib/folders/actions";
 
 export default async function DashboardPage() {
   const user = await getUser();
@@ -21,10 +22,11 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const [resumes, profile, viewCounts] = await Promise.all([
+  const [resumes, profile, viewCounts, folders] = await Promise.all([
     getResumes(),
     getProfile(),
     getAllResumeViewCounts(),
+    getFolders(),
   ]);
 
   const isPremium = profile?.is_premium ?? false;
@@ -93,7 +95,7 @@ export default async function DashboardPage() {
           </div>
         ) : (
           // Client Wrapper for Search, Sort, and Grid
-          <ResumeDashboardClient resumes={resumes} viewCounts={viewCounts} />
+          <ResumeDashboardClient resumes={resumes} viewCounts={viewCounts} folders={folders} />
         )}
 
         {/* Upgrade Prompt */}
