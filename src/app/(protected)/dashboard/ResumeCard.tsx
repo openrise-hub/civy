@@ -4,7 +4,7 @@ import { useState, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { FileText, Pencil, Trash2, Copy, EyeIcon } from "lucide-react";
+import { FileText, Pencil, Trash2, Copy, EyeIcon, Folder as FolderIcon } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -13,9 +13,20 @@ import {
   CardFooter,
   CardAction,
 } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
+} from "@/components/ui/menu";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toastManager } from "@/components/ui/toast";
-import { deleteResume, duplicateResume, saveResume, type ResumeListItem } from "@/lib/resumes/actions";
+import { deleteResume, duplicateResume, saveResume, assignResumeToFolder, type ResumeListItem } from "@/lib/resumes/actions";
+import type { Folder } from "@/lib/folders/actions";
 
 function formatRelativeTime(dateString: string): string {
   const date = new Date(dateString);
@@ -40,10 +51,11 @@ function formatRelativeTime(dateString: string): string {
 type ResumeCardProps = {
   resume: ResumeListItem;
   viewCount?: number;
+  folders?: Folder[];
   onDeleted?: () => void;
 };
 
-export function ResumeCard({ resume, viewCount, onDeleted }: ResumeCardProps) {
+export function ResumeCard({ resume, viewCount, folders, onDeleted }: ResumeCardProps) {
   const t = useTranslations("dashboard");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -105,6 +117,17 @@ export function ResumeCard({ resume, viewCount, onDeleted }: ResumeCardProps) {
           type: "success",
           title: t("duplicateSuccess") || "Resume duplicated",
         });
+        router.refresh();
+      }
+    });
+  };
+
+  const handleAssignFolder = (folderId: string | null) => {
+    startTransition(async () => {
+      const result = await assignResumeToFolder(resume.id, folderId);
+      if (result.error) toastManager.add({ type: "error", title: result.error });
+      else {
+        toastManager.add({ type: "success", title: "Moved to folder" });
         router.refresh();
       }
     });
@@ -180,6 +203,13 @@ export function ResumeCard({ resume, viewCount, onDeleted }: ResumeCardProps) {
                   {viewCount.toLocaleString()}
                 </span>
               )}
+              {resume.folders && (
+                <span className="ml-2 inline-flex">
+                  <Badge variant="secondary" className="px-1.5 py-0 min-h-4 h-4 text-[10px] font-normal" size="sm">
+                    {resume.folders.name}
+                  </Badge>
+                </span>
+              )}
             </CardDescription>
           </div>
         </div>
@@ -236,6 +266,32 @@ export function ResumeCard({ resume, viewCount, onDeleted }: ResumeCardProps) {
             >
               <Copy className="size-4" />
             </Button>
+            {folders && (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button size="sm" variant="ghost" disabled={isPending} aria-label={t("moveToFolder") || "Move to Folder"}>
+                      <FolderIcon className="size-4" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end" className="w-48 z-50">
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className="font-medium">{t("moveToFolder") || "Move to Folder"}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => handleAssignFolder(null)}>
+                      {t("noFolder") || "No Folder"}
+                    </DropdownMenuItem>
+                    {folders.length > 0 && <DropdownMenuSeparator />}
+                    {folders.map(f => (
+                      <DropdownMenuItem key={f.id} onClick={() => handleAssignFolder(f.id)}>
+                        {f.name}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </>
         )}
       </CardFooter>

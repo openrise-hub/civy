@@ -9,12 +9,15 @@ import { toastManager } from "@/components/ui/toast";
 import { bulkDeleteResumes, type ResumeListItem } from "@/lib/resumes/actions";
 import { ResumeCard } from "./ResumeCard";
 
+import type { Folder } from "@/lib/folders/actions";
+
 type ResumeGridProps = {
   resumes: ResumeListItem[];
   viewCounts: Record<string, number>;
+  folders: Folder[];
 };
 
-export function ResumeGrid({ resumes, viewCounts }: ResumeGridProps) {
+export function ResumeGrid({ resumes, viewCounts, folders }: ResumeGridProps) {
   const t = useTranslations("dashboard");
   const router = useRouter();
   const [selecting, setSelecting] = useState(false);
@@ -151,6 +154,7 @@ export function ResumeGrid({ resumes, viewCounts }: ResumeGridProps) {
             <ResumeCard
               resume={resume}
               viewCount={viewCounts[resume.id] ?? 0}
+              folders={folders}
             />
           </div>
         ))}

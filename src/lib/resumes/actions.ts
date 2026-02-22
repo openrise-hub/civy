@@ -12,6 +12,8 @@ export type ResumeListItem = {
   updated_at: string;
   is_public: boolean;
   slug: string | null;
+  folder_id?: string | null;
+  folders?: { name: string } | null;
 };
 
 const defaultResumeData = {
@@ -44,7 +46,7 @@ export async function getResumes(): Promise<ResumeListItem[]> {
 
   const { data, error } = await supabase
     .from("resumes")
-    .select("id, title, updated_at, is_public, slug")
+    .select("id, title, updated_at, is_public, slug, folder_id, folders(name)")
     .eq("user_id", user.id)
     .is("deleted_at", null)
     .order("updated_at", { ascending: false });
@@ -54,7 +56,7 @@ export async function getResumes(): Promise<ResumeListItem[]> {
     return [];
   }
 
-  return data ?? [];
+  return (data as unknown as ResumeListItem[]) ?? [];
 }
 
 import { RESUME_LIMITS } from "@/constants/limits";
@@ -639,4 +641,36 @@ export async function bulkDeleteResumes(
 
   revalidatePath("/dashboard");
   return { count: data?.length ?? 0 };
+}
+
+/**
+ * Assign a resume to a specific folder.
+ */
+export async function assignResumeToFolder(
+  resumeId: string,
+  folderId: string | null
+): Promise<{ error?: string }> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const { error } = await supabase
+    .from("resumes")
+    .update({ folder_id: folderId })
+    .eq("id", resumeId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error("Failed to assign folder:", error.message);
+    return { error: error.message };
+  }
+
+  revalidatePath("/dashboard");
+  return {};
 }

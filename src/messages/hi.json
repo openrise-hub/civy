@@ -74,7 +74,23 @@
     "limitReached": "सीमा समाप्त",
     "upgradeTitle": "असीमित रिज्यूमे अनलॉक करें",
     "upgradeDescription": "असीमित रिज्यूमे बनाने और प्रीमियम टेम्प्लेट तक पहुंचने के लिए प्रो में अपग्रेड करें।",
-    "upgradeButton": "प्रो में अपग्रेड करें"
+    "upgradeButton": "प्रो में अपग्रेड करें",
+    "folders": "फ़ोल्डर",
+    "allResumes": "सभी रिज्यूमे",
+    "gridView": "ग्रिड व्यू",
+    "listView": "सूची दृश्य",
+
+    "emptyFolder": "खाली फ़ोल्डर",
+    "emptyFolderDesc": "इस फ़ोल्डर में कोई रिज्यूमे नहीं है।",
+    "moveToFolder": "फ़ोल्डर में ले जाएं",
+    "noFolder": "कोई फ़ोल्डर नहीं",
+    "createNewFolder": "फ़ोल्डर बनाएं",
+    "folderName": "फ़ोल्डर का नाम",
+    "organizeCollections": "अपने रिज्यूमे को अलग-अलग संग्रहों में व्यवस्थित करें।",
+    "folderNamePlaceholder": "उदा. डिज़ाइन, तकनीकी, ड्राफ्ट",
+    "create": "बनाएं",
+    "creating": "बनाया जा रहा है...",
+    "folderCreated": "फ़ोल्डर बनाया गया"
   },
   "share": {
     "title": "साझा करें",
