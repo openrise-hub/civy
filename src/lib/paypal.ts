@@ -261,3 +261,34 @@ export async function revisePayPalSubscription(
     return { error: "Failed to revise subscription with PayPal" };
   }
 }
+
+/**
+ * Fetch subscription details from PayPal.
+ */
+export async function getPayPalSubscriptionDetails(subscriptionId: string) {
+  try {
+    const accessToken = await getPayPalAccessToken();
+
+    const response = await fetch(
+      `${PAYPAL_API_URL}/v1/billing/subscriptions/${subscriptionId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error(`PayPal get subscription details error (${subscriptionId}):`, response.status, text);
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("PayPal get subscription details error:", error);
+    return null;
+  }
+}
