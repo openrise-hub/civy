@@ -33,7 +33,7 @@ export function EditFolderDialog({ folder, open, onOpenChange }: EditFolderDialo
   const [prevFolderId, setPrevFolderId] = useState(folder?.id);
   const [isPending, startTransition] = useTransition();
 
-  // Sync prop changes (React recommended pattern over useEffect)
+  // Sync prop changes
   if (folder?.id !== prevFolderId) {
     setPrevFolderId(folder?.id);
     setName(folder?.name || "");

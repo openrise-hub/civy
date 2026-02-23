@@ -268,3 +268,31 @@ export async function updatePreferences(updates: {
   revalidatePath("/", "layout");
   return {};
 }
+
+/**
+ * Fetch dynamic pricing data for all active plans.
+ */
+export async function getPricingPlans(): Promise<Record<PricingTier, string>> {
+  const { getPayPalPlanDetails } = await import("@/lib/paypal");
+  
+  try {
+    const [monthly, quarterly, yearly] = await Promise.all([
+      getPayPalPlanDetails(PLAN_IDS.monthly),
+      getPayPalPlanDetails(PLAN_IDS.quarterly),
+      getPayPalPlanDetails(PLAN_IDS.yearly),
+    ]);
+
+    return {
+      monthly: monthly?.value || "3.99",
+      quarterly: quarterly?.value || "9.99",
+      yearly: yearly?.value || "29.99",
+    };
+  } catch (error) {
+    console.error("Error fetching pricing plans:", error);
+    return {
+      monthly: "3.99",
+      quarterly: "9.99",
+      yearly: "29.99",
+    };
+  }
+}

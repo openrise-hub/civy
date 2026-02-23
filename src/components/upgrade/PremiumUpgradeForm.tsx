@@ -1,20 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { Button } from "@/components/ui/button";
 import { toastManager } from "@/components/ui/toast";
 import { CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { changeSubscriptionTier } from "@/lib/profile/actions";
+import { changeSubscriptionTier, getPricingPlans } from "@/lib/profile/actions";
 
 export type PricingTier = "monthly" | "quarterly" | "yearly";
 
-export const PRICING = {
-  monthly: { price: 3.99, label: "Monthly", cycle: "monthly" },
-  quarterly: { price: 9.99, label: "3 Months", cycle: "every 3 months" },
-  yearly: { price: 29.99, label: "Yearly", cycle: "yearly" },
+// Base config for labels and cycles
+const PLAN_CONFIG = {
+  monthly: { label: "Monthly", cycle: "monthly" },
+  quarterly: { label: "3 Months", cycle: "every 3 months" },
+  yearly: { label: "Yearly", cycle: "yearly" },
 } as const;
 
 export const FEATURES = [
@@ -34,6 +35,19 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
   const t = useTranslations("premium");
   const [selectedTier, setSelectedTier] = useState<PricingTier>("yearly");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [pricing, setPricing] = useState<Record<PricingTier, string> | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    getPricingPlans().then((data) => {
+      if (isMounted && data) {
+        setPricing(data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 
@@ -118,8 +132,8 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
     <div className="space-y-6">
       {/* Pricing Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {(Object.entries(PRICING) as [PricingTier, typeof PRICING.monthly][]).map(
-          ([tier, { price, label, cycle }]) => (
+        {(Object.entries(PLAN_CONFIG) as [PricingTier, typeof PLAN_CONFIG.monthly][]).map(
+          ([tier, { label, cycle }]) => (
             <button
               key={tier}
               onClick={() => setSelectedTier(tier)}
@@ -142,7 +156,9 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
                 </span>
               )}
               <div className="text-sm font-medium">{label}</div>
-              <div className="mt-1 text-2xl font-bold">${price}</div>
+              <div className="mt-1 text-2xl font-bold">
+                {pricing ? `$${pricing[tier]}` : "..."}
+              </div>
               <div className="text-xs text-muted-foreground w-max">
                 Billed {cycle}
               </div>

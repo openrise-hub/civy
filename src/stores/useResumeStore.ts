@@ -42,7 +42,7 @@ interface ResumeStore {
   updatePersonal: (personal: Partial<PersonalInfo>) => void;
   updateMetadata: (metadata: Partial<Resume['metadata']>) => void;
   
-  addSection: (type?: string) => void; 
+  addSection: (type?: string, title?: string) => void; 
   removeSection: (sectionId: string) => void;
   reorderSections: (activeId: string, overId: string) => void;
   updateSection: (sectionId: string, data: Partial<Section>) => void; 
@@ -56,9 +56,9 @@ interface ResumeStore {
 
 // --- Initial State ---
 const initialResume: Resume = {
-  id: 'mock-id-1',
-  userId: 'user-123',
-  title: 'My Resume',
+  id: '',
+  userId: '',
+  title: '',
   isPublic: false,
   metadata: {
     template: 'modern',
@@ -70,37 +70,10 @@ const initialResume: Resume = {
     },
   },
   personal: {
-    fullName: 'John Doe',
-    details: [
-      // StringItems (Phone, Location, Email)
-      { id: 'p-1', visible: true, type: 'email', value: 'john@example.com' },
-      { id: 'p-2', visible: true, type: 'phone', value: '+1 234 567 890' },
-      { id: 'p-3', visible: true, type: 'location', value: 'New York, USA' }
-    ],
+    fullName: '',
+    details: [],
   },
-  sections: [
-    {
-      id: 'sec-1',
-      title: 'Experience',
-      visible: true,
-      content: {
-        id: 'cont-1',
-        layout: 'list',
-        items: [
-          // Mixed Item Types
-          { id: 'i-1', visible: true, type: 'heading', value: 'Senior Developer' },
-          { id: 'i-2', visible: true, type: 'sub-heading', value: 'Tech Corp' },
-          { 
-            id: 'i-3', 
-            visible: true, 
-            type: 'date-range', 
-            value: { startDate: '2020-01', endDate: 'Present' } 
-          },
-          { id: 'i-4', visible: true, type: 'bullet', value: 'Led migration to Next.js' }
-        ]
-      }
-    }
-  ],
+  sections: [],
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };
@@ -127,7 +100,7 @@ export const useResumeStore = create<ResumeStore>((set) => ({
     })),
 
 
-  addSection: (type = 'custom') =>
+  addSection: (type = 'custom', title?: string) =>
     set((state) => {
       // Check section limit
       if (state.resume.sections.length >= RESUME_LIMITS.MAX_SECTIONS) {
@@ -135,7 +108,42 @@ export const useResumeStore = create<ResumeStore>((set) => ({
         return {};
       }
 
-      const template = SECTION_TEMPLATES[type] || SECTION_TEMPLATES.custom;
+      const templateKey = type.toLowerCase();
+      const template = SECTION_TEMPLATES[templateKey] || SECTION_TEMPLATES.custom;
+
+      // Ensure the template has a title and content, fallback to 'custom' if not found
+      if (!template.title || !template.content) {
+        console.warn(`Invalid section type '${type}'. Falling back to 'custom'.`);
+        const customTemplate = SECTION_TEMPLATES.custom;
+        if (!customTemplate.title || !customTemplate.content) {
+          console.error("Custom template is also invalid. Cannot add section.");
+          return {};
+        }
+        // Use custom template if the requested type is invalid
+        return {
+          resume: {
+            ...state.resume,
+            sections: [
+              ...state.resume.sections,
+              {
+                id: uuidv4(),
+                title: title || customTemplate.title,
+                visible: true,
+                content: {
+                  ...customTemplate.content,
+                  id: uuidv4(), // Generate unique ID for the content block
+                  items: [],
+                },
+              },
+            ],
+            metadata: {
+              ...state.resume.metadata,
+              updatedAt: new Date().toISOString(),
+            },
+          },
+        };
+      }
+
       return {
         resume: {
           ...state.resume,
@@ -143,17 +151,19 @@ export const useResumeStore = create<ResumeStore>((set) => ({
             ...state.resume.sections,
             {
               id: uuidv4(),
+              title: title || template.title, // Use provided title, fallback to template title
               visible: true,
-              title: template.title!,
               content: {
-                // Generate unique ID for the content block
-                id: uuidv4(),
-                layout: template.content?.layout || 'list',
-                columns: template.content?.columns,
+                ...template.content,
+                id: uuidv4(), // Generate unique ID for the content block
                 items: [],
               },
             },
           ],
+          metadata: {
+            ...state.resume.metadata,
+            updatedAt: new Date().toISOString(),
+          },
         },
       };
     }),

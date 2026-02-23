@@ -111,7 +111,7 @@ export function EditorSidebar() {
               {/* Add Section Buttons */}
               {!isCollapsed && (
                 <div className="space-y-1">
-              {Object.entries(SECTION_TEMPLATES).map(([key, template]) => {
+              {Object.keys(SECTION_TEMPLATES).map((key) => {
                     const iconMap = {
                       experience: BriefcaseIcon,
                       education: GraduationCapIcon,
@@ -125,12 +125,12 @@ export function EditorSidebar() {
                         key={key}
                         variant="ghost"
                         size="sm"
-                        onClick={() => useResumeStore.getState().addSection(key)}
+                        onClick={() => useResumeStore.getState().addSection(key, tForm(key))}
                         disabled={atSectionLimit}
                         className="justify-start w-full"
                       >
                         <Icon className="size-4 mr-2" />
-                        {template.title}
+                        {tForm(key)}
                       </Button>
                     );
                   })}

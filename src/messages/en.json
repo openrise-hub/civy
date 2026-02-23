@@ -9,6 +9,18 @@
     "close": "Close"
   },
   "editor": {
+    "types": {
+      "heading": "Heading",
+      "sub-heading": "Sub-heading",
+      "text": "Text",
+      "bullet": "Bullet List",
+      "number": "Numbered List",
+      "date": "Date",
+      "location": "Location",
+      "phone": "Phone",
+      "email": "Email",
+      "tag": "Tag"
+    },
     "sidebar": {
       "menu": "Menu",
       "sections": "Sections",
@@ -47,6 +59,14 @@
       "skills": "Skills",
       "summary": "Professional Summary",
       "custom": "Custom Section"
+    },
+    "placeholders": {
+      "fullName": "John Doe",
+      "jobTitle": "Software Engineer",
+      "untitledSection": "Untitled Section",
+      "linkUrl": "https://...",
+      "skillLabel": "e.g., JavaScript",
+      "templateName": "Template Name"
     },
     "preview": {
       "title": "Live Preview",
@@ -241,7 +261,6 @@
     "renewsOn": "Renews on",
     "cancelSubscription": "Cancel Subscription",
     "cancelConfirm": "Are you sure? This cannot be undone.",
-    "confirmCancel": "Yes, Cancel",
     "canceling": "Canceling...",
     "subscriptionCanceled": "Subscription canceled",
     "upgradeToPro": "Upgrade to Pro",

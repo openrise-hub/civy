@@ -40,6 +40,7 @@ function DragHandle({ attributes, listeners }: DragHandleProps) {
 interface SortableSectionCardProps {
   section: Section;
   isExpanded: boolean;
+  t: (key: string) => string;
   onToggleExpand: () => void;
   onUpdateTitle: (sectionId: string, title: string) => void;
   onToggleVisibility: (sectionId: string) => void;
@@ -48,7 +49,8 @@ interface SortableSectionCardProps {
 
 function SortableSectionCard({ 
   section, 
-  isExpanded, 
+  isExpanded,
+  t,
   onToggleExpand, 
   onUpdateTitle, 
   onToggleVisibility, 
@@ -87,7 +89,7 @@ function SortableSectionCard({
               value={section.title}
               onChange={(e) => onUpdateTitle(section.id, e.target.value)}
               className="text-base font-semibold border-none bg-transparent px-0 focus-visible:ring-0"
-              placeholder="Untitled Section"
+              placeholder={t("placeholders.untitledSection")}
             />
             <div className="flex-1" />
             <div className="flex items-center gap-1">
@@ -293,6 +295,7 @@ export function SectionManager() {
             <SortableSectionCard
               key={section.id}
               section={section}
+              t={tEditor}
               isExpanded={expandedSections.has(section.id)}
               onToggleExpand={() => toggleExpand(section.id)}
               onUpdateTitle={handleTitleChange}

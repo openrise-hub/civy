@@ -122,6 +122,63 @@ export async function verifyWebhookSignature(
 
 // --- Subscription Management ---
 
+interface PayPalPricingScheme {
+  fixed_price?: {
+    value: string;
+    currency_code: string;
+  };
+}
+
+interface PayPalBillingCycle {
+  tenure_type: "REGULAR" | "TRIAL";
+  pricing_scheme?: PayPalPricingScheme;
+}
+
+interface PayPalPlanDetails {
+  id: string;
+  name: string;
+  billing_cycles?: PayPalBillingCycle[];
+}
+
+export async function getPayPalPlanDetails(planId: string) {
+  try {
+    const accessToken = await getPayPalAccessToken();
+
+    const response = await fetch(`${PAYPAL_API_URL}/v1/billing/plans/${planId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error(`PayPal get plan details error (${planId}):`, response.status, text);
+      return null;
+    }
+
+    const data = (await response.json()) as PayPalPlanDetails;
+    
+    // Extract price from the active billing cycle
+    const regularCycle = data.billing_cycles?.find(
+      (cycle) => cycle.tenure_type === "REGULAR"
+    );
+    
+    if (regularCycle?.pricing_scheme?.fixed_price) {
+      return {
+        value: regularCycle.pricing_scheme.fixed_price.value,
+        currency: regularCycle.pricing_scheme.fixed_price.currency_code
+      };
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("PayPal get plan details error:", error);
+    return null;
+  }
+}
+
 /**
  * Cancel a PayPal subscription via the Billing API.
  */
@@ -202,5 +259,36 @@ export async function revisePayPalSubscription(
   } catch (error) {
     console.error("PayPal revise subscription error:", error);
     return { error: "Failed to revise subscription with PayPal" };
+  }
+}
+
+/**
+ * Fetch subscription details from PayPal.
+ */
+export async function getPayPalSubscriptionDetails(subscriptionId: string) {
+  try {
+    const accessToken = await getPayPalAccessToken();
+
+    const response = await fetch(
+      `${PAYPAL_API_URL}/v1/billing/subscriptions/${subscriptionId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error(`PayPal get subscription details error (${subscriptionId}):`, response.status, text);
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("PayPal get subscription details error:", error);
+    return null;
   }
 }

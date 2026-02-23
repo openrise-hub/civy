@@ -2,12 +2,14 @@
 
 import { Item, StringItem, DateRangeItem, LinkItem, RatingItem } from "@/types/resume";
 import { ColorScheme } from "@/components/pdf/engine/PdfStyles";
+import { useTranslations } from "next-intl";
 import {
   isStringItem,
   isDateRangeItem,
   isLinkItem,
   isRatingItem,
   isSeparatorItem,
+  formatDateRange,
 } from "@/lib/resume-helpers";
 
 interface PreviewItemProps {
@@ -16,10 +18,12 @@ interface PreviewItemProps {
 }
 
 export function PreviewItem({ item, colors }: PreviewItemProps) {
+  const t = useTranslations("resume");
+
   if (!item.visible) return null;
 
   if (isStringItem(item)) return <StringItemPreview item={item} colors={colors} />;
-  if (isDateRangeItem(item)) return <DateRangePreview item={item} colors={colors} />;
+  if (isDateRangeItem(item)) return <DateRangePreview item={item} colors={colors} t={t} />;
   if (isLinkItem(item)) return <LinkPreview item={item} colors={colors} />;
   if (isRatingItem(item)) return <RatingPreview item={item} colors={colors} />;
   if (isSeparatorItem(item)) return <hr style={{ border: 'none', borderTop: `1px solid ${colors.accents?.[2] || '#e5e7eb'}`, margin: '8px 0' }} />;
@@ -79,9 +83,8 @@ function StringItemPreview({ item, colors }: { item: StringItem; colors: ColorSc
   }
 }
 
-function DateRangePreview({ item, colors }: { item: DateRangeItem; colors: ColorScheme }) {
-  const { startDate, endDate } = item.value;
-  const formatted = `${startDate} - ${endDate || "Present"}`;
+function DateRangePreview({ item, colors, t }: { item: DateRangeItem; colors: ColorScheme; t: (key: string) => string }) {
+  const formatted = formatDateRange(item.value, t);
 
   return <span style={{ fontStyle: 'italic', color: colors.accents?.[3] || colors.text }}>{formatted}</span>;
 }

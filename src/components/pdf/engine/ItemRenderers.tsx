@@ -50,7 +50,7 @@ const getStyle = (base: Style, override: Style | undefined, extra?: Style): Styl
   return [base, override, extra].filter(Boolean) as Style[];
 };
 
-export const baseStringItemRenderer: ItemRenderer = (item, styles, colors, customRenderers, overrides, translations) => {
+export const baseStringItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers, overrides, _translations) => {
   if (!isStringItem(item)) return null;
   
   const baseStyle = { color: colors.text };
@@ -131,22 +131,10 @@ export const baseStringItemRenderer: ItemRenderer = (item, styles, colors, custo
   }
 };
 
-export const baseDateRangeItemRenderer: ItemRenderer = (item, styles, colors, customRenderers, overrides, translations) => {
+export const baseDateRangeItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers, overrides, translations) => {
   if (!isDateRangeItem(item)) return null;
-  
-  // Format manual range
-  let formatted = `${item.value.startDate} - ${item.value.endDate || translations?.present || 'Present'}`;
-  
-  // Use helper if format simple
-  // Note: helper is simple, we might want to pass translations to it fundamentally,
-  // but for now I'll inline the "Present" logic here or update helper.
-  // The helper `formatDateRange` uses hardcoded "Present". 
-  // I should manually format here to use translation. Carlos bro plz don't forget this XD
-  if (item.value.endDate) {
-     formatted = `${item.value.startDate} - ${item.value.endDate}`;
-  } else {
-     formatted = `${item.value.startDate} - ${translations?.present || 'Present'}`;
-  }
+
+  const formatted = formatDateRange(item.value, (key) => translations?.[key] || "Present");
 
   return (
     <Text style={getStyle(styles.name, overrides?.name, { fontStyle: 'italic', color: colors.accents[3] })}>
@@ -155,7 +143,7 @@ export const baseDateRangeItemRenderer: ItemRenderer = (item, styles, colors, cu
   );
 };
 
-export const baseLinkItemRenderer: ItemRenderer = (item, styles, colors, customRenderers, overrides, translations) => {
+export const baseLinkItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers, overrides, _translations) => {
   if (!isLinkItem(item)) return null;
   
   return (
@@ -168,7 +156,7 @@ export const baseLinkItemRenderer: ItemRenderer = (item, styles, colors, customR
   );
 };
 
-export const baseRatingItemRenderer: ItemRenderer = (item, styles, colors, customRenderers, overrides, translations) => {
+export const baseRatingItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers, overrides, _translations) => {
   if (!isRatingItem(item)) return null;
   
   const { label, score, max, display } = item.value;
@@ -225,7 +213,7 @@ export const baseRatingItemRenderer: ItemRenderer = (item, styles, colors, custo
   }
 };
 
-export const baseImageItemRenderer: ItemRenderer = (item, styles, colors, customRenderers, overrides, translations) => {
+export const baseImageItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers, overrides, translations) => {
   if (!isImageItem(item)) return null;
   
   return (
@@ -240,7 +228,7 @@ export const baseImageItemRenderer: ItemRenderer = (item, styles, colors, custom
   );
 };
 
-export const baseSeparatorItemRenderer: ItemRenderer = (item, styles, colors, customRenderers, overrides, translations) => {
+export const baseSeparatorItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers, _overrides, _translations) => {
   if (!isSeparatorItem(item)) return null;
   
   return (

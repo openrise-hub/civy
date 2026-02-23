@@ -9,6 +9,18 @@
     "close": "Cerrar"
   },
   "editor": {
+    "types": {
+      "heading": "Encabezado",
+      "sub-heading": "Subtítulo",
+      "text": "Texto",
+      "bullet": "Lista con viñetas",
+      "number": "Lista numerada",
+      "date": "Fecha",
+      "location": "Ubicación",
+      "phone": "Teléfono",
+      "email": "Correo",
+      "tag": "Etiqueta"
+    },
     "sidebar": {
       "menu": "Menú",
       "sections": "Secciones",
@@ -47,6 +59,14 @@
       "skills": "Habilidades",
       "summary": "Resumen Profesional",
       "custom": "Sección Personalizada"
+    },
+    "placeholders": {
+      "fullName": "Juan Pérez",
+      "jobTitle": "Ingeniero de Software",
+      "untitledSection": "Sección sin título",
+      "linkUrl": "https://...",
+      "skillLabel": "ej. JavaScript",
+      "templateName": "Nombre de la plantilla"
     },
     "preview": {
       "title": "Vista Previa",

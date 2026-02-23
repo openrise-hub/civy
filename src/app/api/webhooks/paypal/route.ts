@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: PayPalEvent = JSON.parse(rawBody);
-    console.log("PayPal webhook verified:", body.event_type);
+    console.debug("PayPal webhook verified:", body.event_type);
 
     const subscriptionId = body.resource.id;
     const customId = body.resource.custom_id; // This should be the user ID
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
         }
 
         await updatePremiumStatus(userId, subscriptionId, tier);
-        console.log(`Subscription activated for user: ${userId} (${tier})`);
+        console.info(`Subscription activated for user: ${userId} (${tier})`);
         break;
       }
 
@@ -93,11 +93,11 @@ export async function POST(request: NextRequest) {
       case "BILLING.SUBSCRIPTION.EXPIRED":
       case "BILLING.SUBSCRIPTION.SUSPENDED":
         await cancelPremium(userId);
-        console.log("Subscription cancelled for user:", userId);
+        console.info("Subscription cancelled for user:", userId);
         break;
 
       default:
-        console.log("Unhandled PayPal event:", body.event_type);
+        console.debug("Unhandled PayPal event:", body.event_type);
     }
 
     return NextResponse.json({ received: true });

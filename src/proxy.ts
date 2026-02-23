@@ -5,13 +5,21 @@ import { NextResponse, type NextRequest } from "next/server";
 const publicRoutes = ["/", "/login", "/callback", "/reset-password"];
 
 // Routes that should be ignored by proxy
-const ignoredPrefixes = ["/_next", "/api", "/favicon.ico"];
+const ignoredPrefixes = ["/_next", "/favicon.ico"];
+
+// API routes that allow public access (e.g., webhooks)
+const publicApiPrefixes = ["/api/webhooks/paypal"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip ignored routes
   if (ignoredPrefixes.some((prefix) => pathname.startsWith(prefix))) {
+    return NextResponse.next();
+  }
+
+  // Allow public API routes
+  if (publicApiPrefixes.some((prefix) => pathname.startsWith(prefix))) {
     return NextResponse.next();
   }
 

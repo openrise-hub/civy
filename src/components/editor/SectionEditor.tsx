@@ -19,36 +19,39 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { TrashIcon, TypeIcon, CalendarIcon, LinkIcon, StarIcon, EyeIcon, EyeOffIcon, CopyIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useTranslations } from "next-intl";
+
 interface SectionEditorProps {
   section: Section;
 }
 
 interface ItemEditorProps {
   item: Item;
+  t: (key: string) => string;
   onUpdate: (data: Partial<Item>) => void;
   onRemove: (e: React.MouseEvent) => void;
   onDuplicate: (e: React.MouseEvent) => void;
   onToggleVisibility: (e: React.MouseEvent) => void;
 }
 
-function ItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
+function ItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
   if (isStringItem(item)) {
-    return <StringItemEditor item={item} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
+    return <StringItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
   }
   if (isDateRangeItem(item)) {
-    return <DateRangeItemEditor item={item} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
+    return <DateRangeItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
   }
   if (isLinkItem(item)) {
-    return <LinkItemEditor item={item} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
+    return <LinkItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
   }
   if (isRatingItem(item)) {
-    return <RatingItemEditor item={item} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
+    return <RatingItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
   }
   if (isImageItem(item)) {
-    return <ImageItemEditor item={item} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
+    return <ImageItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
   }
   if (isSeparatorItem(item)) {
-    return <SeparatorItemEditor item={item} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
+    return <SeparatorItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
   }
   return null;
 }
@@ -220,7 +223,7 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
   );
 }
 
-function LinkItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
+function LinkItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
   if (!isLinkItem(item)) return null;
 
   const handleLabelChange = (label: string) => {
@@ -252,13 +255,13 @@ function LinkItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibil
         <Input
           value={item.value.label}
           onChange={(e) => handleLabelChange(e.target.value)}
-          placeholder="Link label (e.g., Portfolio, LinkedIn)"
+          placeholder={t("placeholders.linkLabel")}
           size="sm"
         />
         <Input
           value={item.value.url}
           onChange={(e) => handleUrlChange(e.target.value)}
-          placeholder="https://..."
+          placeholder={t("placeholders.linkUrl")}
           size="sm"
         />
       </div>
@@ -266,7 +269,7 @@ function LinkItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibil
   );
 }
 
-function RatingItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
+function RatingItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
   if (!isRatingItem(item)) return null;
 
   const handleLabelChange = (label: string) => {
@@ -306,7 +309,7 @@ function RatingItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisib
           <Input
             value={item.value.label}
             onChange={(e) => handleLabelChange(e.target.value)}
-            placeholder="e.g., JavaScript"
+            placeholder={t("placeholders.skillLabel")}
             size="sm"
           />
         </div>
@@ -357,7 +360,7 @@ function RatingItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisib
   );
 }
 
-function ImageItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
+function ImageItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
   if (!isImageItem(item)) return null;
 
   const handleUrlChange = (url: string) => {
@@ -393,7 +396,7 @@ function ImageItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibi
           <Input
             value={item.value.url}
             onChange={(e) => handleUrlChange(e.target.value)}
-            placeholder="https://..."
+            placeholder={t("placeholders.linkUrl")}
             size="sm"
           />
         </div>
@@ -527,6 +530,7 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
 }
 
 export function SectionEditor({ section }: SectionEditorProps) {
+  const tEditor = useTranslations("editor");
   const addItem = useResumeStore((state) => state.addItem);
   const updateItem = useResumeStore((state) => state.updateItem);
   const removeItem = useResumeStore((state) => state.removeItem);
@@ -577,6 +581,7 @@ export function SectionEditor({ section }: SectionEditorProps) {
         <ItemEditor
           key={item.id}
           item={item}
+          t={tEditor}
           onUpdate={(data) => handleUpdateItem(item.id, data)}
           onRemove={(e) => handleRemoveItem(item.id, e)}
           onDuplicate={() => useResumeStore.getState().duplicateItem(section.id, item.id)}
