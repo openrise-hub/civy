@@ -173,3 +173,19 @@
     cursor: pointer;
   }
 }
+
+@keyframes typing {
+  0% { width: 0; }
+  50% { width: 100%; }
+  100% { width: 100%; }
+}
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+.typing-animation {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 4s steps(30, end) infinite alternate, blink .75s step-end infinite;
+  max-width: 100%;
+}
