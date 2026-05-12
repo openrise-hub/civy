@@ -16,7 +16,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrashIcon, TypeIcon, CalendarIcon, LinkIcon, StarIcon, EyeIcon, EyeOffIcon, CopyIcon } from "lucide-react";
+import { Popover, PopoverTrigger, PopoverPopup, PopoverClose } from "@/components/ui/popover";
+import { TrashIcon, TypeIcon, CalendarIcon, LinkIcon, StarIcon, EyeIcon, EyeOffIcon, CopyIcon, PlusIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { useTranslations } from "next-intl";
@@ -464,68 +465,44 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
     );
   }
 
+  const itemTypes: { type: ItemType; label: string; icon: React.ReactNode }[] = [
+    { type: "heading", label: "Heading", icon: <TypeIcon className="size-3.5" /> },
+    { type: "text", label: "Text", icon: <TypeIcon className="size-3.5" /> },
+    { type: "bullet", label: "Bullet", icon: <TypeIcon className="size-3.5" /> },
+    { type: "date-range", label: "Date Range", icon: <CalendarIcon className="size-3.5" /> },
+    { type: "link", label: "Link", icon: <LinkIcon className="size-3.5" /> },
+    { type: "rating", label: "Rating", icon: <StarIcon className="size-3.5" /> },
+  ];
+
   return (
-    <div className="flex flex-wrap gap-2 p-3 rounded-lg border border-dashed bg-muted/30 add-item-toolbar">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('heading')}
-        className="text-xs"
-      >
-        <TypeIcon className="size-3 mr-1" />
-        Heading
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('text')}
-        className="text-xs"
-      >
-        <TypeIcon className="size-3 mr-1" />
-        Text
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('bullet')}
-        className="text-xs"
-      >
-        <TypeIcon className="size-3 mr-1" />
-        Bullet
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('date-range')}
-        className="text-xs"
-      >
-        <CalendarIcon className="size-3 mr-1" />
-        Date Range
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('link')}
-        className="text-xs"
-      >
-        <LinkIcon className="size-3 mr-1" />
-        Link
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('rating')}
-        className="text-xs"
-      >
-        <StarIcon className="size-3 mr-1" />
-        Rating
-      </Button>
-    </div>
+    <Popover>
+      <PopoverTrigger
+        render={
+          <button className="flex items-center justify-center w-full gap-1.5 p-3 rounded-lg border border-dashed bg-muted/30 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors add-item-toolbar">
+            <PlusIcon className="size-3.5" />
+            Add item
+          </button>
+        }
+      />
+      <PopoverPopup align="start" side="bottom" sideOffset={4}>
+        <div className="flex flex-col gap-0.5 min-w-36">
+          {itemTypes.map((item) => (
+            <PopoverClose
+              key={item.type}
+              render={
+                <button
+                  onClick={() => onAdd(item.type)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm hover:bg-muted transition-colors text-left"
+                >
+                  {item.icon}
+                  {item.label}
+                </button>
+              }
+            />
+          ))}
+        </div>
+      </PopoverPopup>
+    </Popover>
   );
 }
 

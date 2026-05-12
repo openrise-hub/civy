@@ -34,6 +34,41 @@ export const SECTION_TEMPLATES: Record<string, Partial<Section>> = {
   },
 };
 
+// Default item created alongside each new section so users see a field
+// to edit immediately instead of a blank slate with add-item buttons.
+const SECTION_DEFAULT_ITEMS: Record<string, Partial<Item>[]> = {
+  experience: [
+    { type: 'heading', value: 'Job Title' },
+    { type: 'date-range', value: { startDate: 'Jan 2023', endDate: 'Present' } },
+    { type: 'bullet', value: 'Describe your key responsibilities and achievements' },
+  ],
+  education: [
+    { type: 'heading', value: 'Degree / Program' },
+    { type: 'date-range', value: { startDate: '2019', endDate: '2023' } },
+    { type: 'bullet', value: 'Add relevant coursework, honors, or activities' },
+  ],
+  skills: [
+    { type: 'tag', value: 'Skill name' },
+    { type: 'tag', value: 'Skill name' },
+    { type: 'tag', value: 'Skill name' },
+  ],
+  summary: [
+    { type: 'text', value: 'Brief professional summary highlighting your background and goals.' },
+  ],
+  custom: [
+    { type: 'text', value: 'Add your content here' },
+  ],
+};
+
+function makeDefaultItems(sectionType: string): Item[] {
+  const items = SECTION_DEFAULT_ITEMS[sectionType] || SECTION_DEFAULT_ITEMS.custom;
+  return items.map((item) => ({
+    id: uuidv4(),
+    visible: true,
+    ...item,
+  } as Item));
+}
+
 interface ResumeStore {
   resume: Resume;
   
@@ -131,8 +166,8 @@ export const useResumeStore = create<ResumeStore>((set) => ({
                 visible: true,
                 content: {
                   ...customTemplate.content,
-                  id: uuidv4(), // Generate unique ID for the content block
-                  items: [],
+                  id: uuidv4(),
+                  items: makeDefaultItems('custom'),
                 },
               },
             ],
@@ -155,8 +190,8 @@ export const useResumeStore = create<ResumeStore>((set) => ({
               visible: true,
               content: {
                 ...template.content,
-                id: uuidv4(), // Generate unique ID for the content block
-                items: [],
+                id: uuidv4(),
+                items: makeDefaultItems(templateKey),
               },
             },
           ],

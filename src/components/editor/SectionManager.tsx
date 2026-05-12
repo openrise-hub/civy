@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SectionEditor } from "@/components/editor/SectionEditor";
 import { TrashIcon, GripVertical, EyeIcon, EyeOffIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { DndContext, DragEndEvent, PointerSensor, KeyboardSensor, useSensor, useSensors, type DraggableAttributes } from '@dnd-kit/core';
 import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { SortableContext, verticalListSortingStrategy, useSortable, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
@@ -143,10 +143,18 @@ export function SectionManager() {
   const reorderSections = useResumeStore((state) => state.reorderSections);
 
   // Expanded state for sections
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(sections.map(s => s.id)));
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+
+  const expandedSections = useMemo(() => {
+    const all = new Set(sections.map(s => s.id));
+    for (const id of collapsedSections) {
+      all.delete(id);
+    }
+    return all;
+  }, [sections, collapsedSections]);
 
   const toggleExpand = (id: string) => {
-    setExpandedSections(prev => {
+    setCollapsedSections(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
