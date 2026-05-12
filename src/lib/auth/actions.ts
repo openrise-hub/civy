@@ -15,7 +15,10 @@ export type OAuthProvider =
 export async function signInWithOAuth(provider: OAuthProvider, next?: string) {
   const supabase = await createClient();
   const headersList = await headers();
-  const origin = headersList.get("origin") || "";
+  // OAuth must use the actual origin so the PKCE code verifier cookie
+  // is set on the same domain that receives the callback. Fall back to
+  // NEXT_PUBLIC_SITE_URL only when origin is missing (e.g. server-to-server).
+  const origin = headersList.get("origin") || process.env.NEXT_PUBLIC_SITE_URL || "";
 
   const redirectTo = next 
     ? `${origin}/callback?next=${encodeURIComponent(next)}`
@@ -52,18 +55,24 @@ export async function signInWithEmail(email: string, password: string, next?: st
   redirect(next || "/dashboard");
 }
 
-export async function signUpWithEmail(email: string, password: string, next?: string) {
+export async function signUpWithEmail(email: string, password: string, displayName?: string, next?: string) {
   const supabase = await createClient();
   const headersList = await headers();
-  const origin = headersList.get("origin") || "";
+  const origin =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    headersList.get("origin") ||
+    "";
+
+  const emailRedirectTo = next
+    ? `${origin}/callback?next=${next}`
+    : `${origin}/callback`;
 
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: next 
-        ? `${origin}/callback?next=${encodeURIComponent(next)}`
-        : `${origin}/callback`,
+      data: { display_name: displayName || email.split("@")[0] },
+      emailRedirectTo,
     },
   });
 
@@ -89,7 +98,10 @@ export async function getUser() {
 export async function resetPassword(email: string) {
   const supabase = await createClient();
   const headersList = await headers();
-  const origin = headersList.get("origin") || "";
+  const origin =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    headersList.get("origin") ||
+    "";
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/callback?next=/reset-password`,

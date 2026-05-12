@@ -6,13 +6,12 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/dashboard";
 
+  const supabase = await createClient();
+
   if (code) {
-    const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      // If the user is being redirected to reset-password, append a flag
-      // so the page knows the recovery token was exchanged successfully.
       if (next === "/reset-password") {
         return NextResponse.redirect(`${origin}/reset-password?recovered=true`);
       }
@@ -20,6 +19,15 @@ export async function GET(request: Request) {
     }
   }
 
-  // Return to login with error
+  // Password recovery flow: GoTrue sets the session cookie before redirecting,
+  // so the code exchange step is skipped. Check if user is already authenticated.
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    if (next === "/reset-password") {
+      return NextResponse.redirect(`${origin}/reset-password?recovered=true`);
+    }
+    return NextResponse.redirect(`${origin}${next}`);
+  }
+
   return NextResponse.redirect(`${origin}/login?error=Could not authenticate`);
 }

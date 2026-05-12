@@ -52,7 +52,7 @@ export default function Home() {
             <Link href="/dashboard" className="text-sm font-semibold text-[#142F32] hover:text-[#777C90] transition-colors">
               Log in
             </Link>
-            <Link href="/dashboard" className="bg-[#142F32] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#1a3d42] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center">
+            <Link href="/login?tab=signup&next=/dashboard" className="bg-[#142F32] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#1a3d42] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center">
               Sign Up
             </Link>
           </div>
@@ -78,7 +78,7 @@ export default function Home() {
             <Link href="/dashboard" className="w-full text-center py-3 rounded-xl border-2 border-[#142F32] text-[#142F32] font-bold block whitespace-nowrap">
               Log in
             </Link>
-            <Link href="/dashboard" className="w-full text-center py-3 rounded-xl bg-[#142F32] text-white font-bold block whitespace-nowrap">
+            <Link href="/login?tab=signup&next=/dashboard" className="w-full text-center py-3 rounded-xl bg-[#142F32] text-white font-bold block whitespace-nowrap">
               Sign Up
             </Link>
           </div>

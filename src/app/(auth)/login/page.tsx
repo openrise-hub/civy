@@ -79,10 +79,13 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || undefined;
   const errorParam = searchParams.get("error");
+  const tabParam = searchParams.get("tab");
   const t = useTranslations("auth");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(errorParam);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -136,7 +139,19 @@ function LoginForm() {
     setError(null);
     setMessage(null);
 
-    const result = await signUpWithEmail(email, password, next);
+    if (!displayName.trim()) {
+      setError(t("fullNameRequired"));
+      setLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError(t("passwordMismatch"));
+      setLoading(false);
+      return;
+    }
+
+    const result = await signUpWithEmail(email, password, displayName.trim(), next);
     if (result?.error) {
       setError(result.error);
     } else if (result?.success) {
@@ -193,7 +208,7 @@ function LoginForm() {
       </div>
 
       {/* Email/Password Tabs */}
-      <Tabs defaultValue="signin">
+      <Tabs defaultValue={tabParam === "signup" ? "signup" : "signin"}>
         <TabsList className="w-full">
           <TabsTab value="signin" className="flex-1">{t("signIn")}</TabsTab>
           <TabsTab value="signup" className="flex-1">{t("signUp")}</TabsTab>
@@ -249,6 +264,16 @@ function LoginForm() {
         <TabsPanel value="signup" className="mt-4">
           <form onSubmit={handleEmailSignUp} className="space-y-4">
             <Field>
+              <FieldLabel>{t("fullName")}</FieldLabel>
+              <Input
+                type="text"
+                placeholder={t("fullNamePlaceholder")}
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                required
+              />
+            </Field>
+            <Field>
               <FieldLabel>{t("email")}</FieldLabel>
               <Input
                 type="email"
@@ -265,6 +290,17 @@ function LoginForm() {
                 placeholder={t("passwordPlaceholder")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+            </Field>
+            <Field>
+              <FieldLabel>{t("confirmPassword")}</FieldLabel>
+              <Input
+                type="password"
+                placeholder={t("passwordPlaceholder")}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
               />
