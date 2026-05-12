@@ -6,12 +6,9 @@ export type ItemType =
   // Typography & Text
   | 'heading'        // H1/H2: Job Titles, Section Headers
   | 'sub-heading'    // H3/H4: Company Names, University Names
-  | 'text'           // Paragraph: Summary, Descriptions
-  | 'bullet'         // List Item: "• Increased sales by 20%"
-  | 'number'         // Ordered List Item: "1. Planning..."
+  | 'description'    // Markdown textarea: paragraphs, - bullets, 1. numbers, [links]()
   
   // Temporal & Spatial
-  | 'date'           // Single Date: "2023"
   | 'date-range'     // Start - End: "Jan 2020 - Present"
   | 'location'       // Geographic: "New York, USA" (renders with pin icon)
   
@@ -19,7 +16,6 @@ export type ItemType =
   | 'email'          // Renders with mailto: link + icon
   | 'phone'          // Renders with tel: link + icon
   | 'link'           // Generic URL: Portfolio, Project Link
-  | 'social'         // Social Media: LinkedIn, GitHub (auto-detects icon from URL)
   
   // Visual Elements
   | 'tag'            // Skill Chip: "React", "TypeScript" (rounded badge)
@@ -46,7 +42,7 @@ interface BaseItem {
 
 // Simple String Items (Heading, Text, Bullet, Location, Date, Phone, Email, Tag)
 export interface StringItem extends BaseItem {
-  type: 'heading' | 'sub-heading' | 'text' | 'bullet' | 'number' | 'date' | 'location' | 'phone' | 'email' | 'tag';
+  type: 'heading' | 'sub-heading' | 'description' | 'location' | 'phone' | 'email' | 'tag';
   value: string; // The raw text content
 }
 
@@ -62,7 +58,7 @@ export interface DateRangeItem extends BaseItem {
 }
 
 export interface LinkItem extends BaseItem {
-  type: 'link' | 'social';
+  type: 'link';
   value: {
     label: string; // "My Portfolio"
     url: string;   // "https://..."

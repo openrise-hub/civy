@@ -3,6 +3,7 @@
 import { Item, StringItem, DateRangeItem, LinkItem, RatingItem } from "@/types/resume";
 import { ColorScheme } from "@/components/pdf/engine/PdfStyles";
 import { useTranslations } from "next-intl";
+import React from "react";
 import {
   isStringItem,
   isDateRangeItem,
@@ -15,6 +16,45 @@ import {
 interface PreviewItemProps {
   item: Item;
   colors: ColorScheme;
+}
+
+function DescriptionPreview({ text, colors }: { text: string; colors: ColorScheme }) {
+  const baseStyle = { color: colors.text, margin: 0, fontSize: '11pt', lineHeight: 1.5 };
+  const lines = text.split("\n");
+  const elements: React.ReactNode[] = [];
+  let listItems: React.ReactNode[] = [];
+  let listType: "bullet" | "number" | null = null;
+
+  const flushList = () => {
+    if (listItems.length === 0) return;
+    const style = { ...baseStyle, paddingLeft: '20px', margin: '2px 0' };
+    elements.push(
+      React.createElement(listType === "bullet" ? "ul" : "ol", { key: elements.length, style }, ...listItems)
+    );
+    listItems = [];
+    listType = null;
+  };
+
+  for (const line of lines) {
+    const bulletMatch = line.match(/^- (.*)/);
+    const numberMatch = line.match(/^(\d+)\. (.*)/);
+
+    if (bulletMatch) {
+      if (listType !== "bullet") { flushList(); listType = "bullet"; }
+      listItems.push(React.createElement("li", { key: listItems.length, style: { ...baseStyle, margin: '1px 0' } }, bulletMatch[1]));
+    } else if (numberMatch) {
+      if (listType !== "number") { flushList(); listType = "number"; }
+      listItems.push(React.createElement("li", { key: listItems.length, style: { ...baseStyle, margin: '1px 0' } }, numberMatch[2]));
+    } else {
+      flushList();
+      if (line.trim()) {
+        elements.push(React.createElement("p", { key: elements.length, style: baseStyle }, line));
+      }
+    }
+  }
+  flushList();
+
+  return React.createElement(React.Fragment, null, ...elements);
 }
 
 export function PreviewItem({ item, colors }: PreviewItemProps) {
@@ -41,19 +81,8 @@ function StringItemPreview({ item, colors }: { item: StringItem; colors: ColorSc
     case "sub-heading":
       return <h4 style={{ ...baseStyle, fontSize: '12pt', fontWeight: 500, color: colors.accents?.[1] || colors.text }}>{item.value}</h4>;
 
-    case "text":
-      return <p style={{ ...baseStyle, fontSize: '11pt' }}>{item.value}</p>;
-
-    case "bullet":
-      return (
-        <div style={{ display: 'flex', gap: '8px', fontSize: '11pt' }}>
-          <span style={{ color: colors.accents?.[0] || colors.text, flexShrink: 0 }}>•</span>
-          <span style={baseStyle}>{item.value}</span>
-        </div>
-      );
-
-    case "date":
-      return <span style={{ ...baseStyle, fontStyle: 'italic', color: colors.accents?.[3] || colors.text }}>{item.value}</span>;
+    case "description":
+      return <DescriptionPreview text={item.value} colors={colors} />;
 
     case "location":
       return <span style={{ color: colors.accents?.[3] || colors.text, fontSize: '10pt' }}>📍{item.value}</span>;

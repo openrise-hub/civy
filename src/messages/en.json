@@ -12,10 +12,7 @@
     "types": {
       "heading": "Heading",
       "sub-heading": "Sub-heading",
-      "text": "Text",
-      "bullet": "Bullet List",
-      "number": "Numbered List",
-      "date": "Date",
+      "description": "Description",
       "location": "Location",
       "phone": "Phone",
       "email": "Email",

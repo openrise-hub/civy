@@ -34,8 +34,47 @@ export const SECTION_TEMPLATES: Record<string, Partial<Section>> = {
   },
 };
 
+// Default item created alongside each new section so users see a field
+// to edit immediately instead of a blank slate with add-item buttons.
+const SECTION_DEFAULT_ITEMS: Record<string, Partial<Item>[]> = {
+  experience: [
+    { type: 'heading', value: 'Job Title' },
+    { type: 'date-range', value: { startDate: 'Jan 2023', endDate: 'Present' } },
+    { type: 'description', value: '- Describe your key responsibilities and achievements\n- Add more bullet points as needed' },
+  ],
+  education: [
+    { type: 'heading', value: 'Degree / Program' },
+    { type: 'date-range', value: { startDate: '2019', endDate: '2023' } },
+    { type: 'description', value: '- Add relevant coursework, honors, or activities' },
+  ],
+  skills: [
+    { type: 'tag', value: 'Skill name' },
+    { type: 'tag', value: 'Skill name' },
+    { type: 'tag', value: 'Skill name' },
+  ],
+  summary: [
+    { type: 'description', value: 'Brief professional summary highlighting your background and goals.' },
+  ],
+  custom: [
+    { type: 'description', value: 'Add your content here\n\nUse - for bullet points\nUse 1. for numbered lists' },
+  ],
+};
+
+function makeDefaultItems(sectionType: string): Item[] {
+  const items = SECTION_DEFAULT_ITEMS[sectionType] || SECTION_DEFAULT_ITEMS.custom;
+  return items.map((item) => ({
+    id: uuidv4(),
+    visible: true,
+    ...item,
+  } as Item));
+}
+
 interface ResumeStore {
   resume: Resume;
+  
+  // Track which section the user is currently editing (for preview dimming)
+  activeSectionId: string | null;
+  setActiveSectionId: (id: string | null) => void;
   
   // Actions
   setResume: (resume: Resume) => void;
@@ -80,6 +119,9 @@ const initialResume: Resume = {
 
 export const useResumeStore = create<ResumeStore>((set) => ({
   resume: initialResume,
+
+  activeSectionId: null,
+  setActiveSectionId: (id) => set({ activeSectionId: id }),
 
   setResume: (resume) => set({ resume }),
 
@@ -131,8 +173,8 @@ export const useResumeStore = create<ResumeStore>((set) => ({
                 visible: true,
                 content: {
                   ...customTemplate.content,
-                  id: uuidv4(), // Generate unique ID for the content block
-                  items: [],
+                  id: uuidv4(),
+                  items: makeDefaultItems('custom'),
                 },
               },
             ],
@@ -155,8 +197,8 @@ export const useResumeStore = create<ResumeStore>((set) => ({
               visible: true,
               content: {
                 ...template.content,
-                id: uuidv4(), // Generate unique ID for the content block
-                items: [],
+                id: uuidv4(),
+                items: makeDefaultItems(templateKey),
               },
             },
           ],
@@ -234,7 +276,6 @@ export const useResumeStore = create<ResumeStore>((set) => ({
            } as Item;
            break;
            
-        case 'social':
         case 'link':
            newItem = { 
              ...newItem, 
@@ -250,8 +291,7 @@ export const useResumeStore = create<ResumeStore>((set) => ({
            break;
            
         default:
-          // Handles: heading, sub-heading, text, bullet, number, 
-          // date, location, phone, email, tag.
+          // Handles: heading, sub-heading, description, location, phone, email, tag.
           // These are all StringItems.
           newItem = { 
             ...newItem, 

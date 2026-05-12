@@ -1,30 +1,14 @@
 "use client";
 
-import { memo, useMemo } from "react";
-import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { DownloadButton } from "@/components/editor/DownloadButton";
-import { ZoomInIcon, ZoomOutIcon, Loader2 } from "lucide-react";
+import { ResumePreview } from "@/components/preview/ResumePreview";
+import { ZoomInIcon, ZoomOutIcon } from "lucide-react";
 import { useState } from "react";
 
-// Dynamic import to avoid SSR issues with pdfjs
-const PdfCanvasPreview = dynamic(
-  () => import("@/components/preview/PdfCanvasPreview").then((mod) => mod.PdfCanvasPreview),
-  { 
-    ssr: false, 
-    loading: () => (
-      <div className="flex flex-col items-center justify-center h-full gap-3">
-        <Loader2 className="size-8 animate-spin text-muted-foreground/50" />
-        <p className="text-muted-foreground">Loading preview...</p>
-      </div>
-    )
-  }
-);
-
-// Memoized header to prevent re-renders
-const PreviewHeader = memo(function PreviewHeader({ 
+function PreviewHeader({ 
   zoom, 
   onZoomIn, 
   onZoomOut, 
@@ -72,33 +56,26 @@ const PreviewHeader = memo(function PreviewHeader({
       </div>
     </div>
   );
-});
+}
 
-// Memoized preview content
-const PreviewContent = memo(function PreviewContent({ zoom }: { zoom: number }) {
+function PreviewContent({ zoom }: { zoom: number }) {
   const resume = useResumeStore((state) => state.resume);
-  const tResume = useTranslations("resume");
-
-  const translations = useMemo(() => ({
-    present: tResume("present"),
-    phone: tResume("phone"),
-    email: tResume("email"),
-    image: tResume("image"),
-    location: tResume("location"),
-    website: tResume("website"),
-  }), [tResume]);
+  const activeSectionId = useResumeStore((state) => state.activeSectionId);
 
   return (
-    <div className="flex-1 overflow-hidden relative">
-      <PdfCanvasPreview 
-        resume={resume} 
-        translations={translations}
-        templateName="modern"
-        zoom={zoom}
-      />
+    <div className="flex-1 overflow-auto bg-muted/50">
+      <div
+        style={{
+          transform: `scale(${zoom})`,
+          transformOrigin: 'top center',
+          transition: 'transform 0.15s ease',
+        }}
+      >
+        <ResumePreview resume={resume} activeSectionId={activeSectionId} />
+      </div>
     </div>
   );
-});
+}
 
 export function PreviewPanel() {
   const [zoom, setZoom] = useState(1);

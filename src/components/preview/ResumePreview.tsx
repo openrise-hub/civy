@@ -7,6 +7,7 @@ import { PreviewSection } from "./PreviewSection";
 
 interface ResumePreviewProps {
   resume: Resume;
+  activeSectionId?: string | null;
 }
 
 /**
@@ -15,7 +16,7 @@ interface ResumePreviewProps {
  * This component renders inside a container with `flex-1 overflow-hidden relative`.
  * The outer ScrollArea handles scrolling. The A4 "page" is centered with margin auto.
  */
-export function ResumePreview({ resume }: ResumePreviewProps) {
+export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
   const colors: ColorScheme = {
     ...resume.metadata.colors,
     accents: resume.metadata.colors.accents as string[],
@@ -42,7 +43,7 @@ export function ResumePreview({ resume }: ResumePreviewProps) {
       <PreviewHeader personal={resume.personal} colors={colors} />
 
       {resume.sections.map((section) => (
-        <PreviewSection key={section.id} section={section} colors={colors} />
+        <PreviewSection key={section.id} section={section} colors={colors} isDimmed={!!activeSectionId && activeSectionId !== section.id} />
       ))}
     </div>
   );

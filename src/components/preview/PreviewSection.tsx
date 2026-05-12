@@ -7,9 +7,10 @@ import { PreviewItem } from "./PreviewItem";
 interface PreviewSectionProps {
   section: Section;
   colors: ColorScheme;
+  isDimmed?: boolean;
 }
 
-export function PreviewSection({ section, colors }: PreviewSectionProps) {
+export function PreviewSection({ section, colors, isDimmed }: PreviewSectionProps) {
   if (!section.visible) return null;
 
   const { layout, columns = 1, items } = section.content;
@@ -37,7 +38,7 @@ export function PreviewSection({ section, colors }: PreviewSectionProps) {
   };
 
   return (
-    <section style={{ marginBottom: '16px' }}>
+    <section style={{ marginBottom: '16px', opacity: isDimmed ? 0.35 : 1, transition: 'opacity 0.2s ease' }}>
       <h2 style={{
         fontSize: '10pt',
         fontWeight: 600,

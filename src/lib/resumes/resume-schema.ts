@@ -28,10 +28,7 @@ const itemMetadataSchema = z
 const stringItemTypes = [
   "heading",
   "sub-heading",
-  "text",
-  "bullet",
-  "number",
-  "date",
+  "description",
   "location",
   "phone",
   "email",
@@ -62,17 +59,6 @@ const linkItemSchema = z.object({
   id: z.string().min(1).max(50),
   visible: z.boolean(),
   type: z.literal("link"),
-  metadata: itemMetadataSchema,
-  value: z.object({
-    label: z.string().max(RESUME_LIMITS.MAX_TEXT_FIELD),
-    url: z.string().max(2048),
-  }),
-});
-
-const socialItemSchema = z.object({
-  id: z.string().min(1).max(50),
-  visible: z.boolean(),
-  type: z.literal("social"),
   metadata: itemMetadataSchema,
   value: z.object({
     label: z.string().max(RESUME_LIMITS.MAX_TEXT_FIELD),
@@ -117,7 +103,6 @@ const itemSchema = z.discriminatedUnion("type", [
   stringItemSchema,
   dateRangeItemSchema,
   linkItemSchema,
-  socialItemSchema,
   ratingItemSchema,
   imageItemSchema,
   separatorItemSchema,

@@ -16,7 +16,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrashIcon, TypeIcon, CalendarIcon, LinkIcon, StarIcon, EyeIcon, EyeOffIcon, CopyIcon } from "lucide-react";
+import { Popover, PopoverTrigger, PopoverPopup, PopoverClose } from "@/components/ui/popover";
+import { TrashIcon, TypeIcon, CalendarIcon, LinkIcon, StarIcon, EyeIcon, EyeOffIcon, CopyIcon, PlusIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { useTranslations } from "next-intl";
@@ -105,7 +106,7 @@ function ItemActions({
 function StringItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
   if (!isStringItem(item)) return null;
 
-  const isTextarea = item.type === 'text' || item.type === 'bullet';
+  const isDescription = item.type === 'description';
   const isLarge = item.type === 'heading' || item.type === 'sub-heading';
   const charCount = item.value.length;
   const maxChars = RESUME_LIMITS.MAX_TEXT_FIELD;
@@ -117,14 +118,13 @@ function StringItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisib
       item.visible === false && "opacity-50"
     )}>
       <div className="flex-1 space-y-1">
-        {isTextarea ? (
+        {isDescription ? (
           <Textarea
             value={item.value}
             onChange={(e) => onUpdate({ value: e.target.value })}
-            placeholder={`Enter ${item.type}...`}
+            placeholder="- Use dashes for bullet points\n1. Use numbers for ordered lists\n[Label](https://...) for links\nPlain text for paragraphs"
             maxLength={maxChars}
-            className="resize-none"
-            rows={item.type === 'bullet' ? 2 : 3}
+            className="resize-y min-h-[120px] font-mono text-sm"
           />
         ) : (
           <Input
@@ -240,9 +240,7 @@ function LinkItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisi
       item.visible === false && "opacity-50"
     )}>
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium">
-          {item.type === 'social' ? 'Social Link' : 'Link'}
-        </Label>
+        <Label className="text-sm font-medium">Link</Label>
         <ItemActions 
           visible={item.visible} 
           onRemove={onRemove} 
@@ -464,68 +462,42 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
     );
   }
 
+  const itemTypes: { type: ItemType; label: string; icon: React.ReactNode }[] = [
+    { type: "heading", label: "Heading", icon: <TypeIcon className="size-3.5" /> },
+    { type: "sub-heading", label: "Subtitle", icon: <TypeIcon className="size-3.5" /> },
+    { type: "description", label: "Description", icon: <TypeIcon className="size-3.5" /> },
+    { type: "date-range", label: "Date Range", icon: <CalendarIcon className="size-3.5" /> },
+  ];
+
   return (
-    <div className="flex flex-wrap gap-2 p-3 rounded-lg border border-dashed bg-muted/30 add-item-toolbar">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('heading')}
-        className="text-xs"
-      >
-        <TypeIcon className="size-3 mr-1" />
-        Heading
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('text')}
-        className="text-xs"
-      >
-        <TypeIcon className="size-3 mr-1" />
-        Text
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('bullet')}
-        className="text-xs"
-      >
-        <TypeIcon className="size-3 mr-1" />
-        Bullet
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('date-range')}
-        className="text-xs"
-      >
-        <CalendarIcon className="size-3 mr-1" />
-        Date Range
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('link')}
-        className="text-xs"
-      >
-        <LinkIcon className="size-3 mr-1" />
-        Link
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onAdd('rating')}
-        className="text-xs"
-      >
-        <StarIcon className="size-3 mr-1" />
-        Rating
-      </Button>
-    </div>
+    <Popover>
+      <PopoverTrigger
+        render={
+          <button className="flex items-center justify-center w-full gap-1.5 p-3 rounded-lg border border-dashed bg-muted/30 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors add-item-toolbar">
+            <PlusIcon className="size-3.5" />
+            Add item
+          </button>
+        }
+      />
+      <PopoverPopup align="start" side="bottom" sideOffset={4}>
+        <div className="flex flex-col gap-0.5 min-w-36">
+          {itemTypes.map((item) => (
+            <PopoverClose
+              key={item.type}
+              render={
+                <button
+                  onClick={() => onAdd(item.type)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm hover:bg-muted transition-colors text-left"
+                >
+                  {item.icon}
+                  {item.label}
+                </button>
+              }
+            />
+          ))}
+        </div>
+      </PopoverPopup>
+    </Popover>
   );
 }
 
@@ -572,7 +544,10 @@ export function SectionEditor({ section }: SectionEditorProps) {
   };
 
   return (
-    <div className="space-y-3 p-3">
+    <div
+      className="space-y-3 p-3"
+      onFocusCapture={() => useResumeStore.getState().setActiveSectionId(section.id)}
+    >
       <div className="text-xs text-muted-foreground">
         Items: {itemCount} / {RESUME_LIMITS.MAX_ITEMS_PER_SECTION}
       </div>
