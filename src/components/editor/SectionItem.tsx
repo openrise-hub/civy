@@ -88,7 +88,7 @@ function DescriptionBlock({ text, colors }: { text: string; colors: ItemColors }
 
 function renderInlineMarkdown(text: string, colors: ItemColors): React.ReactNode {
   const parts: React.ReactNode[] = [];
-  let remaining = text;
+  const remaining = text;
   let key = 0;
 
   // Match links [label](url), bold **text**, and plain text

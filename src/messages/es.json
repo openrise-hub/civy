@@ -12,10 +12,7 @@
     "types": {
       "heading": "Encabezado",
       "sub-heading": "Subtítulo",
-      "text": "Texto",
-      "bullet": "Lista con viñetas",
-      "number": "Lista numerada",
-      "date": "Fecha",
+      "description": "Descripción",
       "location": "Ubicación",
       "phone": "Teléfono",
       "email": "Correo",
