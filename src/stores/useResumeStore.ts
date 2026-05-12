@@ -72,6 +72,10 @@ function makeDefaultItems(sectionType: string): Item[] {
 interface ResumeStore {
   resume: Resume;
   
+  // Track which section the user is currently editing (for preview dimming)
+  activeSectionId: string | null;
+  setActiveSectionId: (id: string | null) => void;
+  
   // Actions
   setResume: (resume: Resume) => void;
   updatePersonal: (personal: Partial<PersonalInfo>) => void;
@@ -115,6 +119,9 @@ const initialResume: Resume = {
 
 export const useResumeStore = create<ResumeStore>((set) => ({
   resume: initialResume,
+
+  activeSectionId: null,
+  setActiveSectionId: (id) => set({ activeSectionId: id }),
 
   setResume: (resume) => set({ resume }),
 

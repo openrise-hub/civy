@@ -45,6 +45,7 @@ interface SortableSectionCardProps {
   onUpdateTitle: (sectionId: string, title: string) => void;
   onToggleVisibility: (sectionId: string) => void;
   onRemove: (sectionId: string, e: React.MouseEvent) => void;
+  onFocus: (sectionId: string) => void;
 }
 
 function SortableSectionCard({ 
@@ -54,7 +55,8 @@ function SortableSectionCard({
   onToggleExpand, 
   onUpdateTitle, 
   onToggleVisibility, 
-  onRemove 
+  onRemove,
+  onFocus,
 }: SortableSectionCardProps) {
   const {
     attributes,
@@ -88,6 +90,7 @@ function SortableSectionCard({
             <Input
               value={section.title}
               onChange={(e) => onUpdateTitle(section.id, e.target.value)}
+              onFocus={() => onFocus(section.id)}
               className="text-base font-semibold border-none bg-transparent px-0 focus-visible:ring-0"
               placeholder={t("placeholders.untitledSection")}
             />
@@ -141,6 +144,7 @@ export function SectionManager() {
   const removeSection = useResumeStore((state) => state.removeSection);
   const updateSection = useResumeStore((state) => state.updateSection);
   const reorderSections = useResumeStore((state) => state.reorderSections);
+  const setActiveSectionId = useResumeStore((state) => state.setActiveSectionId);
 
   // Expanded state for sections
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
@@ -154,11 +158,18 @@ export function SectionManager() {
   }, [sections, collapsedSections]);
 
   const toggleExpand = (id: string) => {
+    const isCurrentlyCollapsed = collapsedSections.has(id);
+
     setCollapsedSections(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
+    });
+
+    // Defer active section update to avoid setState-in-render
+    queueMicrotask(() => {
+      useResumeStore.getState().setActiveSectionId(isCurrentlyCollapsed ? id : null);
     });
   };
 
@@ -309,6 +320,7 @@ export function SectionManager() {
               onUpdateTitle={handleTitleChange}
               onToggleVisibility={handleVisibilityToggle}
               onRemove={handleRemoveSection}
+              onFocus={(id) => setActiveSectionId(id)}
             />
           ))}
         </div>

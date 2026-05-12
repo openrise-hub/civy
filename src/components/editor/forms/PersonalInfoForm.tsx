@@ -13,6 +13,7 @@ export function PersonalInfoForm() {
   const t = useTranslations("editor");
   const personal = useResumeStore((state) => state.resume.personal);
   const updatePersonal = useResumeStore((state) => state.updatePersonal);
+  const setActiveSectionId = useResumeStore((state) => state.setActiveSectionId);
 
   const handleFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updatePersonal({ fullName: e.target.value });
@@ -47,6 +48,7 @@ export function PersonalInfoForm() {
             id="fullName"
             value={personal.fullName}
             onChange={handleFullNameChange}
+            onFocus={() => setActiveSectionId(null)}
             placeholder={t("placeholders.fullName")}
             maxLength={RESUME_LIMITS.MAX_FULL_NAME}
           />
@@ -64,6 +66,7 @@ export function PersonalInfoForm() {
             id="jobTitle"
             value={personal.jobTitle ?? ""}
             onChange={handleJobTitleChange}
+            onFocus={() => setActiveSectionId(null)}
             placeholder={t("placeholders.jobTitle")}
             maxLength={RESUME_LIMITS.MAX_JOB_TITLE}
           />
@@ -85,6 +88,7 @@ export function PersonalInfoForm() {
                 id={item.id}
                 value={item.value}
                 onChange={(e) => handleDetailChange(item.id, e.target.value)}
+                onFocus={() => setActiveSectionId(null)}
                 placeholder={getItemTypeLabel(item.type, t)}
                 maxLength={RESUME_LIMITS.MAX_TEXT_FIELD}
               />
