@@ -1,13 +1,24 @@
 "use client";
 
+import { v4 as uuidv4 } from "uuid";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { isStringItem, getItemTypeLabel } from "@/lib/resume-helpers";
 import { RESUME_LIMITS } from "@/constants/limits";
+import type { Item, ItemType } from "@/types/resume";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverTrigger, PopoverPopup, PopoverClose } from "@/components/ui/popover";
+import { PlusIcon, PhoneIcon, MailIcon, MapPinIcon, LinkIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+
+const CONTACT_TYPES: { type: ItemType; label: string; icon: React.ReactNode }[] = [
+  { type: "phone", label: "Phone", icon: <PhoneIcon className="size-3.5" /> },
+  { type: "email", label: "Email", icon: <MailIcon className="size-3.5" /> },
+  { type: "location", label: "Location", icon: <MapPinIcon className="size-3.5" /> },
+  { type: "link", label: "Link", icon: <LinkIcon className="size-3.5" /> },
+];
 
 export function PersonalInfoForm() {
   const t = useTranslations("editor");
@@ -31,6 +42,16 @@ export function PersonalInfoForm() {
       return item;
     });
     updatePersonal({ details: updatedDetails });
+  };
+
+  const handleAddDetail = (type: ItemType) => {
+    const newItem: Item = {
+      id: uuidv4(),
+      visible: true,
+      type,
+      value: type === "link" ? { label: "", url: "" } : "",
+    } as Item;
+    updatePersonal({ details: [...personal.details, newItem] });
   };
 
   const fullNameCount = personal.fullName?.length || 0;
@@ -95,6 +116,37 @@ export function PersonalInfoForm() {
             </div>
           );
         })}
+
+        {personal.details.length < RESUME_LIMITS.MAX_PERSONAL_DETAILS && (
+          <Popover>
+            <PopoverTrigger
+              render={
+                <button className="flex items-center justify-center w-full gap-1.5 p-2 mt-2 rounded-lg border border-dashed bg-muted/30 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors">
+                  <PlusIcon className="size-3.5" />
+                  Add contact
+                </button>
+              }
+            />
+            <PopoverPopup align="start" side="bottom" sideOffset={4}>
+              <div className="flex flex-col gap-0.5 min-w-32">
+                {CONTACT_TYPES.map((ct) => (
+                  <PopoverClose
+                    key={ct.type}
+                    render={
+                      <button
+                        onClick={() => handleAddDetail(ct.type)}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm hover:bg-muted transition-colors text-left"
+                      >
+                        {ct.icon}
+                        {ct.label}
+                      </button>
+                    }
+                  />
+                ))}
+              </div>
+            </PopoverPopup>
+          </Popover>
+        )}
       </CardContent>
     </Card>
   );
