@@ -106,7 +106,7 @@ function ItemActions({
 function StringItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
   if (!isStringItem(item)) return null;
 
-  const isTextarea = item.type === 'text' || item.type === 'bullet';
+  const isDescription = item.type === 'description';
   const isLarge = item.type === 'heading' || item.type === 'sub-heading';
   const charCount = item.value.length;
   const maxChars = RESUME_LIMITS.MAX_TEXT_FIELD;
@@ -118,14 +118,13 @@ function StringItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisib
       item.visible === false && "opacity-50"
     )}>
       <div className="flex-1 space-y-1">
-        {isTextarea ? (
+        {isDescription ? (
           <Textarea
             value={item.value}
             onChange={(e) => onUpdate({ value: e.target.value })}
-            placeholder={`Enter ${item.type}...`}
+            placeholder="- Use dashes for bullet points\n1. Use numbers for ordered lists\n[Label](https://...) for links\nPlain text for paragraphs"
             maxLength={maxChars}
-            className="resize-none"
-            rows={item.type === 'bullet' ? 2 : 3}
+            className="resize-y min-h-[120px] font-mono text-sm"
           />
         ) : (
           <Input
@@ -241,9 +240,7 @@ function LinkItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisi
       item.visible === false && "opacity-50"
     )}>
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium">
-          {item.type === 'social' ? 'Social Link' : 'Link'}
-        </Label>
+        <Label className="text-sm font-medium">Link</Label>
         <ItemActions 
           visible={item.visible} 
           onRemove={onRemove} 
@@ -467,11 +464,9 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
 
   const itemTypes: { type: ItemType; label: string; icon: React.ReactNode }[] = [
     { type: "heading", label: "Heading", icon: <TypeIcon className="size-3.5" /> },
-    { type: "text", label: "Text", icon: <TypeIcon className="size-3.5" /> },
-    { type: "bullet", label: "Bullet", icon: <TypeIcon className="size-3.5" /> },
+    { type: "sub-heading", label: "Subtitle", icon: <TypeIcon className="size-3.5" /> },
+    { type: "description", label: "Description", icon: <TypeIcon className="size-3.5" /> },
     { type: "date-range", label: "Date Range", icon: <CalendarIcon className="size-3.5" /> },
-    { type: "link", label: "Link", icon: <LinkIcon className="size-3.5" /> },
-    { type: "rating", label: "Rating", icon: <StarIcon className="size-3.5" /> },
   ];
 
   return (

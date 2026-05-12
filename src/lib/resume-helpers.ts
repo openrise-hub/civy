@@ -19,7 +19,7 @@ export function isDateRangeItem(item: Item): item is DateRangeItem {
 }
 
 export function isLinkItem(item: Item): item is LinkItem {
-  return item.type === "link" || item.type === "social";
+  return item.type === "link";
 }
 
 export function isRatingItem(item: Item): item is RatingItem {
@@ -54,10 +54,7 @@ export function getItemTypeLabel(
   const labels: Record<StringItem["type"], string> = {
     heading: t("types.heading"),
     "sub-heading": t("types.sub-heading"),
-    text: t("types.text"),
-    bullet: t("types.bullet"),
-    number: t("types.number"),
-    date: t("types.date"),
+    description: t("types.description"),
     location: t("types.location"),
     phone: t("types.phone"),
     email: t("types.email"),

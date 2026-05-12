@@ -16,6 +16,7 @@ import {
   StarIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import React from "react";
 
 /**
  * ItemColors - The color palette passed from the template.
@@ -34,10 +35,91 @@ interface SectionItemProps {
 }
 
 /**
- * SectionItem - The Content Atom
- * 
- * Responsibility: Renders WHAT the content is based on semantic type.
+ * Simple markdown renderer for description-type items.
+ * Handles: paragraphs, - bullets, 1. numbered lists, [text](url) links.
  */
+function DescriptionBlock({ text, colors }: { text: string; colors: ItemColors }) {
+  const lines = text.split("\n");
+  const elements: React.ReactNode[] = [];
+  let listItems: React.ReactNode[] = [];
+  let listType: "bullet" | "number" | null = null;
+
+  const flushList = () => {
+    if (listItems.length === 0) return;
+    const Tag = listType === "bullet" ? "ul" : "ol";
+    elements.push(
+      React.createElement(Tag, { key: elements.length, className: "text-sm space-y-0.5 ml-4 mb-1", style: { color: colors.text } }, ...listItems)
+    );
+    listItems = [];
+    listType = null;
+  };
+
+  for (const line of lines) {
+    const bulletMatch = line.match(/^- (.*)/);
+    const numberMatch = line.match(/^(\d+)\. (.*)/);
+
+    if (bulletMatch) {
+      if (listType !== "bullet") { flushList(); listType = "bullet"; }
+      listItems.push(
+        <li key={listItems.length} className="list-disc">{renderInlineMarkdown(bulletMatch[1], colors)}</li>
+      );
+    } else if (numberMatch) {
+      if (listType !== "number") { flushList(); listType = "number"; }
+      listItems.push(
+        <li key={listItems.length} className="list-decimal">{renderInlineMarkdown(numberMatch[2], colors)}</li>
+      );
+    } else {
+      flushList();
+      if (line.trim()) {
+        elements.push(
+          <p key={elements.length} className="text-sm mb-1" style={{ color: colors.text }}>
+            {renderInlineMarkdown(line, colors)}
+          </p>
+        );
+      } else {
+        elements.push(<div key={elements.length} className="h-1" />);
+      }
+    }
+  }
+  flushList();
+
+  return <>{elements}</>;
+}
+
+function renderInlineMarkdown(text: string, colors: ItemColors): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  let remaining = text;
+  let key = 0;
+
+  // Match links [label](url), bold **text**, and plain text
+  const regex = /\[([^\]]+)\]\(([^)]+)\)|\*\*(.+?)\*\*/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(remaining)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(remaining.slice(lastIndex, match.index));
+    }
+    if (match[1] && match[2]) {
+      // Link
+      parts.push(
+        <a key={key++} href={match[2]} target="_blank" rel="noopener noreferrer"
+          className="underline" style={{ color: colors.primary }}>
+          {match[1]}
+        </a>
+      );
+    } else if (match[3]) {
+      // Bold
+      parts.push(<strong key={key++}>{match[3]}</strong>);
+    }
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < remaining.length) {
+    parts.push(remaining.slice(lastIndex));
+  }
+
+  return parts.length > 0 ? <>{parts}</> : text;
+}
 export function SectionItem({ item, colors }: SectionItemProps) {
   const t = useTranslations("editor");
 
@@ -58,30 +140,8 @@ export function SectionItem({ item, colors }: SectionItemProps) {
             {item.value}
           </h4>
         );
-      case "text":
-        return (
-          <p className="text-sm" style={{ color: colors.text }}>
-            {item.value}
-          </p>
-        );
-      case "bullet":
-        return (
-          <li className="text-sm ml-4 list-disc" style={{ color: colors.text }}>
-            {item.value}
-          </li>
-        );
-      case "number":
-        return (
-          <li className="text-sm ml-4 list-decimal" style={{ color: colors.text }}>
-            {item.value}
-          </li>
-        );
-      case "date":
-        return (
-          <span className="text-sm italic" style={{ color: colors.muted }}>
-            {item.value}
-          </span>
-        );
+      case "description":
+        return <DescriptionBlock text={item.value} colors={colors} />;
       case "location":
         return (
           <span className="text-sm inline-flex items-center gap-1" style={{ color: colors.muted }}>

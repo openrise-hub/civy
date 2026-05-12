@@ -40,12 +40,12 @@ const SECTION_DEFAULT_ITEMS: Record<string, Partial<Item>[]> = {
   experience: [
     { type: 'heading', value: 'Job Title' },
     { type: 'date-range', value: { startDate: 'Jan 2023', endDate: 'Present' } },
-    { type: 'bullet', value: 'Describe your key responsibilities and achievements' },
+    { type: 'description', value: '- Describe your key responsibilities and achievements\n- Add more bullet points as needed' },
   ],
   education: [
     { type: 'heading', value: 'Degree / Program' },
     { type: 'date-range', value: { startDate: '2019', endDate: '2023' } },
-    { type: 'bullet', value: 'Add relevant coursework, honors, or activities' },
+    { type: 'description', value: '- Add relevant coursework, honors, or activities' },
   ],
   skills: [
     { type: 'tag', value: 'Skill name' },
@@ -53,10 +53,10 @@ const SECTION_DEFAULT_ITEMS: Record<string, Partial<Item>[]> = {
     { type: 'tag', value: 'Skill name' },
   ],
   summary: [
-    { type: 'text', value: 'Brief professional summary highlighting your background and goals.' },
+    { type: 'description', value: 'Brief professional summary highlighting your background and goals.' },
   ],
   custom: [
-    { type: 'text', value: 'Add your content here' },
+    { type: 'description', value: 'Add your content here\n\nUse - for bullet points\nUse 1. for numbered lists' },
   ],
 };
 
@@ -276,7 +276,6 @@ export const useResumeStore = create<ResumeStore>((set) => ({
            } as Item;
            break;
            
-        case 'social':
         case 'link':
            newItem = { 
              ...newItem, 
@@ -292,8 +291,7 @@ export const useResumeStore = create<ResumeStore>((set) => ({
            break;
            
         default:
-          // Handles: heading, sub-heading, text, bullet, number, 
-          // date, location, phone, email, tag.
+          // Handles: heading, sub-heading, description, location, phone, email, tag.
           // These are all StringItems.
           newItem = { 
             ...newItem, 

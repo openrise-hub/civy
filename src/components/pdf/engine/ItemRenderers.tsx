@@ -70,26 +70,9 @@ export const baseStringItemRenderer: ItemRenderer = (item, styles, colors, _cust
         </Text>
       );
       
-    case 'text':
+    case 'description':
       return (
         <Text style={[baseStyle, { fontSize: 12 }]}>
-          {item.value}
-        </Text>
-      );
-      
-    case 'bullet':
-      return (
-        <View style={getStyle(styles.bulletRow, overrides?.bulletRow)}>
-          <Text style={{ color: colors.accents[0], marginRight: 4 }}>•</Text>
-          <Text style={[baseStyle, { flex: 1 }]}>
-            {item.value}
-          </Text>
-        </View>
-      );
-      
-    case 'date':
-      return (
-        <Text style={[baseStyle, { fontStyle: 'italic', color: colors.accents[3] }]}>
           {item.value}
         </Text>
       );
@@ -118,13 +101,6 @@ export const baseStringItemRenderer: ItemRenderer = (item, styles, colors, _cust
     case 'tag':
       return (
         <Text style={[baseStyle, { backgroundColor: colors.accents[2], color: colors.text, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4, fontSize: 10 }]}>
-          {item.value}
-        </Text>
-      );
-      
-    default:
-      return (
-        <Text style={baseStyle}>
           {item.value}
         </Text>
       );
