@@ -61,7 +61,7 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
 
           <SidebarInset className="flex-1 overflow-hidden">
             <Group orientation="horizontal" style={{ height: "100%" }}>
-              <Panel id="form-editor" defaultSize="50%" minSize="30%" maxSize="70%">
+              <Panel id="form-editor" defaultSize="33%" minSize="25%" maxSize="50%">
                 <FormEditor 
                   resumeId={resumeId}
                   initialIsPublic={initialData.is_public}
@@ -77,7 +77,7 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
                 }}
               />
 
-              <Panel id="live-preview" defaultSize="50%" minSize="20%" maxSize="70%">
+              <Panel id="live-preview" defaultSize="67%" minSize="50%" maxSize="75%">
                 <PreviewPanel />
               </Panel>
             </Group>
