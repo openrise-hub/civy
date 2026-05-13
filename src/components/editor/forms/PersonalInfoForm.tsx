@@ -8,8 +8,7 @@ import type { Item, ItemType } from "@/types/resume";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverTrigger, PopoverPopup, PopoverClose } from "@/components/ui/popover";
-import { PlusIcon, PhoneIcon, MailIcon, MapPinIcon, LinkIcon } from "lucide-react";
+import { PhoneIcon, MailIcon, MapPinIcon, LinkIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
@@ -118,34 +117,18 @@ export function PersonalInfoForm() {
         })}
 
         {personal.details.length < RESUME_LIMITS.MAX_PERSONAL_DETAILS && (
-          <Popover>
-            <PopoverTrigger
-              render={
-                <button className="flex items-center justify-center w-full gap-1.5 p-2 mt-2 rounded-lg border border-dashed bg-muted/30 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors">
-                  <PlusIcon className="size-3.5" />
-                  Add contact
-                </button>
-              }
-            />
-            <PopoverPopup align="start" side="bottom" sideOffset={4}>
-              <div className="flex flex-col gap-0.5 min-w-32">
-                {CONTACT_TYPES.map((ct) => (
-                  <PopoverClose
-                    key={ct.type}
-                    render={
-                      <button
-                        onClick={() => handleAddDetail(ct.type)}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm hover:bg-muted transition-colors text-left"
-                      >
-                        {ct.icon}
-                        {ct.label}
-                      </button>
-                    }
-                  />
-                ))}
-              </div>
-            </PopoverPopup>
-          </Popover>
+          <div className="flex items-center gap-1 pt-2">
+            {CONTACT_TYPES.map((ct) => (
+              <button
+                key={ct.type}
+                onClick={() => handleAddDetail(ct.type)}
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                {ct.icon}
+                {ct.label}
+              </button>
+            ))}
+          </div>
         )}
       </CardContent>
     </Card>
