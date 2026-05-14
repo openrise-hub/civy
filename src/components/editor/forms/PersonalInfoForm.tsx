@@ -8,7 +8,7 @@ import type { Item, ItemType } from "@/types/resume";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PhoneIcon, MailIcon, MapPinIcon, LinkIcon } from "lucide-react";
+import { PhoneIcon, MailIcon, MapPinIcon, LinkIcon, TrashIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
@@ -51,6 +51,10 @@ export function PersonalInfoForm() {
       value: type === "link" ? { label: "", url: "" } : "",
     } as Item;
     updatePersonal({ details: [...personal.details, newItem] });
+  };
+
+  const handleRemoveDetail = (itemId: string) => {
+    updatePersonal({ details: personal.details.filter((item) => item.id !== itemId) });
   };
 
   const fullNameCount = personal.fullName?.length || 0;
@@ -103,7 +107,15 @@ export function PersonalInfoForm() {
 
           return (
             <div key={item.id} className="space-y-2">
-              <Label htmlFor={item.id}>{getItemTypeLabel(item.type, t)}</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor={item.id}>{getItemTypeLabel(item.type, t)}</Label>
+                <button
+                  onClick={() => handleRemoveDetail(item.id)}
+                  className="text-muted-foreground hover:text-destructive transition-colors"
+                >
+                  <TrashIcon className="size-3.5" />
+                </button>
+              </div>
               <Input
                 id={item.id}
                 value={item.value}
