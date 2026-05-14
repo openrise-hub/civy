@@ -462,7 +462,7 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
   }
 
   return (
-    <div className="flex items-center gap-1 p-2 rounded-lg border border-dashed bg-muted/30 add-item-toolbar">
+    <div className="flex items-center justify-center gap-1 p-2 rounded-lg border border-dashed bg-muted/30 add-item-toolbar">
       <button
         onClick={() => onAdd("heading")}
         title="Heading"
