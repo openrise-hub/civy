@@ -169,7 +169,7 @@ export function PersonalInfoForm() {
         })}
 
         {personal.details.length < RESUME_LIMITS.MAX_PERSONAL_DETAILS && (
-          <div className="flex items-center gap-1 pt-2">
+          <div className="flex items-center justify-center gap-1 pt-2">
             {CONTACT_TYPES.map((ct) => (
               <button
                 key={ct.type}
