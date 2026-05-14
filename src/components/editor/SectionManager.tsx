@@ -268,9 +268,6 @@ export function SectionManager() {
   if (!isMounted) {
     return (
       <div>
-        <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground px-1">
-          <span>Sections: {sectionCount} / {RESUME_LIMITS.MAX_SECTIONS}</span>
-        </div>
         <div className="space-y-4">
           {sections.map((section) => (
             <Card key={section.id}>
@@ -302,9 +299,6 @@ export function SectionManager() {
       onDragEnd={handleDragEnd}
       accessibility={{ announcements }}
     >
-      <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground px-1">
-        <span>Sections: {sectionCount} / {RESUME_LIMITS.MAX_SECTIONS}</span>
-      </div>
       <SortableContext
         items={sections.map(section => ({ id: section.id }))}
         strategy={verticalListSortingStrategy}

@@ -546,10 +546,6 @@ export function SectionEditor({ section }: SectionEditorProps) {
       className="space-y-3 p-3"
       onFocusCapture={() => useResumeStore.getState().setActiveSectionId(section.id)}
     >
-      <div className="text-xs text-muted-foreground">
-        Items: {itemCount} / {RESUME_LIMITS.MAX_ITEMS_PER_SECTION}
-      </div>
-      
       {section.content.items.map((item) => (
         <ItemEditor
           key={item.id}
