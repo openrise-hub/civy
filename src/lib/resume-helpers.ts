@@ -50,9 +50,8 @@ export function formatDateRange(
     return d;
   };
   const start = fmt(value.startDate);
+  if (!start) return "";
   const end = value.endDate !== undefined ? fmt(value.endDate) : t("present");
-  if (!start && !end) return "";
-  if (!start && end) return end;
   return `${start} - ${end}`;
 }
 
