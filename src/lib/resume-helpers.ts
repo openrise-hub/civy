@@ -40,8 +40,16 @@ export function formatDateRange(
   value: DateRangeItem["value"],
   t: (key: string) => string
 ): string {
-  const start = value.startDate;
-  const end = value.endDate || t("present");
+  const fmt = (d: string) => {
+    const match = d.match(/^(\d{4})-(\d{2})$/);
+    if (match) {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      return `${months[parseInt(match[2], 10) - 1]} ${match[1]}`;
+    }
+    return d;
+  };
+  const start = fmt(value.startDate);
+  const end = value.endDate ? fmt(value.endDate) : t("present");
   return `${start} - ${end}`;
 }
 

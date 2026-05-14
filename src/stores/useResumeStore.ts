@@ -39,12 +39,12 @@ export const SECTION_TEMPLATES: Record<string, Partial<Section>> = {
 const SECTION_DEFAULT_ITEMS: Record<string, Partial<Item>[]> = {
   experience: [
     { type: 'heading', value: 'Job Title' },
-    { type: 'date-range', value: { startDate: 'Jan 2023', endDate: 'Present' } },
+    { type: 'date-range', value: { startDate: '2023-01', endDate: undefined } },
     { type: 'description', value: '- Describe your key responsibilities and achievements\n- Add more bullet points as needed' },
   ],
   education: [
     { type: 'heading', value: 'Degree / Program' },
-    { type: 'date-range', value: { startDate: '2019', endDate: '2023' } },
+    { type: 'date-range', value: { startDate: '2019-09', endDate: '2023-05' } },
     { type: 'description', value: '- Add relevant coursework, honors, or activities' },
   ],
   skills: [
