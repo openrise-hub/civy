@@ -197,7 +197,14 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
         <div className="space-y-2">
           <Label htmlFor={`end-${item.id}`} className="text-xs text-muted-foreground">End</Label>
           <div className="flex gap-2">
-            {item.value.endDate !== undefined && (
+            <div
+              className={cn(
+                "overflow-hidden transition-all duration-200 ease-in-out",
+                item.value.endDate !== undefined
+                  ? "max-w-[200px] opacity-100"
+                  : "max-w-0 opacity-0"
+              )}
+            >
               <Input
                 id={`end-${item.id}`}
                 type="month"
@@ -205,7 +212,7 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
                 onChange={(e) => handleEndDateChange(e.target.value)}
                 size="sm"
               />
-            )}
+            </div>
             <Button
               type="button"
               variant={item.value.endDate === undefined ? "default" : "outline"}
