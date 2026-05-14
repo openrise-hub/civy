@@ -2,7 +2,7 @@
 
 import { v4 as uuidv4 } from "uuid";
 import { useResumeStore } from "@/stores/useResumeStore";
-import { isStringItem, getItemTypeLabel } from "@/lib/resume-helpers";
+import { isStringItem, isLinkItem, getItemTypeLabel } from "@/lib/resume-helpers";
 import { RESUME_LIMITS } from "@/constants/limits";
 import type { Item, ItemType } from "@/types/resume";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -37,6 +37,16 @@ export function PersonalInfoForm() {
     const updatedDetails = personal.details.map((item) => {
       if (item.id === itemId && isStringItem(item)) {
         return { ...item, value: newValue };
+      }
+      return item;
+    });
+    updatePersonal({ details: updatedDetails });
+  };
+
+  const handleLinkDetailChange = (itemId: string, field: "label" | "url", newValue: string) => {
+    const updatedDetails = personal.details.map((item) => {
+      if (item.id === itemId && isLinkItem(item)) {
+        return { ...item, value: { ...item.value, [field]: newValue } };
       }
       return item;
     });
@@ -103,6 +113,36 @@ export function PersonalInfoForm() {
         </div>
 
         {personal.details.map((item) => {
+          if (isLinkItem(item)) {
+            return (
+              <div key={item.id} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Link</Label>
+                  <button
+                    onClick={() => handleRemoveDetail(item.id)}
+                    className="text-muted-foreground hover:text-destructive transition-colors"
+                  >
+                    <TrashIcon className="size-3.5" />
+                  </button>
+                </div>
+                <Input
+                  value={item.value.label}
+                  onChange={(e) => handleLinkDetailChange(item.id, "label", e.target.value)}
+                  onFocus={() => setActiveSectionId(null)}
+                  placeholder="Label"
+                  maxLength={RESUME_LIMITS.MAX_TEXT_FIELD}
+                />
+                <Input
+                  value={item.value.url}
+                  onChange={(e) => handleLinkDetailChange(item.id, "url", e.target.value)}
+                  onFocus={() => setActiveSectionId(null)}
+                  placeholder="https://..."
+                  maxLength={RESUME_LIMITS.MAX_TEXT_FIELD}
+                />
+              </div>
+            );
+          }
+
           if (!isStringItem(item)) return null;
 
           return (
