@@ -50,6 +50,7 @@ export function formatDateRange(
   };
   const start = fmt(value.startDate);
   const end = value.endDate ? fmt(value.endDate) : t("present");
+  if (!value.startDate && !value.endDate) return "";
   return `${start} - ${end}`;
 }
 
