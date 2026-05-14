@@ -187,9 +187,10 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
           <Label htmlFor={`start-${item.id}`} className="text-xs text-muted-foreground">Start</Label>
           <Input
             id={`start-${item.id}`}
-            type="month"
+            type="text"
             value={item.value.startDate}
             onChange={(e) => handleStartDateChange(e.target.value)}
+            placeholder="e.g. Mar 2023 or 2023-03-15"
             size="sm"
           />
         </div>
@@ -207,9 +208,10 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
             >
               <Input
                 id={`end-${item.id}`}
-                type="month"
+                type="text"
                 value={item.value.endDate || ''}
                 onChange={(e) => handleEndDateChange(e.target.value)}
+                placeholder="e.g. 2025 or Dec 2023"
                 size="sm"
               />
             </div>
