@@ -16,8 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverTrigger, PopoverPopup, PopoverClose } from "@/components/ui/popover";
-import { TrashIcon, TypeIcon, CalendarIcon, LinkIcon, StarIcon, EyeIcon, EyeOffIcon, CopyIcon, PlusIcon } from "lucide-react";
+import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { useTranslations } from "next-intl";
@@ -122,7 +121,7 @@ function StringItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisib
           <Textarea
             value={item.value}
             onChange={(e) => onUpdate({ value: e.target.value })}
-            placeholder="- Use dashes for bullet points\n1. Use numbers for ordered lists\n[Label](https://...) for links\nPlain text for paragraphs"
+            placeholder="Write your content here.&#10;&#10;- Start a line with a dash for bullet points&#10;1. Start with a number for ordered lists&#10;[Click here](https://example.com) to add a link&#10;&#10;Leave a blank line between paragraphs."
             maxLength={maxChars}
             className="resize-y min-h-[120px] font-mono text-sm"
           />
@@ -462,42 +461,41 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
     );
   }
 
-  const itemTypes: { type: ItemType; label: string; icon: React.ReactNode }[] = [
-    { type: "heading", label: "Heading", icon: <TypeIcon className="size-3.5" /> },
-    { type: "sub-heading", label: "Subtitle", icon: <TypeIcon className="size-3.5" /> },
-    { type: "description", label: "Description", icon: <TypeIcon className="size-3.5" /> },
-    { type: "date-range", label: "Date Range", icon: <CalendarIcon className="size-3.5" /> },
-  ];
-
   return (
-    <Popover>
-      <PopoverTrigger
-        render={
-          <button className="flex items-center justify-center w-full gap-1.5 p-3 rounded-lg border border-dashed bg-muted/30 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors add-item-toolbar">
-            <PlusIcon className="size-3.5" />
-            Add item
-          </button>
-        }
-      />
-      <PopoverPopup align="start" side="bottom" sideOffset={4}>
-        <div className="flex flex-col gap-0.5 min-w-36">
-          {itemTypes.map((item) => (
-            <PopoverClose
-              key={item.type}
-              render={
-                <button
-                  onClick={() => onAdd(item.type)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm hover:bg-muted transition-colors text-left"
-                >
-                  {item.icon}
-                  {item.label}
-                </button>
-              }
-            />
-          ))}
-        </div>
-      </PopoverPopup>
-    </Popover>
+    <div className="flex items-center justify-center gap-1 p-2 rounded-lg border border-dashed bg-muted/30 add-item-toolbar">
+      <button
+        onClick={() => onAdd("heading")}
+        title="Heading"
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+      >
+        <TypeIcon className="size-3.5" />
+        Heading
+      </button>
+      <button
+        onClick={() => onAdd("sub-heading")}
+        title="Subtitle"
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+      >
+        <TypeIcon className="size-3.5" />
+        Subtitle
+      </button>
+      <button
+        onClick={() => onAdd("description")}
+        title="Description"
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+      >
+        <TypeIcon className="size-3.5" />
+        Text
+      </button>
+      <button
+        onClick={() => onAdd("date-range")}
+        title="Date Range"
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+      >
+        <CalendarIcon className="size-3.5" />
+        Dates
+      </button>
+    </div>
   );
 }
 
