@@ -40,7 +40,8 @@ export function formatDateRange(
   value: DateRangeItem["value"],
   t: (key: string) => string
 ): string {
-  const fmt = (d: string) => {
+  const fmt = (d: string | undefined) => {
+    if (!d) return "";
     const match = d.match(/^(\d{4})-(\d{2})$/);
     if (match) {
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -49,8 +50,9 @@ export function formatDateRange(
     return d;
   };
   const start = fmt(value.startDate);
-  const end = value.endDate ? fmt(value.endDate) : t("present");
-  if (!value.startDate && !value.endDate) return "";
+  const end = value.endDate !== undefined ? fmt(value.endDate) : t("present");
+  if (!start && !end) return "";
+  if (!start && end) return end;
   return `${start} - ${end}`;
 }
 

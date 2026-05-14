@@ -39,12 +39,12 @@ export const SECTION_TEMPLATES: Record<string, Partial<Section>> = {
 const SECTION_DEFAULT_ITEMS: Record<string, Partial<Item>[]> = {
   experience: [
     { type: 'heading', value: 'Job Title' },
-    { type: 'date-range', value: { startDate: '', endDate: '' } },
+    { type: 'date-range', value: { startDate: '', endDate: undefined } },
     { type: 'description', value: '- Describe your key responsibilities and achievements\n- Add more bullet points as needed' },
   ],
   education: [
     { type: 'heading', value: 'Degree / Program' },
-    { type: 'date-range', value: { startDate: '', endDate: '' } },
+    { type: 'date-range', value: { startDate: '', endDate: undefined } },
     { type: 'description', value: '- Add relevant coursework, honors, or activities' },
   ],
   skills: [
@@ -258,7 +258,7 @@ export const useResumeStore = create<ResumeStore>((set) => ({
         case 'date-range':
           newItem = { 
             ...newItem, 
-            value: { startDate: '', endDate: '' } 
+            value: { startDate: '', endDate: undefined } 
           } as Item;
           break;
           

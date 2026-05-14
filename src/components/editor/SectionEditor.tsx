@@ -160,7 +160,7 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
   };
 
   const handleEndDateChange = (endDate: string) => {
-    onUpdate({ value: { ...item.value, endDate: endDate || undefined } });
+    onUpdate({ value: { ...item.value, endDate } });
   };
 
   const handlePresentToggle = (isPresent: boolean) => {
