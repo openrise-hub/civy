@@ -33,6 +33,43 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
       sections?: Resume["sections"];
     };
 
+    // Normalize old date-range values to YYYY-MM format
+    const monthNames: Record<string, string> = {
+      jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06",
+      jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12",
+    };
+    const normalizeDate = (d: string | undefined, allowUndefined: boolean): string | undefined => {
+      if (!d || d === "Present") return allowUndefined ? undefined : "";
+      const mm = d.match(/^(\d{4})-(\d{2})$/);
+      if (mm) return d;
+      const text = d.match(/^([a-z]{3})\s(\d{4})$/i);
+      if (text && monthNames[text[1].toLowerCase()])
+        return `${text[2]}-${monthNames[text[1].toLowerCase()]}`;
+      const yearOnly = d.match(/^(\d{4})$/);
+      if (yearOnly) return `${yearOnly[1]}-01`;
+      return allowUndefined ? undefined : "";
+    };
+
+    const sections = (resumeData.sections ?? []).map((section) => ({
+      ...section,
+      content: {
+        ...section.content,
+        items: section.content.items.map((item) => {
+          if (item.type === "date-range" && "value" in item && typeof item.value === "object" && item.value) {
+            const val = item.value as Record<string, unknown>;
+            return {
+              ...item,
+              value: {
+                startDate: normalizeDate(val.startDate as string, false) as string,
+                endDate: normalizeDate(val.endDate as string, true),
+              },
+            };
+          }
+          return item;
+        }),
+      },
+    }));
+
     setResume({
       id: initialData.id,
       userId: "",
@@ -44,7 +81,7 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
         colors: { background: "#ffffff", text: "#1f2937", accents: [] },
       },
       personal: resumeData.personal ?? { fullName: "", details: [] },
-      sections: resumeData.sections ?? [],
+      sections,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
