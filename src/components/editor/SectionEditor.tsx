@@ -194,39 +194,29 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
           />
         </div>
         
-        {item.value.endDate !== undefined ? (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor={`end-${item.id}`} className="text-xs text-muted-foreground">End</Label>
-              <button
-                type="button"
-                onClick={() => handlePresentToggle(true)}
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Present
-              </button>
-            </div>
-            <Input
-              id={`end-${item.id}`}
-              type="month"
-              value={item.value.endDate || ''}
-              onChange={(e) => handleEndDateChange(e.target.value)}
-              size="sm"
-            />
-          </div>
-        ) : (
-          <div className="flex items-end pb-1">
+        <div className="space-y-2">
+          <Label htmlFor={`end-${item.id}`} className="text-xs text-muted-foreground">End</Label>
+          <div className="flex gap-2">
+            {item.value.endDate !== undefined && (
+              <Input
+                id={`end-${item.id}`}
+                type="month"
+                value={item.value.endDate || ''}
+                onChange={(e) => handleEndDateChange(e.target.value)}
+                size="sm"
+              />
+            )}
             <Button
               type="button"
-              variant="outline"
+              variant={item.value.endDate === undefined ? "default" : "outline"}
               size="sm"
-              onClick={() => handlePresentToggle(false)}
-              className="w-full"
+              onClick={() => handlePresentToggle(item.value.endDate !== undefined)}
+              className="whitespace-nowrap shrink-0"
             >
               Present
             </Button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
