@@ -184,35 +184,27 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
       
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-2">
-          <Label htmlFor={`start-${item.id}`} className="text-xs text-muted-foreground">Start</Label>
-          <Input
-            id={`start-${item.id}`}
-            type="text"
+          <Label className="text-xs text-muted-foreground">Start</Label>
+          <DateInput
             value={item.value.startDate}
-            onChange={(e) => handleStartDateChange(e.target.value)}
-            placeholder="e.g. Mar 2023 or 2023-03-15"
-            size="sm"
+            onChange={handleStartDateChange}
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor={`end-${item.id}`} className="text-xs text-muted-foreground">End</Label>
+          <Label className="text-xs text-muted-foreground">End</Label>
           <div className="flex gap-2">
             <div
               className={cn(
                 "overflow-hidden transition-all duration-200 ease-in-out",
                 item.value.endDate !== undefined
-                  ? "max-w-[200px] opacity-100"
+                  ? "flex-1 opacity-100"
                   : "max-w-0 opacity-0"
               )}
             >
-              <Input
-                id={`end-${item.id}`}
-                type="text"
+              <DateInput
                 value={item.value.endDate || ''}
-                onChange={(e) => handleEndDateChange(e.target.value)}
-                placeholder="e.g. 2025 or Dec 2023"
-                size="sm"
+                onChange={handleEndDateChange}
               />
             </div>
             <Button
@@ -229,6 +221,79 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
       </div>
     </div>
   );
+}
+
+function DateInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const parsed = parseDateParts(value);
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 76 }, (_, i) => currentYear - i);
+
+  const months = [
+    { value: "", label: "—" },
+    { value: "01", label: "Jan" }, { value: "02", label: "Feb" },
+    { value: "03", label: "Mar" }, { value: "04", label: "Apr" },
+    { value: "05", label: "May" }, { value: "06", label: "Jun" },
+    { value: "07", label: "Jul" }, { value: "08", label: "Aug" },
+    { value: "09", label: "Sep" }, { value: "10", label: "Oct" },
+    { value: "11", label: "Nov" }, { value: "12", label: "Dec" },
+  ];
+
+  const emit = (y: string, m: string, d: string) => {
+    if (!y) { onChange(""); return; }
+    let v = y;
+    if (m) v += `-${m}`;
+    if (m && d) v += `-${d}`;
+    onChange(v);
+  };
+
+  return (
+    <div className="flex gap-1">
+      <Select value={parsed.year} onValueChange={(y) => emit(y ?? "", parsed.month, parsed.day)}>
+        <SelectTrigger className="h-8 text-xs w-[72px]">
+          <SelectValue placeholder="Year" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">—</SelectItem>
+          {years.map((y) => (
+            <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select value={parsed.month} onValueChange={(m) => emit(parsed.year, m ?? "", m ? parsed.day : "")}>
+        <SelectTrigger className="h-8 text-xs w-[56px]">
+          <SelectValue placeholder="Mon" />
+        </SelectTrigger>
+        <SelectContent>
+          {months.map((m) => (
+            <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {parsed.month && (
+        <Input
+          type="number"
+          min={1}
+          max={31}
+          placeholder="DD"
+          value={parsed.day}
+          onChange={(e) => {
+            const d = e.target.value.padStart(2, "0");
+            emit(parsed.year, parsed.month, d);
+          }}
+          className="h-8 w-[44px] text-xs px-1"
+        />
+      )}
+    </div>
+  );
+}
+
+function parseDateParts(value: string): { year: string; month: string; day: string } {
+  if (!value) return { year: "", month: "", day: "" };
+  const m = value.match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/);
+  if (m) return { year: m[1], month: m[2] || "", day: m[3] || "" };
+  return { year: value, month: "", day: "" };
 }
 
 function LinkItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
