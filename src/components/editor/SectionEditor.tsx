@@ -194,29 +194,39 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
           />
         </div>
         
-        <div className="space-y-2">
-          <Label htmlFor={`end-${item.id}`} className="text-xs text-muted-foreground">End</Label>
-          <div className="flex gap-2">
+        {item.value.endDate !== undefined ? (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor={`end-${item.id}`} className="text-xs text-muted-foreground">End</Label>
+              <button
+                type="button"
+                onClick={() => handlePresentToggle(true)}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Present
+              </button>
+            </div>
             <Input
               id={`end-${item.id}`}
               type="month"
               value={item.value.endDate || ''}
               onChange={(e) => handleEndDateChange(e.target.value)}
-              placeholder="Present"
               size="sm"
-              disabled={!item.value.endDate}
             />
+          </div>
+        ) : (
+          <div className="flex items-end pb-1">
             <Button
               type="button"
-              variant={!item.value.endDate ? "default" : "outline"}
+              variant="outline"
               size="sm"
-              onClick={() => handlePresentToggle(!item.value.endDate)}
-              className="whitespace-nowrap"
+              onClick={() => handlePresentToggle(false)}
+              className="w-full"
             >
               Present
             </Button>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
