@@ -225,10 +225,9 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
   const [d, setD] = useState(parsed ? parsed.getDate() : 1);
 
   const emit = (year: number, month: number | null, day: number | null) => {
-    if (month === null) { onChange(`${year}`); setOpen(false); return; }
-    if (day === null) { onChange(`${year}-${String(month + 1).padStart(2, "0")}`); setOpen(false); return; }
-    onChange(`${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
-    setOpen(false);
+    if (month === null) onChange(`${year}`);
+    else if (day === null) onChange(`${year}-${String(month + 1).padStart(2, "0")}`);
+    else onChange(`${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
   };
 
   const displayLabel = (() => {
@@ -248,8 +247,12 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
     <Popover
       open={open}
       onOpenChange={(isOpen) => {
-        setOpen(isOpen);
-        if (isOpen) {
+        if (!isOpen) {
+          // Closing popover: emit whatever precision we're at
+          if (step === 1) emit(y, null, null);
+          else if (step === 2) emit(y, m, null);
+          else emit(y, m, d);
+        } else {
           const p = parseDateValue(value);
           if (p) {
             setY(p.getFullYear());
@@ -260,6 +263,7 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
             setStep(1);
           }
         }
+        setOpen(isOpen);
       }}
     >
       <PopoverTrigger
@@ -345,6 +349,7 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
                 if (date) {
                   setD(date.getDate());
                   emit(date.getFullYear(), date.getMonth(), date.getDate());
+                  setOpen(false);
                 }
               }}
               captionLayout="dropdown"
