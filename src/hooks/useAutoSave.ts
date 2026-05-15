@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { saveResume } from "@/lib/resumes/actions";
+import { validateDateRange } from "@/lib/resume-helpers";
 import { toastManager } from "@/components/ui/toast";
 import { useAriaLive } from "@/components/AriaLiveRegion";
 
@@ -19,6 +20,22 @@ export function useAutoSave(resumeId: string) {
 
   const save = useCallback(async (showToast = true) => {
     if (isSavingRef.current) return;
+
+    // Check for date-range validation errors
+    const sections = useResumeStore.getState().resume.sections;
+    for (const section of sections) {
+      for (const item of section.content.items) {
+        if (item.type !== "date-range") continue;
+        const dr = item as { type: "date-range"; value: { startDate: string; endDate?: string } };
+        const err = validateDateRange(dr.value.startDate, dr.value.endDate);
+        if (err) {
+          if (showToast) {
+            toastManager.add({ type: "error", title: "Cannot save", description: `"${section.title}": ${err}` });
+          }
+          return;
+        }
+      }
+    }
 
     const dataToSave = {
       title: resume.title,
@@ -72,6 +89,20 @@ export function useAutoSave(resumeId: string) {
     // Clear any pending auto-save
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
+    }
+
+    // Check for date-range validation errors
+    const sections = useResumeStore.getState().resume.sections;
+    for (const section of sections) {
+      for (const item of section.content.items) {
+        if (item.type !== "date-range") continue;
+        const dr = item as { type: "date-range"; value: { startDate: string; endDate?: string } };
+        const err = validateDateRange(dr.value.startDate, dr.value.endDate);
+        if (err) {
+          toastManager.add({ type: "error", title: "Cannot save", description: `"${section.title}": ${err}` });
+          return;
+        }
+      }
     }
     
     isSavingRef.current = false; // Allow save even if one was in progress

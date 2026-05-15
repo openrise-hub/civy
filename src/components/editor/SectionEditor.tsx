@@ -11,6 +11,7 @@ import {
   isImageItem, 
   isSeparatorItem 
 } from "@/lib/resume-helpers";
+import { parseDateValue, validateDateRange } from "@/lib/resume-helpers";
 import { RESUME_LIMITS } from "@/constants/limits";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,7 +22,7 @@ import { Popover, PopoverTrigger, PopoverPopup } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { format, parse, isValid } from "date-fns";
+import { format } from "date-fns";
 
 import { useTranslations } from "next-intl";
 
@@ -159,10 +160,13 @@ function StringItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisib
 function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
   if (!isDateRangeItem(item)) return null;
 
+  const error = validateDateRange(item.value.startDate, item.value.endDate);
+
   return (
     <div className={cn(
       "space-y-3 p-3 rounded-lg border bg-card item-container transition-opacity",
-      item.visible === false && "opacity-50"
+      item.visible === false && "opacity-50",
+      error && "border-destructive"
     )}>
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">Date Range</Label>
@@ -180,6 +184,7 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
           <DatePickerPopover
             value={item.value.startDate}
             onChange={(v) => onUpdate({ value: { ...item.value, startDate: v } })}
+            error={!!error}
           />
         </div>
 
@@ -189,6 +194,7 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
               <DatePickerPopover
                 value={item.value.endDate || ''}
                 onChange={(v) => onUpdate({ value: { ...item.value, endDate: v } })}
+                error={!!error}
               />
           </div>
         )}
@@ -203,11 +209,14 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
           Present
         </Button>
       </div>
+      {error && (
+        <p className="text-xs text-destructive">{error}</p>
+      )}
     </div>
   );
 }
 
-function DatePickerPopover({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function DatePickerPopover({ value, onChange, error }: { value: string; onChange: (v: string) => void; error?: boolean }) {
   const [mode, setMode] = useState<"year" | "month" | "day">(detectPrecision(value));
   const selected = parseDateValue(value);
 
@@ -232,7 +241,8 @@ function DatePickerPopover({ value, onChange }: { value: string; onChange: (v: s
       <PopoverTrigger
         render={
           <button className={cn(
-            "flex h-8 items-center gap-1 rounded-md border border-input px-2 text-xs min-w-[120px]",
+            "flex h-8 items-center gap-1 rounded-md border px-2 text-xs min-w-[120px]",
+            error ? "border-destructive" : "border-input",
             !value && "text-muted-foreground"
           )}>
             <CalendarIcon className="size-3 shrink-0" />
@@ -327,17 +337,6 @@ function detectPrecision(value: string): "year" | "month" | "day" {
   if (/^\d{4}$/.test(value)) return "year";
   if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return "day";
   return "month";
-}
-
-function parseDateValue(value: string): Date | null {
-  if (!value) return null;
-  const d = parse(value, "yyyy-MM-dd", new Date());
-  if (isValid(d)) return d;
-  const m = parse(value, "yyyy-MM", new Date());
-  if (isValid(m)) return m;
-  const y = parse(value, "yyyy", new Date());
-  if (isValid(y)) return y;
-  return null;
 }
 
 function LinkItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {

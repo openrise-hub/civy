@@ -7,6 +7,7 @@ import type {
   SeparatorItem,
   ImageItem,
 } from "@/types/resume";
+import { parse, isValid } from "date-fns";
 
 // --- Type Guards ---
 
@@ -71,4 +72,41 @@ export function getItemTypeLabel(
     tag: t("types.tag"),
   };
   return labels[type] || type;
+}
+
+// --- Date Validation ---
+
+export function parseDateValue(value: string): Date | null {
+  if (!value) return null;
+  const d = parse(value, "yyyy-MM-dd", new Date());
+  if (isValid(d)) return d;
+  const m = parse(value, "yyyy-MM", new Date());
+  if (isValid(m)) return m;
+  const y = parse(value, "yyyy", new Date());
+  if (isValid(y)) return y;
+  return null;
+}
+
+export function validateDateRange(start: string, end: string | undefined): string | null {
+  if (!start) return "Start date is required";
+
+  const startDate = parseDateValue(start);
+  if (!startDate) return "Invalid start date format";
+
+  if (startDate.getFullYear() < 1935) return "Date must be 1935 or later";
+  if (startDate > new Date()) return "Start date cannot be in the future";
+
+  if (end !== undefined) {
+    if (!end) return "End date is required";
+
+    const endDate = parseDateValue(end);
+    if (!endDate) return "Invalid end date format";
+
+    if (endDate.getFullYear() < 1935) return "Date must be 1935 or later";
+    if (endDate > new Date()) return "End date cannot be in the future";
+
+    if (endDate.getTime() <= startDate.getTime()) return "End date must be after start date";
+  }
+
+  return null;
 }
