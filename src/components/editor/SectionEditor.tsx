@@ -217,27 +217,51 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
 }
 
 function DatePickerPopover({ value, onChange, error }: { value: string; onChange: (v: string) => void; error?: boolean }) {
-  const [mode, setMode] = useState<"year" | "month" | "day">(detectPrecision(value));
-  const selected = parseDateValue(value);
+  const parsed = parseDateValue(value);
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [y, setY] = useState(parsed ? parsed.getFullYear() : new Date().getFullYear());
+  const [m, setM] = useState(parsed ? parsed.getMonth() : 0);
+  const [d, setD] = useState(parsed ? parsed.getDate() : 1);
+
+  const emit = (year: number, month: number | null, day: number | null) => {
+    if (month === null) { onChange(`${year}`); setOpen(false); return; }
+    if (day === null) { onChange(`${year}-${String(month + 1).padStart(2, "0")}`); setOpen(false); return; }
+    onChange(`${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
+    setOpen(false);
+  };
 
   const displayLabel = (() => {
     if (!value) return "Pick a date";
-    const d = parseDateValue(value);
-    if (!d) return value;
-    if (mode === "year") return format(d, "yyyy");
-    if (mode === "month") return format(d, "MMM yyyy");
-    return format(d, "MMM d, yyyy");
+    const dt = parseDateValue(value);
+    if (!dt) return value;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return format(dt, "MMM d, yyyy");
+    if (/^\d{4}-\d{2}$/.test(value)) return format(dt, "MMM yyyy");
+    return format(dt, "yyyy");
   })();
 
-  const handleSelect = (date: Date | undefined) => {
-    if (!date) { onChange(""); return; }
-    if (mode === "year") { onChange(format(date, "yyyy")); return; }
-    if (mode === "month") { onChange(format(date, "yyyy-MM")); return; }
-    onChange(format(date, "yyyy-MM-dd"));
-  };
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 60 }, (_, i) => currentYear - i);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   return (
-    <Popover>
+    <Popover
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (isOpen) {
+          const p = parseDateValue(value);
+          if (p) {
+            setY(p.getFullYear());
+            setM(p.getMonth());
+            setD(p.getDate());
+            setStep(/^\d{4}$/.test(value) ? 1 : /^\d{4}-\d{2}$/.test(value) ? 2 : 3);
+          } else {
+            setStep(1);
+          }
+        }
+      }}
+    >
       <PopoverTrigger
         render={
           <button className={cn(
@@ -251,30 +275,78 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
         }
       />
       <PopoverPopup align="start" side="bottom" sideOffset={4} className="w-auto p-0">
-        <div className="flex items-center gap-1 border-b px-3 py-2">
-          {(["year", "month", "day"] as const).map((m) => (
+        {/* Breadcrumb */}
+        {step > 1 && (
+          <div className="flex items-center gap-0.5 border-b px-3 py-2 text-xs">
             <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={cn(
-                "rounded px-2 py-0.5 text-xs capitalize",
-                mode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-              )}
+              onClick={() => { setStep(1); emit(y, null, null); }}
+              className="rounded px-1.5 py-0.5 hover:bg-muted transition-colors"
             >
-              {m}
+              {y}
             </button>
-          ))}
-        </div>
+            {step >= 3 && (
+              <>
+                <span className="text-muted-foreground">›</span>
+                <button
+                  onClick={() => { setStep(2); emit(y, m, null); }}
+                  className="rounded px-1.5 py-0.5 hover:bg-muted transition-colors"
+                >
+                  {months[m]}
+                </button>
+              </>
+            )}
+          </div>
+        )}
+
         <div className="p-2">
-          {mode === "year" ? (
-            <YearGrid selected={selected} onSelect={handleSelect} />
-          ) : mode === "month" ? (
-            <MonthGrid selected={selected} onSelect={handleSelect} />
-          ) : (
+          {/* Step 1: Year grid */}
+          {step === 1 && (
+            <div className="grid grid-cols-4 gap-1 w-52">
+              {years.map((year) => (
+                <button
+                  key={year}
+                  onClick={() => { setY(year); setStep(2); emit(year, null, null); }}
+                  className={cn(
+                    "rounded px-2 py-1 text-xs hover:bg-muted transition-colors",
+                    parseInt(value) === year && "bg-primary text-primary-foreground"
+                  )}
+                >
+                  {year}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Step 2: Month grid */}
+          {step === 2 && (
+            <div className="grid grid-cols-3 gap-2 w-64">
+              {months.map((mon, i) => (
+                <button
+                  key={mon}
+                  onClick={() => { setM(i); setStep(3); emit(y, i, null); }}
+                  className={cn(
+                    "rounded px-3 py-2 text-sm hover:bg-muted transition-colors",
+                    /^\d{4}-\d{2}$/.test(value) && parsed && parsed.getMonth() === i && parsed.getFullYear() === y && "bg-primary text-primary-foreground"
+                  )}
+                >
+                  {mon}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Step 3: Day calendar */}
+          {step === 3 && (
             <Calendar
               mode="single"
-              selected={selected || undefined}
-              onSelect={handleSelect}
+              selected={parsed || new Date(y, m, 1)}
+              defaultMonth={new Date(y, m, 1)}
+              onSelect={(date) => {
+                if (date) {
+                  setD(date.getDate());
+                  emit(date.getFullYear(), date.getMonth(), date.getDate());
+                }
+              }}
               captionLayout="dropdown"
               className="rounded-md"
             />
@@ -283,60 +355,6 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
       </PopoverPopup>
     </Popover>
   );
-}
-
-function YearGrid({ selected, onSelect }: { selected: Date | null; onSelect: (d: Date) => void }) {
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 60 }, (_, i) => currentYear - i);
-  return (
-    <div className="grid grid-cols-4 gap-1 w-52">
-      {years.map((y) => (
-        <button
-          key={y}
-          onClick={() => onSelect(new Date(y, 0, 1))}
-          className={cn(
-            "rounded px-2 py-1 text-xs hover:bg-muted",
-            selected?.getFullYear() === y && "bg-primary text-primary-foreground"
-          )}
-        >
-          {y}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function MonthGrid({ selected, onSelect }: { selected: Date | null; onSelect: (d: Date) => void }) {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const year = selected ? selected.getFullYear() : new Date().getFullYear();
-  return (
-    <div className="w-64">
-      <div className="flex items-center justify-between mb-2">
-        <button onClick={() => {/* year nav */}} className="text-xs">{year}</button>
-      </div>
-      <div className="grid grid-cols-3 gap-2">
-        {months.map((mon, i) => (
-          <button
-            key={mon}
-            onClick={() => onSelect(new Date(year, i, 1))}
-            className={cn(
-              "rounded px-3 py-2 text-sm hover:bg-muted",
-              selected && selected.getMonth() === i && selected.getFullYear() === year && "bg-primary text-primary-foreground"
-            )}
-          >
-            {mon}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function detectPrecision(value: string): "year" | "month" | "day" {
-  if (!value) return "month";
-  if (/^\d{4}$/.test(value)) return "year";
-  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return "day";
-  return "month";
 }
 
 function LinkItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
