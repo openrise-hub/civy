@@ -182,6 +182,31 @@ export function SectionItem({ item, colors }: SectionItemProps) {
     }
   }
 
+  // --- Tags ---
+  if (item.type === "tags" && "value" in item && item.value && typeof item.value === "object" && "items" in item.value) {
+    const v = item.value as { name?: string; items: string[]; display: 'text' | 'badge' | 'pill' };
+    return (
+      <div>
+        {v.name && <span className="text-xs font-semibold" style={{ color: colors.text }}>{v.name}</span>}
+        <div className={cn(
+          "flex flex-wrap gap-1",
+          v.name && "mt-1"
+        )}>
+          {v.items.map((tag, i) => (
+            <span key={i} className={cn(
+              v.display === 'text' && "text-xs",
+              v.display === 'pill' && "inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700",
+              v.display === 'badge' && "inline-block rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700"
+            )}>
+              {v.display === 'text' && i > 0 && ", "}
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   // --- Date Range ---
   if (isDateRangeItem(item)) {
     return (

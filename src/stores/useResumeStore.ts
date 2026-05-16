@@ -48,9 +48,7 @@ const SECTION_DEFAULT_ITEMS: Record<string, Partial<Item>[]> = {
     { type: 'description', value: '- Add relevant coursework, honors, or activities' },
   ],
   skills: [
-    { type: 'tag', value: 'Skill name' },
-    { type: 'tag', value: 'Skill name' },
-    { type: 'tag', value: 'Skill name' },
+    { type: 'tags', value: { items: ['Responsibility', 'Teamwork', 'Resilience'], display: 'pill' as const } },
   ],
   summary: [
     { type: 'description', value: 'Brief professional summary highlighting your background and goals.' },
@@ -283,6 +281,13 @@ export const useResumeStore = create<ResumeStore>((set) => ({
            } as Item;
            break;
            
+        case 'tags':
+           newItem = {
+             ...newItem,
+             value: { items: [], display: 'pill' as const },
+           } as Item;
+           break;
+
         case 'separator':
            newItem = { 
              ...newItem, 
@@ -291,7 +296,7 @@ export const useResumeStore = create<ResumeStore>((set) => ({
            break;
            
         default:
-          // Handles: heading, sub-heading, description, location, phone, email, tag.
+          // Handles: heading, sub-heading, description, location, phone, email.
           // These are all StringItems.
           newItem = { 
             ...newItem, 

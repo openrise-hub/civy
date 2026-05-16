@@ -6,6 +6,7 @@ import type {
   RatingItem,
   SeparatorItem,
   ImageItem,
+  TagsItem,
 } from "@/types/resume";
 import { parse, isValid } from "date-fns";
 
@@ -33,6 +34,10 @@ export function isImageItem(item: Item): item is ImageItem {
 
 export function isSeparatorItem(item: Item): item is SeparatorItem {
   return item.type === "separator";
+}
+
+export function isTagsItem(item: Item): item is TagsItem {
+  return item.type === "tags";
 }
 
 // --- Formatters ---
@@ -69,7 +74,6 @@ export function getItemTypeLabel(
     location: t("types.location"),
     phone: t("types.phone"),
     email: t("types.email"),
-    tag: t("types.tag"),
   };
   return labels[type] || type;
 }
