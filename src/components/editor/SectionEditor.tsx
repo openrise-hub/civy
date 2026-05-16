@@ -223,7 +223,7 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [y, setY] = useState(currentYear);
   const [m, setM] = useState(-1);
-  const [d, setD] = useState(1);
+  const [d, setD] = useState(0);
   const monthSelected = m >= 0;
   const daySelected = d > 0;
 
@@ -268,10 +268,11 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
             const hasMonth = /^\d{4}-\d{2}/.test(value || "");
             const hasDay = /^\d{4}-\d{2}-\d{2}$/.test(value || "");
             setM(hasMonth ? p.getMonth() : -1);
-            setD(hasDay ? p.getDate() : 1);
+            setD(hasDay ? p.getDate() : 0);
             setStep(hasDay ? 3 : hasMonth ? 2 : 1);
           } else {
             setM(-1);
+            setD(0);
             setStep(1);
           }
         }
