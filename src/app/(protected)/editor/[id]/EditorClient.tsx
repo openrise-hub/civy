@@ -33,6 +33,26 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
       sections?: Resume["sections"];
     };
 
+    const sections = (resumeData.sections ?? []).map((section) => ({
+      ...section,
+      content: {
+        ...section.content,
+        items: section.content.items.map((item) => {
+          if (item.type === "date-range" && "value" in item && item.value && typeof item.value === "object") {
+            const v = item.value as Record<string, unknown>;
+            return {
+              ...item,
+              value: {
+                startDate: v.startDate === "Present" ? "" : (v.startDate as string),
+                endDate: v.endDate === "Present" ? undefined : (v.endDate as string | undefined),
+              },
+            };
+          }
+          return item;
+        }),
+      },
+    }));
+
     setResume({
       id: initialData.id,
       userId: "",
@@ -44,7 +64,7 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
         colors: { background: "#ffffff", text: "#1f2937", accents: [] },
       },
       personal: resumeData.personal ?? { fullName: "", details: [] },
-      sections: resumeData.sections ?? [],
+      sections,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });

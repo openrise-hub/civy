@@ -11,6 +11,7 @@ import {
   isImageItem, 
   isSeparatorItem 
 } from "@/lib/resume-helpers";
+import { parseDateValue, validateDateRange } from "@/lib/resume-helpers";
 import { RESUME_LIMITS } from "@/constants/limits";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,9 +20,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverTrigger, PopoverPopup } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon } from "lucide-react";
+import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { format, parse, isValid } from "date-fns";
+import { format } from "date-fns";
 
 import { useTranslations } from "next-intl";
 
@@ -159,10 +160,13 @@ function StringItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisib
 function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
   if (!isDateRangeItem(item)) return null;
 
+  const error = validateDateRange(item.value.startDate, item.value.endDate);
+
   return (
     <div className={cn(
       "space-y-3 p-3 rounded-lg border bg-card item-container transition-opacity",
-      item.visible === false && "opacity-50"
+      item.visible === false && "opacity-50",
+      error && "border-destructive"
     )}>
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">Date Range</Label>
@@ -180,6 +184,7 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
           <DatePickerPopover
             value={item.value.startDate}
             onChange={(v) => onUpdate({ value: { ...item.value, startDate: v } })}
+            error={!!error}
           />
         </div>
 
@@ -189,6 +194,7 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
               <DatePickerPopover
                 value={item.value.endDate || ''}
                 onChange={(v) => onUpdate({ value: { ...item.value, endDate: v } })}
+                error={!!error}
               />
           </div>
         )}
@@ -203,36 +209,81 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
           Present
         </Button>
       </div>
+      {error && (
+        <p className="text-xs text-destructive">{error}</p>
+      )}
     </div>
   );
 }
 
-function DatePickerPopover({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const [mode, setMode] = useState<"year" | "month" | "day">(detectPrecision(value));
-  const selected = parseDateValue(value);
+function DatePickerPopover({ value, onChange, error }: { value: string; onChange: (v: string) => void; error?: boolean }) {
+  const parsed = parseDateValue(value);
+  const currentYear = new Date().getFullYear();
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [y, setY] = useState(parsed ? parsed.getFullYear() : currentYear);
+  const [m, setM] = useState(parsed ? parsed.getMonth() : -1);
+  const [d, setD] = useState(parsed ? parsed.getDate() : 1);
+  const monthSelected = m >= 0;
+  const daySelected = d > 0;
+
+  const [decadeStart, setDecadeStart] = useState(() => {
+    const yr = parsed ? parsed.getFullYear() : currentYear;
+    return Math.floor(yr / 10) * 10;
+  });
+
+  const emit = (year: number, month: number | null, day: number | null) => {
+    if (month === null) onChange(`${year}`);
+    else if (day === null) onChange(`${year}-${String(month + 1).padStart(2, "0")}`);
+    else onChange(`${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
+  };
+
+  // Only show a selected day if the value has day-level precision
+  const hasDay = /^\d{4}-\d{2}-\d{2}$/.test(value || "");
+  const calendarSelected = hasDay && parsed ? parsed : undefined;
 
   const displayLabel = (() => {
     if (!value) return "Pick a date";
-    const d = parseDateValue(value);
-    if (!d) return value;
-    if (mode === "year") return format(d, "yyyy");
-    if (mode === "month") return format(d, "MMM yyyy");
-    return format(d, "MMM d, yyyy");
+    const dt = parseDateValue(value);
+    if (!dt) return value;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return format(dt, "MMM d, yyyy");
+    if (/^\d{4}-\d{2}$/.test(value)) return format(dt, "MMM yyyy");
+    return format(dt, "yyyy");
   })();
 
-  const handleSelect = (date: Date | undefined) => {
-    if (!date) { onChange(""); return; }
-    if (mode === "year") { onChange(format(date, "yyyy")); return; }
-    if (mode === "month") { onChange(format(date, "yyyy-MM")); return; }
-    onChange(format(date, "yyyy-MM-dd"));
-  };
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   return (
-    <Popover>
+    <Popover
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          // Closing popover: emit whatever precision was actually selected
+          if (step >= 3 && daySelected) emit(y, m, d);
+          else if (step >= 2 && monthSelected) emit(y, m, null);
+          else emit(y, null, null);
+        } else {
+          const p = parseDateValue(value);
+          if (p) {
+            setY(p.getFullYear());
+            const hasMonth = /^\d{4}-\d{2}/.test(value || "");
+            const hasDay = /^\d{4}-\d{2}-\d{2}$/.test(value || "");
+            setM(hasMonth ? p.getMonth() : -1);
+            setD(hasDay ? p.getDate() : 1);
+            setStep(hasDay ? 3 : hasMonth ? 2 : 1);
+          } else {
+            setM(-1);
+            setStep(1);
+          }
+        }
+        setOpen(isOpen);
+      }}
+    >
       <PopoverTrigger
         render={
           <button className={cn(
-            "flex h-8 items-center gap-1 rounded-md border border-input px-2 text-xs min-w-[120px]",
+            "flex h-8 items-center gap-1 rounded-md border px-2 text-xs min-w-[120px]",
+            error ? "border-destructive" : "border-input",
             !value && "text-muted-foreground"
           )}>
             <CalendarIcon className="size-3 shrink-0" />
@@ -240,31 +291,102 @@ function DatePickerPopover({ value, onChange }: { value: string; onChange: (v: s
           </button>
         }
       />
-      <PopoverPopup align="start" side="bottom" sideOffset={4} className="w-auto p-0">
-        <div className="flex items-center gap-1 border-b px-3 py-2">
-          {(["year", "month", "day"] as const).map((m) => (
+      <PopoverPopup align="start" side="bottom" sideOffset={4} className="w-fit p-0">
+        {/* Breadcrumb */}
+        {step > 1 && (
+          <div className="flex items-center gap-0.5 border-b px-2 py-1.5 text-xs">
             <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={cn(
-                "rounded px-2 py-0.5 text-xs capitalize",
-                mode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-              )}
+              onClick={() => { setStep(1); emit(y, null, null); }}
+              className="rounded px-1 py-0.5 hover:bg-muted transition-colors"
             >
-              {m}
+              {y}
             </button>
-          ))}
-        </div>
-        <div className="p-2">
-          {mode === "year" ? (
-            <YearGrid selected={selected} onSelect={handleSelect} />
-          ) : mode === "month" ? (
-            <MonthGrid selected={selected} onSelect={handleSelect} />
-          ) : (
+            {step >= 3 && (
+              <>
+                <span className="text-muted-foreground">›</span>
+                <button
+                  onClick={() => { setStep(2); emit(y, m, null); }}
+                  className="rounded px-1 py-0.5 hover:bg-muted transition-colors"
+                >
+                  {months[m]}
+                </button>
+              </>
+            )}
+          </div>
+        )}
+
+        <div className="p-1.5">
+          {/* Step 1: Year grid with decade pagination */}
+          {step === 1 && (
+            <div className="mx-auto">
+              <div className="flex items-center justify-between mb-1 px-1">
+                <button
+                  onClick={() => setDecadeStart((s) => s - 10)}
+                  className="rounded p-0.5 hover:bg-muted transition-colors"
+                >
+                  <ChevronLeftIcon className="size-3" />
+                </button>
+                <span className="text-xs font-medium text-muted-foreground">
+                  {decadeStart}–{decadeStart + 9}
+                </span>
+                <button
+                  onClick={() => setDecadeStart((s) => Math.min(s + 10, currentYear))}
+                  disabled={decadeStart + 10 > currentYear}
+                  className="rounded p-0.5 hover:bg-muted transition-colors disabled:opacity-30"
+                >
+                  <ChevronRightIcon className="size-3" />
+                </button>
+              </div>
+              <div className="grid grid-cols-4 gap-0.5">
+                {Array.from({ length: 10 }, (_, i) => decadeStart + i)
+                  .filter((year) => year <= currentYear)
+                  .map((year) => (
+                  <button
+                    key={year}
+                    onClick={() => { setY(year); setStep(2); } }
+                    className={cn(
+                      "rounded px-1.5 py-1 text-xs hover:bg-muted transition-colors",
+                      parseInt(value) === year && "bg-primary text-primary-foreground"
+                    )}
+                  >
+                    {year}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: Month grid */}
+          {step === 2 && (
+            <div className="grid grid-cols-3 gap-1.5 mx-auto">
+              {months.map((mon, i) => (
+                <button
+                  key={mon}
+                  onClick={() => { setM(i); setStep(3); } }
+                  className={cn(
+                    "rounded px-3 py-1.5 text-xs hover:bg-muted transition-colors",
+                    /^\d{4}-\d{2}$/.test(value) && parsed && parsed.getMonth() === i && parsed.getFullYear() === y && "bg-primary text-primary-foreground"
+                  )}
+                >
+                  {mon}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Step 3: Day calendar */}
+          {step === 3 && (
             <Calendar
               mode="single"
-              selected={selected || undefined}
-              onSelect={handleSelect}
+              selected={calendarSelected}
+              defaultMonth={new Date(y, m, 1)}
+              onSelect={(date) => {
+                if (date) {
+                  setD(date.getDate());
+                  emit(date.getFullYear(), date.getMonth(), date.getDate());
+                  setOpen(false);
+                }
+              }}
               captionLayout="dropdown"
               className="rounded-md"
             />
@@ -273,71 +395,6 @@ function DatePickerPopover({ value, onChange }: { value: string; onChange: (v: s
       </PopoverPopup>
     </Popover>
   );
-}
-
-function YearGrid({ selected, onSelect }: { selected: Date | null; onSelect: (d: Date) => void }) {
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 60 }, (_, i) => currentYear - i);
-  return (
-    <div className="grid grid-cols-4 gap-1 w-52">
-      {years.map((y) => (
-        <button
-          key={y}
-          onClick={() => onSelect(new Date(y, 0, 1))}
-          className={cn(
-            "rounded px-2 py-1 text-xs hover:bg-muted",
-            selected?.getFullYear() === y && "bg-primary text-primary-foreground"
-          )}
-        >
-          {y}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function MonthGrid({ selected, onSelect }: { selected: Date | null; onSelect: (d: Date) => void }) {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const year = selected ? selected.getFullYear() : new Date().getFullYear();
-  return (
-    <div className="w-64">
-      <div className="flex items-center justify-between mb-2">
-        <button onClick={() => {/* year nav */}} className="text-xs">{year}</button>
-      </div>
-      <div className="grid grid-cols-3 gap-2">
-        {months.map((mon, i) => (
-          <button
-            key={mon}
-            onClick={() => onSelect(new Date(year, i, 1))}
-            className={cn(
-              "rounded px-3 py-2 text-sm hover:bg-muted",
-              selected && selected.getMonth() === i && selected.getFullYear() === year && "bg-primary text-primary-foreground"
-            )}
-          >
-            {mon}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function detectPrecision(value: string): "year" | "month" | "day" {
-  if (!value) return "month";
-  if (/^\d{4}$/.test(value)) return "year";
-  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return "day";
-  return "month";
-}
-
-function parseDateValue(value: string): Date | null {
-  if (!value) return null;
-  const d = parse(value, "yyyy-MM-dd", new Date());
-  if (isValid(d)) return d;
-  const m = parse(value, "yyyy-MM", new Date());
-  if (isValid(m)) return m;
-  const y = parse(value, "yyyy", new Date());
-  if (isValid(y)) return y;
-  return null;
 }
 
 function LinkItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
