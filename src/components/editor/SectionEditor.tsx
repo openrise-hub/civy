@@ -286,7 +286,7 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
           </button>
         }
       />
-      <PopoverPopup align="start" side="bottom" sideOffset={4} className="w-auto p-0">
+      <PopoverPopup align="start" side="bottom" sideOffset={4} className="min-w-[280px] p-0">
         {/* Breadcrumb */}
         {step > 1 && (
           <div className="flex items-center gap-0.5 border-b px-3 py-2 text-xs">
