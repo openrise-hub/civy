@@ -62,7 +62,7 @@ function TagsPreview({ item, colors }: { item: TagsItem; colors: ColorScheme }) 
   const bgColor = colors.accents?.[2] || '#e5e7eb';
 
   return (
-    <div style={{ marginBottom: '4px' }}>
+    <div style={{ marginBottom: '4px', width: '100%' }}>
       {name && <p style={{ fontWeight: 600, fontSize: '10pt', margin: '0 0 4px 0', color: colors.text }}>{name}</p>}
       {display === 'text' ? (
         <span style={{ fontSize: '11pt', color: colors.text }}>{items.join(', ')}</span>

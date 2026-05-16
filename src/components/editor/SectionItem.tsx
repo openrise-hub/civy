@@ -181,7 +181,7 @@ export function SectionItem({ item, colors }: SectionItemProps) {
   if (item.type === "tags" && "value" in item && item.value && typeof item.value === "object" && "items" in item.value) {
     const v = item.value as { name?: string; items: string[]; display: 'text' | 'badge' | 'pill' };
     return (
-      <div>
+      <div className="w-full">
         {v.name && <span className="text-xs font-semibold" style={{ color: colors.text }}>{v.name}</span>}
         <div className={cn(
           "flex flex-wrap gap-1",

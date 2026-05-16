@@ -759,6 +759,14 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
         <CalendarIcon className="size-3.5" />
         Dates
       </button>
+      <button
+        onClick={() => onAdd("tags")}
+        title="Tags"
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+      >
+        <TypeIcon className="size-3.5" />
+        Tags
+      </button>
     </div>
   );
 }
