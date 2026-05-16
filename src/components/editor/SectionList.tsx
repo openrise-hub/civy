@@ -24,7 +24,9 @@ export function SectionList({ content, colors }: SectionListProps) {
         style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
       >
         {items.map((item) => (
-          <SectionItem key={item.id} item={item} colors={colors} />
+          <div key={item.id} className={item.type === "tags" ? "col-span-full" : ""}>
+            <SectionItem item={item} colors={colors} />
+          </div>
         ))}
       </div>
     );
