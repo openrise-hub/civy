@@ -318,7 +318,7 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
         <div className="p-2">
           {/* Step 1: Year grid with decade pagination */}
           {step === 1 && (
-            <div className="w-52">
+            <div className="w-52 mx-auto">
               <div className="flex items-center justify-between mb-1">
                 <button
                   onClick={() => setDecadeStart((s) => s - 10)}
@@ -356,7 +356,7 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
 
           {/* Step 2: Month grid */}
           {step === 2 && (
-            <div className="grid grid-cols-3 gap-2 w-64">
+            <div className="grid grid-cols-3 gap-2 w-64 mx-auto">
               {months.map((mon, i) => (
                 <button
                   key={mon}
