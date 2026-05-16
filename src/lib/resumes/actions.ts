@@ -195,7 +195,10 @@ export async function saveResume(
   // Server-side validation
   const parsed = saveResumeUpdatesSchema.safeParse(updates);
   if (!parsed.success) {
-    const firstError = parsed.error.issues[0]?.message ?? "Invalid input";
+    const messages = parsed.error.issues.map(
+      (i) => `${i.path.join(".") || "root"}: ${i.message}`
+    );
+    const firstError = messages[0] ?? "Invalid input";
     console.warn("saveResume validation failed:", parsed.error.issues);
     return { error: firstError };
   }
