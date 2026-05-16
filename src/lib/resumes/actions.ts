@@ -195,11 +195,18 @@ export async function saveResume(
   // Server-side validation
   const parsed = saveResumeUpdatesSchema.safeParse(updates);
   if (!parsed.success) {
-    const messages = parsed.error.issues.map(
-      (i) => `${i.path.join(".") || "root"}: ${i.message}`
-    );
-    const firstError = messages[0] ?? "Invalid input";
-    console.warn("saveResume validation failed:", parsed.error.issues);
+    const messages = parsed.error.issues.map((i) => {
+      const field = i.path.join(".");
+      const readable = field
+        .replace(/^data\./, "")
+        .replace(/sections\.(\d+)/g, "Section $1")
+        .replace(/content\.items\.(\d+)/g, "item $1")
+        .replace(/personal\.details\.(\d+)/g, "contact $1")
+        .replace(/\./g, " → ");
+      return `${readable}: ${i.message}`;
+    });
+    const firstError = messages[0] ?? "Invalid data";
+    console.warn("saveResume validation failed:", messages);
     return { error: firstError };
   }
 
