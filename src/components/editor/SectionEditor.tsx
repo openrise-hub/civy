@@ -160,13 +160,10 @@ function StringItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisib
 function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
   if (!isDateRangeItem(item)) return null;
 
-  const error = validateDateRange(item.value.startDate, item.value.endDate);
-
   return (
     <div className={cn(
       "space-y-3 p-3 rounded-lg border bg-card item-container transition-opacity",
-      item.visible === false && "opacity-50",
-      error && "border-destructive"
+      item.visible === false && "opacity-50"
     )}>
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">Date Range</Label>
@@ -184,7 +181,6 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
           <DatePickerPopover
             value={item.value.startDate}
             onChange={(v) => onUpdate({ value: { ...item.value, startDate: v } })}
-            error={!!error}
           />
         </div>
 
@@ -194,7 +190,6 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
               <DatePickerPopover
                 value={item.value.endDate || ''}
                 onChange={(v) => onUpdate({ value: { ...item.value, endDate: v } })}
-                error={!!error}
               />
           </div>
         )}
@@ -209,28 +204,24 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
           Present
         </Button>
       </div>
-      {error && (
-        <p className="text-xs text-destructive">{error}</p>
-      )}
     </div>
   );
 }
 
-function DatePickerPopover({ value, onChange, error }: { value: string; onChange: (v: string) => void; error?: boolean }) {
+function DatePickerPopover({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const parsed = parseDateValue(value);
   const currentYear = new Date().getFullYear();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [y, setY] = useState(parsed ? parsed.getFullYear() : currentYear);
-  const [m, setM] = useState(parsed ? parsed.getMonth() : -1);
-  const [d, setD] = useState(parsed ? parsed.getDate() : 1);
+  const [y, setY] = useState(currentYear);
+  const [m, setM] = useState(-1);
+  const [d, setD] = useState(0);
   const monthSelected = m >= 0;
   const daySelected = d > 0;
 
-  const [decadeStart, setDecadeStart] = useState(() => {
-    const yr = parsed ? parsed.getFullYear() : currentYear;
-    return Math.floor(yr / 10) * 10;
-  });
+  const [decadeStart, setDecadeStart] = useState(() =>
+    Math.floor(currentYear / 10) * 10
+  );
 
   const emit = (year: number, month: number | null, day: number | null) => {
     if (month === null) onChange(`${year}`);
@@ -269,10 +260,11 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
             const hasMonth = /^\d{4}-\d{2}/.test(value || "");
             const hasDay = /^\d{4}-\d{2}-\d{2}$/.test(value || "");
             setM(hasMonth ? p.getMonth() : -1);
-            setD(hasDay ? p.getDate() : 1);
+            setD(hasDay ? p.getDate() : 0);
             setStep(hasDay ? 3 : hasMonth ? 2 : 1);
           } else {
             setM(-1);
+            setD(0);
             setStep(1);
           }
         }
@@ -282,8 +274,7 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
       <PopoverTrigger
         render={
           <button className={cn(
-            "flex h-8 items-center gap-1 rounded-md border px-2 text-xs min-w-[120px]",
-            error ? "border-destructive" : "border-input",
+            "flex h-8 items-center gap-1 rounded-md border border-input px-2 text-xs min-w-[120px]",
             !value && "text-muted-foreground"
           )}>
             <CalendarIcon className="size-3 shrink-0" />
@@ -345,8 +336,10 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
                     key={year}
                     onClick={() => { setY(year); setStep(2); } }
                     className={cn(
-                      "rounded px-1.5 py-1 text-xs hover:bg-muted transition-colors",
-                      parseInt(value) === year && "bg-primary text-primary-foreground"
+                      "rounded px-1.5 py-1 text-xs transition-colors",
+                      parseInt(value) === year
+                        ? "bg-primary text-primary-foreground hover:bg-primary/80"
+                        : "hover:bg-muted"
                     )}
                   >
                     {year}
@@ -364,8 +357,10 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
                   key={mon}
                   onClick={() => { setM(i); setStep(3); } }
                   className={cn(
-                    "rounded px-3 py-1.5 text-xs hover:bg-muted transition-colors",
-                    /^\d{4}-\d{2}$/.test(value) && parsed && parsed.getMonth() === i && parsed.getFullYear() === y && "bg-primary text-primary-foreground"
+                    "rounded px-3 py-1.5 text-xs transition-colors",
+                    /^\d{4}-\d{2}$/.test(value) && parsed && parsed.getMonth() === i && parsed.getFullYear() === y
+                      ? "bg-primary text-primary-foreground hover:bg-primary/80"
+                      : "hover:bg-muted"
                   )}
                 >
                   {mon}

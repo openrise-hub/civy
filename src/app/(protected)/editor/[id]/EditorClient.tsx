@@ -9,7 +9,7 @@ import { PreviewPanel } from "@/components/editor/PreviewPanel";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { SaveProvider } from "@/contexts/SaveContext";
-import type { Resume } from "@/types/resume";
+import type { Resume, Item } from "@/types/resume";
 
 type EditorClientProps = {
   resumeId: string;
@@ -38,17 +38,28 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
       content: {
         ...section.content,
         items: section.content.items.map((item) => {
+          // Map old deprecated item types to new equivalents
+          const oldToNew: Record<string, string> = {
+            text: "description",
+            bullet: "description",
+            number: "description",
+            date: "tag",
+            social: "link",
+          };
+          const newType = oldToNew[item.type] || item.type;
+
           if (item.type === "date-range" && "value" in item && item.value && typeof item.value === "object") {
             const v = item.value as Record<string, unknown>;
             return {
               ...item,
+              type: "date-range" as const,
               value: {
                 startDate: v.startDate === "Present" ? "" : (v.startDate as string),
                 endDate: v.endDate === "Present" ? undefined : (v.endDate as string | undefined),
               },
-            };
+            } as Item;
           }
-          return item;
+          return { ...item, type: newType } as Item;
         }),
       },
     }));
@@ -64,7 +75,7 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
         colors: { background: "#ffffff", text: "#1f2937", accents: [] },
       },
       personal: resumeData.personal ?? { fullName: "", details: [] },
-      sections,
+      sections: sections as Resume["sections"],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
