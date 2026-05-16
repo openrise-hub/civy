@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React from "react";
+import { cn } from "@/lib/utils";
 
 /**
  * ItemColors - The color palette passed from the template.
@@ -170,12 +171,6 @@ export function SectionItem({ item, colors }: SectionItemProps) {
             <PhoneIcon className="size-3" />
             {item.value}
           </a>
-        );
-      case "tag":
-        return (
-          <span className="inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-            {item.value}
-          </span>
         );
       default:
         return null;

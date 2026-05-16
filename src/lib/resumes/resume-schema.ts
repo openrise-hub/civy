@@ -32,7 +32,6 @@ const stringItemTypes = [
   "location",
   "phone",
   "email",
-  "tag",
 ] as const;
 
 const stringItemSchema = z.object({
@@ -99,6 +98,18 @@ const separatorItemSchema = z.object({
   value: z.null(),
 });
 
+const tagsItemSchema = z.object({
+  id: z.string().min(1).max(50),
+  visible: z.boolean(),
+  type: z.literal("tags"),
+  metadata: itemMetadataSchema,
+  value: z.object({
+    name: z.string().max(100).optional(),
+    items: z.array(z.string().max(100)).max(50),
+    display: z.enum(["text", "badge", "pill"]),
+  }),
+});
+
 const itemSchema = z.discriminatedUnion("type", [
   stringItemSchema,
   dateRangeItemSchema,
@@ -106,6 +117,7 @@ const itemSchema = z.discriminatedUnion("type", [
   ratingItemSchema,
   imageItemSchema,
   separatorItemSchema,
+  tagsItemSchema,
 ]);
 
 // --- Section Schema ---
