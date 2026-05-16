@@ -221,16 +221,15 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
   const currentYear = new Date().getFullYear();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [y, setY] = useState(parsed ? parsed.getFullYear() : currentYear);
-  const [m, setM] = useState(parsed ? parsed.getMonth() : -1);
-  const [d, setD] = useState(parsed ? parsed.getDate() : 1);
+  const [y, setY] = useState(currentYear);
+  const [m, setM] = useState(-1);
+  const [d, setD] = useState(1);
   const monthSelected = m >= 0;
   const daySelected = d > 0;
 
-  const [decadeStart, setDecadeStart] = useState(() => {
-    const yr = parsed ? parsed.getFullYear() : currentYear;
-    return Math.floor(yr / 10) * 10;
-  });
+  const [decadeStart, setDecadeStart] = useState(() =>
+    Math.floor(currentYear / 10) * 10
+  );
 
   const emit = (year: number, month: number | null, day: number | null) => {
     if (month === null) onChange(`${year}`);
