@@ -338,7 +338,9 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
                 </button>
               </div>
               <div className="grid grid-cols-4 gap-0.5">
-                {Array.from({ length: 10 }, (_, i) => decadeStart + i).map((year) => (
+                {Array.from({ length: 10 }, (_, i) => decadeStart + i)
+                  .filter((year) => year <= currentYear)
+                  .map((year) => (
                   <button
                     key={year}
                     onClick={() => { setY(year); setStep(2); } }
