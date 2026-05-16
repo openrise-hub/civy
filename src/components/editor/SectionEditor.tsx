@@ -291,13 +291,13 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
           </button>
         }
       />
-      <PopoverPopup align="start" side="bottom" sideOffset={4} className="min-w-[280px] p-0">
+      <PopoverPopup align="start" side="bottom" sideOffset={4} className="w-fit p-0">
         {/* Breadcrumb */}
         {step > 1 && (
-          <div className="flex items-center gap-0.5 border-b px-3 py-2 text-xs">
+          <div className="flex items-center gap-0.5 border-b px-2 py-1.5 text-xs">
             <button
               onClick={() => { setStep(1); emit(y, null, null); }}
-              className="rounded px-1.5 py-0.5 hover:bg-muted transition-colors"
+              className="rounded px-1 py-0.5 hover:bg-muted transition-colors"
             >
               {y}
             </button>
@@ -306,7 +306,7 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
                 <span className="text-muted-foreground">›</span>
                 <button
                   onClick={() => { setStep(2); emit(y, m, null); }}
-                  className="rounded px-1.5 py-0.5 hover:bg-muted transition-colors"
+                  className="rounded px-1 py-0.5 hover:bg-muted transition-colors"
                 >
                   {months[m]}
                 </button>
@@ -315,16 +315,16 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
           </div>
         )}
 
-        <div className="p-2">
+        <div className="p-1.5">
           {/* Step 1: Year grid with decade pagination */}
           {step === 1 && (
-            <div className="w-52 mx-auto">
-              <div className="flex items-center justify-between mb-1">
+            <div className="mx-auto">
+              <div className="flex items-center justify-between mb-1 px-1">
                 <button
                   onClick={() => setDecadeStart((s) => s - 10)}
-                  className="rounded p-1 hover:bg-muted transition-colors"
+                  className="rounded p-0.5 hover:bg-muted transition-colors"
                 >
-                  <ChevronLeftIcon className="size-3.5" />
+                  <ChevronLeftIcon className="size-3" />
                 </button>
                 <span className="text-xs font-medium text-muted-foreground">
                   {decadeStart}–{decadeStart + 9}
@@ -332,18 +332,18 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
                 <button
                   onClick={() => setDecadeStart((s) => Math.min(s + 10, currentYear))}
                   disabled={decadeStart + 10 > currentYear}
-                  className="rounded p-1 hover:bg-muted transition-colors disabled:opacity-30"
+                  className="rounded p-0.5 hover:bg-muted transition-colors disabled:opacity-30"
                 >
-                  <ChevronRightIcon className="size-3.5" />
+                  <ChevronRightIcon className="size-3" />
                 </button>
               </div>
-              <div className="grid grid-cols-4 gap-1">
+              <div className="grid grid-cols-4 gap-0.5">
                 {Array.from({ length: 10 }, (_, i) => decadeStart + i).map((year) => (
                   <button
                     key={year}
                     onClick={() => { setY(year); setStep(2); } }
                     className={cn(
-                      "rounded px-2 py-1 text-xs hover:bg-muted transition-colors",
+                      "rounded px-1.5 py-1 text-xs hover:bg-muted transition-colors",
                       parseInt(value) === year && "bg-primary text-primary-foreground"
                     )}
                   >
@@ -356,13 +356,13 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
 
           {/* Step 2: Month grid */}
           {step === 2 && (
-            <div className="grid grid-cols-3 gap-2 w-64 mx-auto">
+            <div className="grid grid-cols-3 gap-1.5 mx-auto">
               {months.map((mon, i) => (
                 <button
                   key={mon}
                   onClick={() => { setM(i); setStep(3); } }
                   className={cn(
-                    "rounded px-3 py-2 text-sm hover:bg-muted transition-colors",
+                    "rounded px-3 py-1.5 text-xs hover:bg-muted transition-colors",
                     /^\d{4}-\d{2}$/.test(value) && parsed && parsed.getMonth() === i && parsed.getFullYear() === y && "bg-primary text-primary-foreground"
                   )}
                 >
