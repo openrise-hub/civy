@@ -222,8 +222,10 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [y, setY] = useState(parsed ? parsed.getFullYear() : currentYear);
-  const [m, setM] = useState(parsed ? parsed.getMonth() : 0);
+  const [m, setM] = useState(parsed ? parsed.getMonth() : -1);
   const [d, setD] = useState(parsed ? parsed.getDate() : 1);
+  const monthSelected = m >= 0;
+  const daySelected = d > 0;
 
   const [decadeStart, setDecadeStart] = useState(() => {
     const yr = parsed ? parsed.getFullYear() : currentYear;
@@ -256,18 +258,21 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
       open={open}
       onOpenChange={(isOpen) => {
         if (!isOpen) {
-          // Closing popover: emit whatever precision we're at
-          if (step === 1) emit(y, null, null);
-          else if (step === 2) emit(y, m, null);
-          else emit(y, m, d);
+          // Closing popover: emit whatever precision was actually selected
+          if (step >= 3 && daySelected) emit(y, m, d);
+          else if (step >= 2 && monthSelected) emit(y, m, null);
+          else emit(y, null, null);
         } else {
           const p = parseDateValue(value);
           if (p) {
             setY(p.getFullYear());
-            setM(p.getMonth());
-            setD(p.getDate());
-            setStep(/^\d{4}$/.test(value) ? 1 : /^\d{4}-\d{2}$/.test(value) ? 2 : 3);
+            const hasMonth = /^\d{4}-\d{2}/.test(value || "");
+            const hasDay = /^\d{4}-\d{2}-\d{2}$/.test(value || "");
+            setM(hasMonth ? p.getMonth() : -1);
+            setD(hasDay ? p.getDate() : 1);
+            setStep(hasDay ? 3 : hasMonth ? 2 : 1);
           } else {
+            setM(-1);
             setStep(1);
           }
         }
@@ -336,7 +341,7 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
                 {Array.from({ length: 10 }, (_, i) => decadeStart + i).map((year) => (
                   <button
                     key={year}
-                    onClick={() => { setY(year); setStep(2); emit(year, null, null); }}
+                    onClick={() => { setY(year); setStep(2); } }
                     className={cn(
                       "rounded px-2 py-1 text-xs hover:bg-muted transition-colors",
                       parseInt(value) === year && "bg-primary text-primary-foreground"
@@ -355,7 +360,7 @@ function DatePickerPopover({ value, onChange, error }: { value: string; onChange
               {months.map((mon, i) => (
                 <button
                   key={mon}
-                  onClick={() => { setM(i); setStep(3); emit(y, i, null); }}
+                  onClick={() => { setM(i); setStep(3); } }
                   className={cn(
                     "rounded px-3 py-2 text-sm hover:bg-muted transition-colors",
                     /^\d{4}-\d{2}$/.test(value) && parsed && parsed.getMonth() === i && parsed.getFullYear() === y && "bg-primary text-primary-foreground"
