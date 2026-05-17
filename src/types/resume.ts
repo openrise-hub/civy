@@ -1,3 +1,5 @@
+import type { TemplateConfig } from "@/types/template";
+
 // src/types/resume.ts
 
 // --- Item Types ---
@@ -147,6 +149,7 @@ export interface Resume {
   
   metadata: {
     template: string;
+    templateConfig?: TemplateConfig;
     typography: { fontFamily: string; fontSize: 'sm' | 'md' | 'lg' };
   colors: { 
       background: string;   // Paper color

@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { trackEvent } from "@/lib/analytics/actions";
+import { getTemplateConfig } from "@/lib/templates/registry";
 
 export type ResumeListItem = {
   id: string;
@@ -19,6 +20,7 @@ export type ResumeListItem = {
 const defaultResumeData = {
   metadata: {
     template: "modern",
+    templateConfig: getTemplateConfig("modern"),
     typography: { fontFamily: "inter", fontSize: "md" },
     colors: {
       background: "#ffffff",

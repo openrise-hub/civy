@@ -6,12 +6,26 @@ import { pdf } from "@react-pdf/renderer";
 import type { Resume } from "@/types/resume";
 import { Loader2 } from "lucide-react";
 import { UniversalPdf } from "@/components/pdf/UniversalPdf";
-import { PdfTranslations } from "@/components/pdf/engine/ItemRenderers";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import React from "react";
+import type { TemplateConfig } from "@/types/template";
 
-// Set worker path for pdf.js - use jsdelivr CDN which has the latest version
-if (typeof window !== "undefined") {
-  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+interface PdfTranslations {
+  present: string;
+  phone: string;
+  email: string;
+  image: string;
+  location: string;
+  website: string;
+  [key: string]: string;
+}
+
+interface PdfCanvasPreviewProps {
+  resume: Resume;
+  translations: PdfTranslations;
+  templateName?: string;
+  templateConfig?: TemplateConfig;
+  zoom?: number;
 }
 
 interface PdfCanvasPreviewProps {
@@ -25,6 +39,7 @@ export function PdfCanvasPreview({
   resume, 
   translations,
   templateName = "modern",
+  templateConfig,
   zoom = 1 
 }: PdfCanvasPreviewProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -42,6 +57,7 @@ export function PdfCanvasPreview({
         <UniversalPdf 
           resume={resume} 
           templateName={templateName} 
+          templateConfig={templateConfig}
           translations={translations} 
         />
       );
