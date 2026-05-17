@@ -21,7 +21,6 @@ import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import {
-  LayoutTemplateIcon,
   FileTextIcon,
   BriefcaseIcon,
   GraduationCapIcon,
@@ -36,6 +35,7 @@ import { RESUME_LIMITS } from "@/constants/limits";
 import { useUser } from "@/contexts/UserContext";
 import { VersionHistory } from "@/components/editor/VersionHistory";
 import { ResumeSettingsDialog } from "@/components/editor/ResumeSettingsDialog";
+import { TemplatePicker } from "@/components/editor/TemplatePicker";
 import { UserNav } from "@/components/UserNav";
 
 export function EditorSidebar() {
@@ -117,10 +117,7 @@ export function EditorSidebar() {
                 </SidebarMenuItem>
 
                 <SidebarMenuItem>
-                  <SidebarMenuButton tooltip={isCollapsed ? t("templates") : undefined}>
-                    <LayoutTemplateIcon />
-                    <span>{t("templates")}</span>
-                  </SidebarMenuButton>
+                  <TemplatePicker isCollapsed={isCollapsed} />
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>

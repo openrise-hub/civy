@@ -34,6 +34,8 @@
       "deleteTemplate": "Eliminar",
       "apply": "Aplicar",
       "appearanceDesc": "Personaliza la apariencia de tu currículum.",
+      "chooseTemplate": "Elegir Plantilla",
+      "chooseTemplateDesc": "Selecciona una plantilla para cambiar el diseño y estilo de tu currículum.",
       "limitFree": "Los usuarios gratuitos solo pueden guardar 2 plantillas. Pásate a Pro para tener plantillas ilimitadas.",
       "limitPro": "Has alcanzado el límite máximo de 50 plantillas personalizadas.",
       "saveError": "Error al guardar la plantilla. Por favor, inténtalo de nuevo.",

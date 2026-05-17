@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid'; 
 import { Resume, Section, Item, PersonalInfo, ItemType } from '@/types/resume';
 import { RESUME_LIMITS } from '@/constants/limits';
+import { getTemplateConfig } from '@/lib/templates/registry';
 
 // --- Default Templates ---
 // Used when creating new sections.
@@ -78,6 +79,7 @@ interface ResumeStore {
   setResume: (resume: Resume) => void;
   updatePersonal: (personal: Partial<PersonalInfo>) => void;
   updateMetadata: (metadata: Partial<Resume['metadata']>) => void;
+  setTemplate: (name: string) => void;
   
   addSection: (type?: string, title?: string) => void; 
   removeSection: (sectionId: string) => void;
@@ -138,6 +140,21 @@ export const useResumeStore = create<ResumeStore>((set) => ({
         metadata: { ...state.resume.metadata, ...data },
       },
     })),
+
+  setTemplate: (name) =>
+    set((state) => {
+      const config = getTemplateConfig(name);
+      return {
+        resume: {
+          ...state.resume,
+          metadata: {
+            ...state.resume.metadata,
+            template: name,
+            templateConfig: config,
+          },
+        },
+      };
+    }),
 
 
   addSection: (type = 'custom', title?: string) =>
