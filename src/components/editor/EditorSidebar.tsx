@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
@@ -53,7 +54,10 @@ export function EditorSidebar() {
         <SidebarHeader className="p-2">
           <SidebarMenu>
             <SidebarMenuItem>
-              <div className="flex items-center justify-between px-2 py-1">
+              <div className={cn(
+                "flex items-center px-2 py-1",
+                isCollapsed ? "justify-center" : "justify-between"
+              )}>
                 <div className="flex items-center gap-2">
                   {!isCollapsed && <UserNav />}
                   {!isCollapsed && (
