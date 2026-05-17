@@ -63,7 +63,7 @@ export function EditorSidebar() {
                      </div>
                   )}
                 </div>
-                {!isCollapsed && <SidebarTrigger />}
+                <SidebarTrigger />
               </div>
             </SidebarMenuItem>
             <SidebarMenuItem>
