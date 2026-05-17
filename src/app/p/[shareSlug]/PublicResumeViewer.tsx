@@ -6,7 +6,9 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import type { Resume } from "@/types/resume";
+import type { TemplateConfig } from "@/types/template";
 import type { PublicResumeData } from "@/lib/resumes/actions";
+import { getTemplateConfig } from "@/lib/templates/registry";
 import { DownloadIcon, EyeIcon } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { UniversalPdf } from "@/components/pdf/UniversalPdf";
@@ -49,15 +51,22 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
       sections?: Resume["sections"];
     };
 
+    const metadata = (data.metadata ?? {}) as Resume["metadata"];
+    const templateName = metadata.template || "modern";
+    const templateConfig: TemplateConfig =
+      metadata.templateConfig ?? getTemplateConfig(templateName);
+
     return {
       id: resume.id,
       userId: "",
       title: resume.title,
       isPublic: true,
-      metadata: data.metadata ?? {
-        template: "modern",
-        typography: { fontFamily: "inter", fontSize: "md" },
-        colors: { background: "#ffffff", text: "#1f2937", accents: [] },
+      metadata: {
+        ...metadata,
+        template: templateName,
+        templateConfig,
+        typography: metadata.typography ?? { fontFamily: "inter", fontSize: "md" },
+        colors: metadata.colors ?? { background: "#ffffff", text: "#1f2937", accents: [] },
       },
       personal: data.personal ?? { fullName: "", details: [] },
       sections: data.sections ?? [],
@@ -70,7 +79,8 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
     const pdfDocument = (
       <UniversalPdf 
         resume={resumeData} 
-        templateName="modern" 
+        templateName={resumeData.metadata.template} 
+        templateConfig={resumeData.metadata.templateConfig}
         translations={translations} 
       />
     );
@@ -113,7 +123,7 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
         <PdfCanvasPreview 
           resume={resumeData} 
           translations={translations}
-          templateName="modern"
+          templateName={resumeData.metadata.template}
         />
       </main>
 

@@ -44,7 +44,8 @@ export const DownloadButton = ({
       const pdfDocument = (
         <UniversalPdf 
           resume={resume} 
-          templateName="modern" 
+          templateName={resume.metadata.template || "modern"} 
+          templateConfig={resume.metadata.templateConfig}
           translations={translations} 
         />
       );

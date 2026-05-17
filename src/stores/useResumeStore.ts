@@ -101,6 +101,7 @@ const initialResume: Resume = {
   isPublic: false,
   metadata: {
     template: 'modern',
+    templateConfig: getTemplateConfig('modern'),
     typography: { fontFamily: 'inter', fontSize: 'md' },
     colors: { 
       background: '#ffffff',

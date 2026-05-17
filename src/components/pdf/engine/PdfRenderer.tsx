@@ -5,12 +5,6 @@ import type { TemplateConfig } from '@/types/template';
 import { PdfTranslations, renderPdfItem } from './ItemRenderers';
 import { Style } from '@react-pdf/types';
 
-// Legacy support
-export interface PdfTemplateConfig {
-  name: string;
-  styles: Partial<Record<string, Style>>;
-}
-
 // Helper to convert CSS-like values to numbers where possible
 function parseDimension(val: string): number {
   const num = parseFloat(val);
