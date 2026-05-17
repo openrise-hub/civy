@@ -36,7 +36,6 @@ import { useUser } from "@/contexts/UserContext";
 import { VersionHistory } from "@/components/editor/VersionHistory";
 import { ResumeSettingsDialog } from "@/components/editor/ResumeSettingsDialog";
 import { UserNav } from "@/components/UserNav";
-import { LanguageToggle } from "@/components/LanguageToggle";
 
 export function EditorSidebar() {
   const t = useTranslations("editor.sidebar");
@@ -64,7 +63,7 @@ export function EditorSidebar() {
                      </div>
                   )}
                 </div>
-                {!isCollapsed && <LanguageToggle />}
+                {!isCollapsed && <SidebarTrigger />}
               </div>
             </SidebarMenuItem>
             <SidebarMenuItem>
@@ -174,7 +173,6 @@ export function EditorSidebar() {
             </SidebarMenuItem>
           </SidebarMenu>
 
-          <SidebarTrigger className="w-full" />
         </SidebarFooter>
       </Sidebar>
     </TooltipProvider>
