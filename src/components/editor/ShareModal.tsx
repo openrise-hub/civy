@@ -32,12 +32,14 @@ type ShareModalProps = {
   resumeId: string;
   initialIsPublic: boolean;
   initialSlug: string | null;
+  iconOnly?: boolean;
 };
 
 export function ShareModal({ 
   resumeId, 
   initialIsPublic, 
-  initialSlug 
+  initialSlug,
+  iconOnly,
 }: ShareModalProps) {
   const t = useTranslations("share");
   const [isPublic, setIsPublic] = useState(initialIsPublic);
@@ -112,7 +114,7 @@ export function ShareModal({
     <Dialog>
       <DialogTrigger render={<Button size="sm" variant="outline" />}>
         <ShareIcon className="size-4" />
-        <span>{t("title")}</span>
+        {!iconOnly && <span>{t("title")}</span>}
       </DialogTrigger>
 
       <DialogPopup>
