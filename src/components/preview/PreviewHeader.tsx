@@ -1,49 +1,76 @@
 "use client";
 
 import { PersonalInfo } from "@/types/resume";
-import { ColorScheme } from "@/components/pdf/engine/PdfStyles";
+import type { TemplateConfig } from "@/types/template";
 import { PreviewItem } from "./PreviewItem";
 
 interface PreviewHeaderProps {
   personal: PersonalInfo;
-  colors: ColorScheme;
+  config: TemplateConfig;
 }
 
-export function PreviewHeader({ personal, colors }: PreviewHeaderProps) {
+export function PreviewHeader({ personal, config }: PreviewHeaderProps) {
+  const { colors, typography, header } = config;
+  const alignment = header.alignment === "center"
+    ? "center"
+    : header.alignment === "right"
+      ? "right"
+      : "left";
+
   return (
-    <header style={{ textAlign: 'center', marginBottom: '20px' }}>
-      <h1 style={{ 
-        fontSize: '24pt', 
-        fontWeight: 700, 
-        margin: '0 0 4px 0',
-        letterSpacing: '-0.02em',
-        color: colors.accents?.[0] || colors.text 
+    <header style={{
+      textAlign: alignment as React.CSSProperties['textAlign'],
+      marginBottom: header.spaceBelowConnections,
+    }}>
+      <h1 style={{
+        fontSize: typography.fontSize.name,
+        fontWeight: typography.bold.name ? 700 : 400,
+        fontFamily: typography.fontFamily.name,
+        margin: `0 0 ${header.spaceBelowName} 0`,
+        letterSpacing: "-0.02em",
+        color: colors.name,
+        fontVariant: typography.smallCaps.name ? "small-caps" : "normal",
       }}>
         {personal.fullName}
       </h1>
 
       {personal.jobTitle && (
-        <p style={{ 
-          fontSize: '14pt', 
-          margin: '0 0 12px 0', 
-          fontWeight: 400,
-          color: colors.accents?.[1] || colors.text 
+        <p style={{
+          fontSize: typography.fontSize.headline,
+          fontWeight: typography.bold.headline ? 700 : 400,
+          fontFamily: typography.fontFamily.headline,
+          margin: `0 0 ${header.spaceBelowHeadline} 0`,
+          color: colors.headline,
+          fontVariant: typography.smallCaps.headline ? "small-caps" : "normal",
         }}>
           {personal.jobTitle}
         </p>
       )}
 
       {personal.details.length > 0 && (
-        <div style={{ 
-          display: 'flex', 
-          flexWrap: 'wrap', 
-          justifyContent: 'center', 
-          gap: '8px 16px',
-          fontSize: '10pt'
+        <div style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: header.alignment === "center" ? "center" : "flex-start",
+          gap: header.connections.separator
+            ? `4px ${header.connections.spaceBetweenConnections}`
+            : `${header.connections.spaceBetweenConnections}`,
+          fontSize: typography.fontSize.connections,
+          fontFamily: typography.fontFamily.connections,
+          color: colors.connections,
         }}>
-          {personal.details.map((item) => (
-            <PreviewItem key={item.id} item={item} colors={colors} />
-          ))}
+          {personal.details
+            .filter((item) => item.visible !== false)
+            .map((item, idx) => (
+              <span key={item.id} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <PreviewItem item={item} config={config} />
+                {header.connections.separator && idx < personal.details.length - 1 && (
+                  <span style={{ color: colors.connections }}>
+                    {header.connections.separator}
+                  </span>
+                )}
+              </span>
+            ))}
         </div>
       )}
     </header>
