@@ -49,7 +49,7 @@ export function EditorSidebar() {
 
   return (
     <TooltipProvider>
-      <Sidebar collapsible="icon" className="border-e overflow-x-hidden">
+      <Sidebar collapsible="icon" className="border-e">
         <SidebarHeader className="p-2">
           <SidebarMenu>
             <SidebarMenuItem>
