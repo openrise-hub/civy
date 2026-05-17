@@ -38,9 +38,10 @@ interface ItemEditorProps {
   onRemove: (e: React.MouseEvent) => void;
   onDuplicate: (e: React.MouseEvent) => void;
   onToggleVisibility: (e: React.MouseEvent) => void;
+  onAddItem?: (type: ItemType) => void;
 }
 
-function ItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
+function ItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility, onAddItem }: ItemEditorProps) {
   if (isStringItem(item)) {
     return <StringItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
   }
@@ -60,7 +61,7 @@ function ItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibili
     return <SeparatorItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
   }
   if (isTagsItem(item)) {
-    return <TagsItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
+    return <TagsItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} onAddItem={onAddItem} />;
   }
   return null;
 }
@@ -606,7 +607,7 @@ function ImageItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVis
   );
 }
 
-function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
+function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility, onAddItem }: ItemEditorProps) {
   const [inputValue, setInputValue] = useState("");
 
   if (!isTagsItem(item)) return null;
@@ -692,6 +693,15 @@ function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisi
           </SelectContent>
         </Select>
       </div>
+      {onAddItem && (
+        <button
+          type="button"
+          onClick={() => onAddItem("tags")}
+          className="w-full rounded-lg border border-dashed py-1.5 text-xs text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
+        >
+          + Add group
+        </button>
+      )}
     </div>
   );
 }
@@ -827,6 +837,7 @@ export function SectionEditor({ section }: SectionEditorProps) {
           onRemove={(e) => handleRemoveItem(item.id, e)}
           onDuplicate={() => useResumeStore.getState().duplicateItem(section.id, item.id)}
           onToggleVisibility={() => handleUpdateItem(item.id, { visible: !item.visible })}
+          onAddItem={handleAddItem}
         />
       ))}
       
