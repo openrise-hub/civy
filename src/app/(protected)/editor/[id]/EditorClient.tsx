@@ -8,6 +8,7 @@ import { FormEditor } from "@/components/editor/FormEditor";
 import { PreviewPanel } from "@/components/editor/PreviewPanel";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { useAutoSave } from "@/hooks/useAutoSave";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { SaveProvider } from "@/contexts/SaveContext";
 import type { Resume, Item } from "@/types/resume";
 
@@ -115,6 +116,7 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
 
   // Enable auto-save and get manual save function
   const { saveNow } = useAutoSave(resumeId);
+  const isMobile = useIsMobile();
 
   return (
     <SaveProvider saveNow={saveNow}>
@@ -123,27 +125,35 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
           <EditorSidebar />
 
           <SidebarInset className="flex-1 overflow-hidden">
-            <Group orientation="horizontal" style={{ height: "100%" }}>
-              <Panel id="form-editor" defaultSize="33%" minSize="25%" maxSize="50%">
-                <FormEditor 
-                  resumeId={resumeId}
-                  initialIsPublic={initialData.is_public}
-                  initialSlug={initialData.slug}
-                />
-              </Panel>
-
-              <Separator
-                style={{
-                  width: "8px",
-                  background: "var(--border)",
-                  cursor: "col-resize",
-                }}
+            {isMobile ? (
+              <FormEditor 
+                resumeId={resumeId}
+                initialIsPublic={initialData.is_public}
+                initialSlug={initialData.slug}
               />
+            ) : (
+              <Group orientation="horizontal" style={{ height: "100%" }}>
+                <Panel id="form-editor" defaultSize="33%" minSize="25%" maxSize="50%">
+                  <FormEditor 
+                    resumeId={resumeId}
+                    initialIsPublic={initialData.is_public}
+                    initialSlug={initialData.slug}
+                  />
+                </Panel>
 
-              <Panel id="live-preview" defaultSize="67%" minSize="50%" maxSize="75%">
-                <PreviewPanel />
-              </Panel>
-            </Group>
+                <Separator
+                  style={{
+                    width: "8px",
+                    background: "var(--border)",
+                    cursor: "col-resize",
+                  }}
+                />
+
+                <Panel id="live-preview" defaultSize="67%" minSize="50%" maxSize="75%">
+                  <PreviewPanel />
+                </Panel>
+              </Group>
+            )}
           </SidebarInset>
         </div>
       </SidebarProvider>
