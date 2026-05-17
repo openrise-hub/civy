@@ -67,17 +67,14 @@ export function PersonalInfoForm() {
     updatePersonal({ details: personal.details.filter((item) => item.id !== itemId) });
   };
 
-  const fullNameCount = personal.fullName?.length || 0;
-  const jobTitleCount = personal.jobTitle?.length || 0;
-
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Personal Information</CardTitle>
+      <CardHeader className="p-3 pb-0">
+        <CardTitle className="text-sm font-semibold">Personal Information</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="fullName">Full Name</Label>
+      <CardContent className="space-y-3 p-3 pt-2">
+        <div className="space-y-1.5">
+          <Label htmlFor="fullName" className="text-xs text-muted-foreground">Full Name</Label>
           <Input
             id="fullName"
             value={personal.fullName}
@@ -86,16 +83,10 @@ export function PersonalInfoForm() {
             placeholder={t("placeholders.fullName")}
             maxLength={RESUME_LIMITS.MAX_FULL_NAME}
           />
-          <div className={cn(
-            "text-xs text-right",
-            fullNameCount >= RESUME_LIMITS.MAX_FULL_NAME * 0.9 ? "text-amber-500" : "text-muted-foreground"
-          )}>
-            {fullNameCount} / {RESUME_LIMITS.MAX_FULL_NAME}
-          </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="jobTitle">Job Title</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="jobTitle" className="text-xs text-muted-foreground">Job Title</Label>
           <Input
             id="jobTitle"
             value={personal.jobTitle ?? ""}
@@ -104,12 +95,6 @@ export function PersonalInfoForm() {
             placeholder={t("placeholders.jobTitle")}
             maxLength={RESUME_LIMITS.MAX_JOB_TITLE}
           />
-          <div className={cn(
-            "text-xs text-right",
-            jobTitleCount >= RESUME_LIMITS.MAX_JOB_TITLE * 0.9 ? "text-amber-500" : "text-muted-foreground"
-          )}>
-            {jobTitleCount} / {RESUME_LIMITS.MAX_JOB_TITLE}
-          </div>
         </div>
 
         {personal.details.map((item) => {

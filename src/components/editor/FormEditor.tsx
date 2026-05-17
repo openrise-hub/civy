@@ -72,7 +72,7 @@ export function FormEditor({ resumeId, initialIsPublic, initialSlug }: FormEdito
 
   return (
     <div className="flex h-full flex-col bg-muted/30">
-      <div className="flex items-center justify-between border-b bg-background px-4 py-3">
+      <div className="flex items-center justify-between border-b bg-background px-3 py-2">
         <div className="flex items-center gap-2">
           <Button size="icon" variant="ghost" render={<Link href="/dashboard" />}>
             <ArrowLeftIcon className="size-4" />
@@ -144,7 +144,7 @@ export function FormEditor({ resumeId, initialIsPublic, initialSlug }: FormEdito
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="p-4 space-y-4">
+        <div className="p-3 space-y-3">
           <PersonalInfoForm />
 
           <Separator />

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
@@ -14,9 +15,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,12 +37,11 @@ import { useUser } from "@/contexts/UserContext";
 import { VersionHistory } from "@/components/editor/VersionHistory";
 import { ResumeSettingsDialog } from "@/components/editor/ResumeSettingsDialog";
 import { UserNav } from "@/components/UserNav";
-import { LanguageToggle } from "@/components/LanguageToggle";
 
 export function EditorSidebar() {
   const t = useTranslations("editor.sidebar");
   const tForm = useTranslations("editor.formEditor");
-  const { state } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
   const isCollapsed = state === "collapsed";
   const sectionCount = useResumeStore((state) => state.resume.sections.length);
   const resumeId = useResumeStore((state) => state.resume.id);
@@ -50,23 +50,46 @@ export function EditorSidebar() {
 
   return (
     <TooltipProvider>
-      <Sidebar collapsible="icon" className="border-e overflow-x-hidden">
+      <Sidebar collapsible="icon" className="border-e">
         <SidebarHeader className="p-2">
           <SidebarMenu>
-            <SidebarMenuItem>
-              <div className="flex items-center justify-between px-2 py-1">
-                <div className="flex items-center gap-2">
-                  <UserNav />
-                  {!isCollapsed && (
-                     <div className="flex flex-col gap-0.5 leading-none overflow-hidden text-sm">
-                       <span className="font-semibold truncate max-w-32">{t("user")}</span>
-                       <span className="text-xs text-muted-foreground truncate max-w-32">{user?.user_metadata?.display_name || user?.email || "Unknown"}</span>
-                     </div>
+              <SidebarMenuItem>
+                    <div className={cn(
+                      "flex items-center px-2 py-1",
+                      isCollapsed ? "justify-center" : "justify-between"
+                    )}>
+                      <div className="flex items-center gap-2">
+                        {!isCollapsed && <UserNav />}
+                        {!isCollapsed && (
+                          <div className="flex flex-col gap-0.5 leading-none overflow-hidden text-sm">
+                            <span className="font-semibold truncate max-w-32">{t("user")}</span>
+                            <span className="text-xs text-muted-foreground truncate max-w-32">{user?.user_metadata?.display_name || user?.email || "Unknown"}</span>
+                          </div>
+                        )}
+                      </div>
+                      {!isCollapsed && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={toggleSidebar}
+                          className="size-8 rounded-lg hover:bg-accent"
+                          aria-label="Toggle Sidebar"
+                        >
+                          <PanelLeftClose className="size-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </SidebarMenuItem>
+                  {isCollapsed && (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        onClick={toggleSidebar}
+                        tooltip="Toggle Sidebar"
+                      >
+                        <PanelLeftOpen className="size-4" />
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
                   )}
-                </div>
-                {!isCollapsed && <LanguageToggle />}
-              </div>
-            </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip={isCollapsed ? "Dashboard" : undefined}
@@ -174,7 +197,6 @@ export function EditorSidebar() {
             </SidebarMenuItem>
           </SidebarMenu>
 
-          <SidebarTrigger className="w-full" />
         </SidebarFooter>
       </Sidebar>
     </TooltipProvider>
