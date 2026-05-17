@@ -1,52 +1,214 @@
-
 import React from 'react';
 import { Document, Page, View, Text } from '@react-pdf/renderer';
 import type { Resume, SectionContent, Item } from '@/types/resume';
-import { ColorScheme, BasePdfStyles, basePdfStyles } from './PdfStyles';
+import type { TemplateConfig } from '@/types/template';
 import { PdfTranslations, renderPdfItem } from './ItemRenderers';
 import { Style } from '@react-pdf/types';
 
+// Legacy support
 export interface PdfTemplateConfig {
   name: string;
-  styles: Partial<BasePdfStyles>;
+  styles: Partial<Record<string, Style>>;
+}
+
+// Helper to convert CSS-like values to numbers where possible
+function parseDimension(val: string): number {
+  const num = parseFloat(val);
+  if (val.endsWith('pt')) return num * 1.333; // pt to px (approx)
+  if (val.endsWith('cm')) return num * 37.8;   // cm to px (approx)
+  if (val.endsWith('mm')) return num * 3.78;   // mm to px
+  if (val.endsWith('in')) return num * 96;     // in to px
+  if (val.endsWith('em')) return num * 12;     // em to px (approx at 12pt base)
+  if (val.endsWith('px')) return num;
+  return num || 0;
+}
+
+function parseFontSize(val: string): number {
+  const num = parseFloat(val);
+  if (val.endsWith('pt')) return num;
+  if (val.endsWith('em')) return num * 10; // em relative to base 10pt
+  return num || 10;
+}
+
+// Build styles from TemplateConfig for @react-pdf/renderer
+function buildStyles(config: TemplateConfig) {
+  const { colors, typography, page, sectionTitles, header, entries } = config;
+
+  const fontSize = {
+    body: parseFontSize(typography.fontSize.body),
+    name: parseFontSize(typography.fontSize.name),
+    headline: parseFontSize(typography.fontSize.headline),
+    connections: parseFontSize(typography.fontSize.connections),
+    sectionTitles: parseFontSize(typography.fontSize.sectionTitles),
+  };
+
+  return {
+    page: {
+      paddingTop: parseDimension(page.topMargin),
+      paddingBottom: parseDimension(page.bottomMargin),
+      paddingLeft: parseDimension(page.leftMargin),
+      paddingRight: parseDimension(page.rightMargin),
+      fontFamily: typography.fontFamily.body,
+      fontSize: fontSize.body,
+      lineHeight: typography.lineSpacing,
+      backgroundColor: colors.body === 'rgb(31, 41, 55)' ? '#ffffff' : '#ffffff',
+      color: colors.body,
+    },
+    name: {
+      fontSize: fontSize.name,
+      fontFamily: typography.fontFamily.name,
+      fontWeight: typography.bold.name ? 'bold' : 'normal',
+      color: colors.name,
+      fontStyle: typography.smallCaps.name ? undefined : undefined,
+    },
+    headline: {
+      fontSize: fontSize.headline,
+      fontFamily: typography.fontFamily.headline,
+      fontWeight: typography.bold.headline ? 'bold' : 'normal',
+      color: colors.headline,
+    },
+    header: {
+      flexDirection: 'column' as const,
+      alignItems: header.alignment === 'center' ? 'center' as const : header.alignment === 'right' ? 'flex-end' as const : 'flex-start' as const,
+      marginBottom: parseDimension(header.spaceBelowConnections),
+    },
+    nameRow: {
+      marginBottom: parseDimension(header.spaceBelowName),
+    },
+    headlineRow: {
+      marginBottom: parseDimension(header.spaceBelowHeadline),
+    },
+    contactRow: {
+      flexDirection: 'row' as const,
+      flexWrap: 'wrap' as const,
+      justifyContent: header.alignment === 'center' ? 'center' as const : 'flex-start' as const,
+      gap: parseDimension(header.connections.spaceBetweenConnections),
+      marginBottom: 0,
+    },
+    contactItem: {
+      flexDirection: 'row' as const,
+      alignItems: 'center' as const,
+      gap: 4,
+      fontFamily: typography.fontFamily.connections,
+      fontSize: fontSize.connections,
+      color: colors.connections,
+    },
+    section: {
+      marginBottom: parseDimension(sectionTitles.spaceAbove) + parseDimension(sectionTitles.spaceBelow) + 4,
+    },
+    sectionTitle: {
+      fontSize: fontSize.sectionTitles,
+      fontFamily: typography.fontFamily.sectionTitles,
+      fontWeight: typography.bold.sectionTitles ? 'bold' : 'normal',
+      textTransform: 'uppercase' as const,
+      color: colors.sectionTitles,
+      borderBottomWidth: sectionTitles.type !== 'without_line' ? parseFloat(sectionTitles.lineThickness) : 0,
+      borderBottomStyle: 'solid' as const,
+      borderBottomColor: colors.sectionTitles,
+      marginBottom: parseDimension(sectionTitles.spaceBelow),
+      paddingBottom: 4,
+    },
+    sectionContent: {
+      marginTop: 4,
+    },
+    listItem: {
+      marginBottom: parseDimension(entries.spaceBetweenColumns) || 8,
+    },
+    bulletRow: {
+      flexDirection: 'row' as const,
+      alignItems: 'flex-start' as const,
+      gap: 4,
+      marginLeft: parseDimension(entries.highlights.spaceLeft),
+      marginBottom: parseDimension(entries.highlights.spaceBetweenItems),
+    },
+    ratingRow: {
+      flexDirection: 'row' as const,
+      alignItems: 'center' as const,
+      gap: 8,
+    },
+    ratingLabel: {
+      fontSize: fontSize.connections,
+      marginRight: 8,
+      color: colors.body,
+    },
+    barContainer: {
+      width: 60,
+      height: 6,
+      backgroundColor: '#e5e7eb',
+      borderRadius: 3,
+    },
+    barFill: {
+      height: '100%' as const,
+      borderRadius: 3,
+      backgroundColor: colors.sectionTitles,
+    },
+    dotsContainer: {
+      flexDirection: 'row' as const,
+      gap: 3,
+    },
+    dot: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+    },
+    grid: {
+      flexDirection: 'row' as const,
+      flexWrap: 'wrap' as const,
+      gap: 8,
+    },
+    gridRow: {
+      flexDirection: 'row' as const,
+      gap: 8,
+    },
+    gridItem: {
+      flex: 1,
+    },
+    inline: {
+      flexDirection: 'row' as const,
+      flexWrap: 'wrap' as const,
+      gap: 6,
+    },
+    footer: page.showFooter ? {
+      position: 'absolute' as const,
+      bottom: 20,
+      left: 0,
+      right: 0,
+      textAlign: 'center' as const,
+      fontSize: fontSize.connections,
+      fontFamily: typography.fontFamily.connections,
+      color: colors.footer,
+    } : undefined,
+    topNote: page.showTopNote ? {
+      fontSize: fontSize.connections,
+      fontFamily: typography.fontFamily.connections,
+      color: colors.topNote,
+      marginBottom: 12,
+    } : undefined,
+  };
 }
 
 // Helper to render section content based on layout
 const renderSectionContent = (
   content: SectionContent,
-  baseStyles: BasePdfStyles,
-  overrideStyles: Partial<BasePdfStyles>,
-  colors: ColorScheme,
+  styles: ReturnType<typeof buildStyles>,
+  colors: TemplateConfig['colors'],
   translations: PdfTranslations
 ) => {
   const { layout, columns = 1, items } = content;
   const visibleItems = items.filter((i: Item) => i.visible !== false);
-  
-  // Helper for applying styles with overrides
-  const getStyle = (key: keyof BasePdfStyles, extra?: Style): Style[] => {
-    return [
-      baseStyles[key], 
-      overrideStyles[key], 
-      extra
-    ].filter(Boolean) as Style[];
-  };
 
   if (layout === 'grid') {
     return (
-      <View style={getStyle('grid')}>
+      <View style={styles.grid}>
         {visibleItems.map((item: Item) => (
-          <View 
-            key={item.id} 
-            style={[
-              baseStyles.gridItem, 
-              overrideStyles.gridItem, 
-              { 
-                width: item.type === 'tags' ? '100%' : `${100 / columns}%`, 
-                paddingRight: ((Number(baseStyles.grid?.gap) || 8) / 2) 
-              }
-            ] as Style[]}
+          <View
+            key={item.id}
+            style={{
+              ...styles.gridItem,
+              width: item.type === 'tags' ? '100%' : `${100 / columns}%`,
+            }}
           >
-            {renderPdfItem(item, baseStyles, colors, undefined, overrideStyles, translations)}
+            {renderPdfItem(item, styles, colors, undefined, translations)}
           </View>
         ))}
       </View>
@@ -55,81 +217,119 @@ const renderSectionContent = (
 
   if (layout === 'inline') {
     return (
-      <View style={getStyle('inline')}>
+      <View style={styles.inline}>
         {visibleItems.map((item: Item) => (
           <View key={item.id}>
-            {renderPdfItem(item, baseStyles, colors, undefined, overrideStyles, translations)}
+            {renderPdfItem(item, styles, colors, undefined, translations)}
           </View>
         ))}
       </View>
     );
   }
 
-  // Default list layout
   return (
     <View>
       {visibleItems.map((item: Item) => (
-        <View key={item.id} style={getStyle('listItem')}>
-          {renderPdfItem(item, baseStyles, colors, undefined, overrideStyles, translations)}
+        <View key={item.id} style={styles.listItem}>
+          {renderPdfItem(item, styles, colors, undefined, translations)}
         </View>
       ))}
     </View>
   );
 };
 
-export const PdfRenderer = ({ 
-  resume, 
-  template,
-  translations 
-}: { 
-  resume: Resume; 
-  template: PdfTemplateConfig;
+function formatTemplateString(template: string, values: Record<string, string>): string {
+  return template.replace(/\b([A-Z_]+)\b/g, (match) => values[match] || match);
+}
+
+export const PdfRenderer = ({
+  resume,
+  templateConfig,
+  translations,
+}: {
+  resume: Resume;
+  templateConfig: TemplateConfig;
   translations: PdfTranslations;
 }) => {
-  const colors: ColorScheme = {
-    ...resume.metadata.colors,
-    accents: resume.metadata.colors.accents as string[]
+  const styles = buildStyles(templateConfig);
+  const { colors, templates: tmpl, pageKey } = {
+    ...templateConfig,
+    pageKey: templateConfig.page.size === 'us-letter' ? 'LETTER' : 'A4',
   };
-  
-  const overrides = template.styles || {};
-  
-  // Helper for consistent style application
-  const s = (key: keyof BasePdfStyles, extra?: Style) => {
-    return [basePdfStyles[key], overrides[key], extra].filter(Boolean) as Style[];
-  };
+
+  const totalPages = 1; // Will be dynamic if we support multi-page
+  const footerText = formatTemplateString(tmpl.footer, {
+    NAME: resume.personal.fullName,
+    PAGE_NUMBER: '1',
+    TOTAL_PAGES: String(totalPages),
+    CURRENT_DATE: new Date().toLocaleDateString(),
+  });
+
+  const topNoteText = formatTemplateString(tmpl.topNote, {
+    NAME: resume.personal.fullName,
+    CURRENT_DATE: new Date().toLocaleDateString(),
+  });
 
   return (
     <Document>
-      <Page size="A4" style={s('page', { backgroundColor: colors.background })}>
+      <Page size={pageKey as 'A4' | 'LETTER'} style={styles.page}>
+        {/* Top Note */}
+        {templateConfig.page.showTopNote && styles.topNote && (
+          <Text style={styles.topNote}>{topNoteText}</Text>
+        )}
+
         {/* Header Section */}
-        <View style={s('header')}>
-          <Text style={s('name', { color: colors.accents[0] || colors.text })}>{resume.personal.fullName}</Text>
+        <View style={styles.header}>
+          <View style={styles.nameRow}>
+            <Text style={styles.name}>{resume.personal.fullName}</Text>
+          </View>
           {resume.personal.jobTitle && (
-            <Text style={s('jobTitle', { color: colors.accents[1] || colors.text })}>
-              {resume.personal.jobTitle}
-            </Text>
+            <View style={styles.headlineRow}>
+              <Text style={styles.headline}>{resume.personal.jobTitle}</Text>
+            </View>
           )}
-          
-          <View style={s('contactRow')}>
-            {resume.personal.details.map((item) => (
-              <View key={item.id} style={s('contactItem')}>
-                {renderPdfItem(item, basePdfStyles, colors, undefined, overrides, translations)}
-              </View>
-            ))}
+          <View style={styles.contactRow}>
+            {resume.personal.details
+              .filter((item) => item.visible !== false)
+              .map((item) => (
+                <View key={item.id} style={styles.contactItem}>
+                  {renderPdfItem(item, styles, colors, undefined, translations)}
+                </View>
+              ))}
           </View>
         </View>
 
         {/* Sections */}
-        {resume.sections.filter(s => s.visible !== false).map((section) => (
-          <View key={section.id} style={s('section')}>
-            <Text style={s('sectionTitle', { color: colors.accents[0] || colors.text, borderBottomColor: colors.accents[0] || colors.text })}>
-              {section.title.toUpperCase()}
-            </Text>
-            <View style={s('sectionContent')}>
-              {renderSectionContent(section.content, basePdfStyles, overrides, colors, translations)}
+        {resume.sections
+          .filter((s) => s.visible !== false)
+          .map((section) => (
+            <View key={section.id} style={styles.section}>
+              <Text style={styles.sectionTitle}>
+                {section.title.toUpperCase()}
+              </Text>
+              <View style={styles.sectionContent}>
+                {renderSectionContent(section.content, styles, colors, translations)}
+              </View>
             </View>
-          </View>
-        ))}
+          ))}
+
+        {/* Footer */}
+        {templateConfig.page.showFooter && styles.footer && (
+          <Text
+            style={styles.footer}
+            fixed
+            render={({ pageNumber, totalPages: total }) => (
+              <Text style={styles.footer}>
+                {formatTemplateString(tmpl.footer, {
+                  NAME: resume.personal.fullName,
+                  PAGE_NUMBER: String(pageNumber),
+                  TOTAL_PAGES: String(total),
+                  CURRENT_DATE: new Date().toLocaleDateString(),
+                })}
+              </Text>
+            )}
+          />
+        )}
       </Page>
     </Document>
   );
