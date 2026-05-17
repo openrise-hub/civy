@@ -8,6 +8,7 @@
 import { z } from "zod";
 import { RESUME_LIMITS } from "@/constants/limits";
 import { ALL_TEMPLATES } from "@/constants/limits";
+import { templateConfigSchema } from "@/lib/templates/schema";
 
 // Cast readonly tuple for z.enum compatibility
 const templateValues = ALL_TEMPLATES as unknown as [string, ...string[]];
@@ -149,6 +150,7 @@ const personalInfoSchema = z.object({
 
 const metadataSchema = z.object({
   template: z.enum(templateValues),
+  templateConfig: templateConfigSchema.optional(),
   typography: z.object({
     fontFamily: z.string().max(50),
     fontSize: z.enum(["sm", "md", "lg"]),
