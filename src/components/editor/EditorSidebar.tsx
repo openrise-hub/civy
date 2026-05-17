@@ -67,7 +67,7 @@ export function EditorSidebar() {
                      </div>
                   )}
                 </div>
-                <SidebarTrigger />
+                <SidebarTrigger className="group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2" />
               </div>
             </SidebarMenuItem>
             <SidebarMenuItem>
