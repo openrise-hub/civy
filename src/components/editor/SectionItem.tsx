@@ -179,25 +179,50 @@ export function SectionItem({ item, colors }: SectionItemProps) {
 
   // --- Tags ---
   if (item.type === "tags" && "value" in item && item.value && typeof item.value === "object" && "items" in item.value) {
-    const v = item.value as { name?: string; items: string[]; display: 'text' | 'badge' | 'pill' };
+    const v = item.value as { name?: string; items: string[]; display: string };
     return (
       <div className="w-full">
         {v.name && <span className="text-xs font-semibold" style={{ color: colors.text }}>{v.name}</span>}
-        <div className={cn(
-          "flex flex-wrap gap-1",
-          v.name && "mt-1"
-        )}>
-          {v.items.map((tag, i) => (
-            <span key={i} className={cn(
-              v.display === 'text' && "text-xs",
-              v.display === 'pill' && "inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700",
-              v.display === 'badge' && "inline-block rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700"
-            )}>
-              {v.display === 'text' && i > 0 && ", "}
-              {tag}
-            </span>
-          ))}
-        </div>
+        {v.display === 'sep' ? (
+          <span className="text-xs" style={{ color: colors.text }}>{v.items.join(' • ')}</span>
+        ) : v.display === 'dot' ? (
+          <div className={cn("flex flex-wrap gap-x-3 gap-y-1", v.name && "mt-1")}>
+            {v.items.map((tag, i) => (
+              <span key={i} className="inline-flex items-center gap-1 text-xs" style={{ color: colors.text }}>
+                <span className="size-1.5 rounded-full shrink-0" style={{ backgroundColor: colors.primary }} />
+                {tag}
+              </span>
+            ))}
+          </div>
+        ) : v.display === 'block' ? (
+          <div className={cn("flex flex-col gap-0.5", v.name && "mt-1")}>
+            {v.items.map((tag, i) => (
+              <span key={i} className="block rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700">{tag}</span>
+            ))}
+          </div>
+        ) : v.display === 'text' ? (
+          <span className="text-xs" style={{ color: colors.text }}>{v.items.join(', ')}</span>
+        ) : v.display === 'compact' ? (
+          <div className={cn("flex flex-wrap gap-x-2 gap-y-0.5", v.name && "mt-1")}>
+            {v.items.map((tag, i) => (
+              <span key={i} className="text-[10px]" style={{ color: colors.text }}>{tag}{i < v.items.length - 1 ? ',' : ''}</span>
+            ))}
+          </div>
+        ) : (
+          <div className={cn("flex flex-wrap gap-1", v.name && "mt-1")}>
+            {v.items.map((tag, i) => (
+              <span key={i} className={cn(
+                "px-2 py-0.5 text-xs",
+                v.display === 'pill' && "rounded-full bg-slate-100 font-medium text-slate-700",
+                v.display === 'badge' && "rounded bg-slate-100 font-medium text-slate-700",
+                v.display === 'outline' && "rounded border border-slate-300 text-slate-600",
+                v.display === 'soft' && "rounded font-medium",
+              )} style={v.display === 'soft' ? { backgroundColor: `${colors.primary}18`, color: colors.primary } : undefined}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     );
   }

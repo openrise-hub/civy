@@ -58,30 +58,87 @@ function DescriptionPreview({ text, colors }: { text: string; colors: ColorSchem
 }
 
 function TagsPreview({ item, colors }: { item: TagsItem; colors: ColorScheme }) {
-  const { name, items, display } = item.value;
+  const { name, items: tagItems, display } = item.value;
   const bgColor = colors.accents?.[2] || '#e5e7eb';
+  const accentColor = colors.accents?.[0] || '#2563eb';
 
-  return (
-    <div style={{ marginBottom: '4px', width: '100%' }}>
-      {name && <p style={{ fontWeight: 600, fontSize: '10pt', margin: '0 0 4px 0', color: colors.text }}>{name}</p>}
-      {display === 'text' ? (
-        <span style={{ fontSize: '11pt', color: colors.text }}>{items.join(', ')}</span>
-      ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-          {items.map((tag, i) => (
-            <span key={i} style={{
-              display: 'inline-block',
-              padding: '2px 8px',
-              borderRadius: display === 'pill' ? '9999px' : '4px',
-              fontSize: '9pt',
-              backgroundColor: bgColor,
-              color: colors.text,
-            }}>
+  const tagStyle = (base: React.CSSProperties = {}): React.CSSProperties => {
+    switch (display) {
+      case 'badge': return { ...base, display: 'inline-block', padding: '2px 8px', borderRadius: '4px', fontSize: '9pt', backgroundColor: bgColor, color: colors.text };
+      case 'pill': return { ...base, display: 'inline-block', padding: '2px 8px', borderRadius: '9999px', fontSize: '9pt', backgroundColor: bgColor, color: colors.text };
+      case 'outline': return { ...base, display: 'inline-block', padding: '2px 8px', borderRadius: '4px', fontSize: '9pt', border: `1px solid ${accentColor}`, color: accentColor };
+      case 'soft': return { ...base, display: 'inline-block', padding: '2px 8px', borderRadius: '4px', fontSize: '9pt', backgroundColor: `${accentColor}18`, color: accentColor };
+      case 'dot': return { ...base, fontSize: '10pt', color: colors.text };
+      case 'compact': return { ...base, display: 'inline-block', padding: '1px 4px', fontSize: '8pt', color: colors.text };
+      case 'block': return { ...base, display: 'block', padding: '2px 8px', fontSize: '9pt', backgroundColor: bgColor, color: colors.text, marginBottom: '2px', borderRadius: '4px' };
+      case 'sep': return { ...base, fontSize: '11pt', color: colors.text };
+      default: return { ...base, fontSize: '11pt', color: colors.text };
+    }
+  };
+
+  if (display === 'sep') {
+    return (
+      <div style={{ marginBottom: '4px', width: '100%' }}>
+        {name && <p style={{ fontWeight: 600, fontSize: '10pt', margin: '0 0 4px 0', color: colors.text }}>{name}</p>}
+        <span style={{ fontSize: '11pt', color: colors.text }}>{tagItems.join(' • ')}</span>
+      </div>
+    );
+  }
+
+  if (display === 'dot') {
+    return (
+      <div style={{ marginBottom: '4px', width: '100%' }}>
+        {name && <p style={{ fontWeight: 600, fontSize: '10pt', margin: '0 0 4px 0', color: colors.text }}>{name}</p>}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          {tagItems.map((tag, i) => (
+            <span key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10pt', color: colors.text }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: accentColor, display: 'inline-block', flexShrink: 0 }} />
               {tag}
             </span>
           ))}
         </div>
-      )}
+      </div>
+    );
+  }
+
+  if (display === 'block') {
+    return (
+      <div style={{ marginBottom: '4px', width: '100%' }}>
+        {name && <p style={{ fontWeight: 600, fontSize: '10pt', margin: '0 0 4px 0', color: colors.text }}>{name}</p>}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          {tagItems.map((tag, i) => (
+            <span key={i} style={tagStyle()}>{tag}</span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (display === 'text' || display === 'compact') {
+    return (
+      <div style={{ marginBottom: '4px', width: '100%' }}>
+        {name && <p style={{ fontWeight: 600, fontSize: '10pt', margin: '0 0 4px 0', color: colors.text }}>{name}</p>}
+        {display === 'text' ? (
+          <span style={tagStyle()}>{tagItems.join(', ')}</span>
+        ) : (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
+            {tagItems.map((tag, i) => (
+              <span key={i} style={tagStyle()}>{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginBottom: '4px', width: '100%' }}>
+      {name && <p style={{ fontWeight: 600, fontSize: '10pt', margin: '0 0 4px 0', color: colors.text }}>{name}</p>}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+        {tagItems.map((tag, i) => (
+          <span key={i} style={tagStyle()}>{tag}</span>
+        ))}
+      </div>
     </div>
   );
 }

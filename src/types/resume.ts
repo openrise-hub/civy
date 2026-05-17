@@ -94,7 +94,7 @@ export interface TagsItem extends BaseItem {
   value: {
     name?: string;             // Optional group label ("Programming")
     items: string[];           // Tag strings
-    display: 'text' | 'badge' | 'pill'; // Visual style
+    display: 'text' | 'badge' | 'pill' | 'outline' | 'soft' | 'dot' | 'compact' | 'block' | 'sep'; // Visual style
   };
 }
 

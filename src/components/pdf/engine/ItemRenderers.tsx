@@ -214,21 +214,72 @@ export const baseSeparatorItemRenderer: ItemRenderer = (item, styles, colors, _c
 const baseTagsItemRenderer: ItemRenderer = (item, _styles, colors) => {
   if (!isTagsItem(item)) return null;
   const { name, items: tagItems, display } = item.value;
+  const bgColor = colors.accents[2] || '#e5e7eb';
+  const accent = colors.accents[0] || '#2563eb';
+
+  const renderChips = (extra: object = {}) => (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>
+      {tagItems.map((tag, i) => (
+        <Text key={i} style={{ ...extra, fontSize: 10 }}>{tag}</Text>
+      ))}
+    </View>
+  );
+
+  let body: React.ReactNode;
+  switch (display) {
+    case 'sep':
+      body = <Text style={{ fontSize: 12, color: colors.text }}>{tagItems.join(' • ')}</Text>;
+      break;
+    case 'dot':
+      body = (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          {tagItems.map((tag, i) => (
+            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={{ width: 6, height: 6, borderRadius: 999, backgroundColor: accent }} />
+              <Text style={{ fontSize: 12, color: colors.text }}>{tag}</Text>
+            </View>
+          ))}
+        </View>
+      );
+      break;
+    case 'block':
+      body = (
+        <View style={{ gap: 2 }}>
+          {tagItems.map((tag, i) => (
+            <Text key={i} style={{ backgroundColor: bgColor, color: colors.text, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4, fontSize: 10 }}>{tag}</Text>
+          ))}
+        </View>
+      );
+      break;
+    case 'compact':
+      body = (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>
+          {tagItems.map((tag, i) => (
+            <Text key={i} style={{ fontSize: 9, color: colors.text }}>{tag}{i < tagItems.length - 1 ? ',' : ''}</Text>
+          ))}
+        </View>
+      );
+      break;
+    case 'outline':
+      body = renderChips({ border: `1px solid ${accent}`, color: accent, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 });
+      break;
+    case 'soft':
+      body = renderChips({ backgroundColor: `${accent}18`, color: accent, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 });
+      break;
+    case 'badge':
+      body = renderChips({ backgroundColor: bgColor, color: colors.text, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4 });
+      break;
+    case 'pill':
+      body = renderChips({ backgroundColor: bgColor, color: colors.text, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 999 });
+      break;
+    default: // text
+      body = <Text style={{ fontSize: 12, color: colors.text }}>{tagItems.join(', ')}</Text>;
+  }
 
   return (
     <View style={{ marginBottom: 4 }}>
       {name ? <Text style={{ fontWeight: 'bold', fontSize: 10, marginBottom: 2, color: colors.text }}>{name}</Text> : null}
-      {display === 'text' ? (
-        <Text style={{ fontSize: 12, color: colors.text }}>{tagItems.join(', ')}</Text>
-      ) : (
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>
-          {tagItems.map((tag, i) => (
-            <Text key={i} style={{ backgroundColor: colors.accents[2], color: colors.text, paddingHorizontal: 8, paddingVertical: 2, borderRadius: display === 'pill' ? 999 : 4, fontSize: 10 }}>
-              {tag}
-            </Text>
-          ))}
-        </View>
-      )}
+      {body}
     </View>
   );
 };
