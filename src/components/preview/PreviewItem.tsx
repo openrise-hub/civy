@@ -1,6 +1,6 @@
 "use client";
 
-import { Item, StringItem, DateRangeItem, LinkItem, RatingItem } from "@/types/resume";
+import { Item, StringItem, DateRangeItem, LinkItem, RatingItem, TagsItem } from "@/types/resume";
 import { ColorScheme } from "@/components/pdf/engine/PdfStyles";
 import { useTranslations } from "next-intl";
 import React from "react";
@@ -57,6 +57,35 @@ function DescriptionPreview({ text, colors }: { text: string; colors: ColorSchem
   return React.createElement(React.Fragment, null, ...elements);
 }
 
+function TagsPreview({ item, colors }: { item: TagsItem; colors: ColorScheme }) {
+  const { name, items, display } = item.value;
+  const bgColor = colors.accents?.[2] || '#e5e7eb';
+
+  return (
+    <div style={{ marginBottom: '4px', width: '100%' }}>
+      {name && <p style={{ fontWeight: 600, fontSize: '10pt', margin: '0 0 4px 0', color: colors.text }}>{name}</p>}
+      {display === 'text' ? (
+        <span style={{ fontSize: '11pt', color: colors.text }}>{items.join(', ')}</span>
+      ) : (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+          {items.map((tag, i) => (
+            <span key={i} style={{
+              display: 'inline-block',
+              padding: '2px 8px',
+              borderRadius: display === 'pill' ? '9999px' : '4px',
+              fontSize: '9pt',
+              backgroundColor: bgColor,
+              color: colors.text,
+            }}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function PreviewItem({ item, colors }: PreviewItemProps) {
   const t = useTranslations("resume");
 
@@ -67,6 +96,7 @@ export function PreviewItem({ item, colors }: PreviewItemProps) {
   if (isLinkItem(item)) return <LinkPreview item={item} colors={colors} />;
   if (isRatingItem(item)) return <RatingPreview item={item} colors={colors} />;
   if (isSeparatorItem(item)) return <hr style={{ border: 'none', borderTop: `1px solid ${colors.accents?.[2] || '#e5e7eb'}`, margin: '8px 0' }} />;
+  if (item.type === "tags") return <TagsPreview item={item as TagsItem} colors={colors} />;
 
   return null;
 }
@@ -92,20 +122,6 @@ function StringItemPreview({ item, colors }: { item: StringItem; colors: ColorSc
 
     case "email":
       return <span style={{ color: colors.accents?.[3] || colors.text, fontSize: '10pt' }}>📧{item.value}</span>;
-
-    case "tag":
-      return (
-        <span style={{
-          display: 'inline-block',
-          padding: '2px 8px',
-          borderRadius: '4px',
-          fontSize: '9pt',
-          backgroundColor: colors.accents?.[2] || '#e5e7eb',
-          color: colors.text,
-        }}>
-          {item.value}
-        </span>
-      );
 
     default:
       return <span style={baseStyle}>{item.value}</span>;

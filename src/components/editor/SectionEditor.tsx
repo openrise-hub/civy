@@ -9,7 +9,8 @@ import {
   isLinkItem, 
   isRatingItem, 
   isImageItem, 
-  isSeparatorItem 
+  isSeparatorItem,
+  isTagsItem,
 } from "@/lib/resume-helpers";
 import { parseDateValue, validateDateRange } from "@/lib/resume-helpers";
 import { RESUME_LIMITS } from "@/constants/limits";
@@ -20,7 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverTrigger, PopoverPopup } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon, XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -37,9 +38,10 @@ interface ItemEditorProps {
   onRemove: (e: React.MouseEvent) => void;
   onDuplicate: (e: React.MouseEvent) => void;
   onToggleVisibility: (e: React.MouseEvent) => void;
+  onAddItem?: (type: ItemType) => void;
 }
 
-function ItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
+function ItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility, onAddItem }: ItemEditorProps) {
   if (isStringItem(item)) {
     return <StringItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
   }
@@ -57,6 +59,9 @@ function ItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibili
   }
   if (isSeparatorItem(item)) {
     return <SeparatorItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} />;
+  }
+  if (isTagsItem(item)) {
+    return <TagsItemEditor item={item} t={t} onUpdate={onUpdate} onRemove={onRemove} onDuplicate={onDuplicate} onToggleVisibility={onToggleVisibility} onAddItem={onAddItem} />;
   }
   return null;
 }
@@ -602,6 +607,105 @@ function ImageItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVis
   );
 }
 
+function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility, onAddItem }: ItemEditorProps) {
+  const [inputValue, setInputValue] = useState("");
+
+  if (!isTagsItem(item)) return null;
+
+  const addTag = (value: string) => {
+    const trimmed = value.trim().replace(/,$/, "");
+    if (!trimmed) return;
+    const parts = trimmed.split(",").map(s => s.trim()).filter(Boolean);
+    if (parts.length === 0) return;
+    const existing = item.value.items;
+    const merged = [...existing, ...parts.filter(p => !existing.includes(p))];
+    onUpdate({ value: { ...item.value, items: merged } });
+    setInputValue("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTag(inputValue);
+    } else if (e.key === "Backspace" && !inputValue && item.value.items.length > 0) {
+      onUpdate({ value: { ...item.value, items: item.value.items.slice(0, -1) } });
+    }
+  };
+
+  const removeTag = (index: number) => {
+    onUpdate({ value: { ...item.value, items: item.value.items.filter((_, i) => i !== index) } });
+  };
+
+  return (
+    <div className={cn(
+      "space-y-3 p-3 rounded-lg border bg-card item-container transition-opacity",
+      item.visible === false && "opacity-50"
+    )}>
+      <div className="flex items-center justify-between">
+        <Label className="text-sm font-medium">Tags</Label>
+        <ItemActions 
+          visible={item.visible} 
+          onRemove={onRemove} 
+          onDuplicate={onDuplicate} 
+          onToggleVisibility={onToggleVisibility} 
+        />
+      </div>
+
+      <Input
+        value={item.value.name || ""}
+        onChange={(e) => onUpdate({ value: { ...item.value, name: e.target.value || undefined } })}
+        placeholder="Group name (optional)"
+        size="sm"
+      />
+
+      <div className="flex flex-wrap gap-1.5 p-2 min-h-[36px] rounded-lg border bg-background">
+        {item.value.items.map((tag, i) => (
+          <span key={i} className="inline-flex items-center gap-1 rounded bg-muted px-2 py-0.5 text-xs">
+            {tag}
+            <button onClick={() => removeTag(i)} className="hover:text-destructive">
+              <XIcon className="size-3" />
+            </button>
+          </span>
+        ))}
+        <Input
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onBlur={() => addTag(inputValue)}
+          placeholder="Type skills and press Enter"
+          className="flex-1 min-w-[140px] h-7 border-none bg-transparent px-0 text-xs focus-visible:ring-0"
+        />
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Label className="text-xs text-muted-foreground shrink-0">Display</Label>
+        <Select
+          value={item.value.display}
+          onValueChange={(v) => onUpdate({ value: { ...item.value, display: v as "text" | "badge" | "pill" } })}
+        >
+          <SelectTrigger className="h-7 text-xs w-24">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="text">Text</SelectItem>
+            <SelectItem value="badge">Badge</SelectItem>
+            <SelectItem value="pill">Pill</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      {onAddItem && (
+        <button
+          type="button"
+          onClick={() => onAddItem("tags")}
+          className="w-full rounded-lg border border-dashed py-1.5 text-xs text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
+        >
+          + Add group
+        </button>
+      )}
+    </div>
+  );
+}
+
 function SeparatorItemEditor({ item, onRemove, onDuplicate, onToggleVisibility }: ItemEditorProps) {
   return (
     <div className={cn(
@@ -665,6 +769,14 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
         <CalendarIcon className="size-3.5" />
         Dates
       </button>
+      <button
+        onClick={() => onAdd("tags")}
+        title="Tags"
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+      >
+        <TypeIcon className="size-3.5" />
+        Tags
+      </button>
     </div>
   );
 }
@@ -725,6 +837,7 @@ export function SectionEditor({ section }: SectionEditorProps) {
           onRemove={(e) => handleRemoveItem(item.id, e)}
           onDuplicate={() => useResumeStore.getState().duplicateItem(section.id, item.id)}
           onToggleVisibility={() => handleUpdateItem(item.id, { visible: !item.visible })}
+          onAddItem={handleAddItem}
         />
       ))}
       

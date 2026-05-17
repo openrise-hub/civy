@@ -18,7 +18,7 @@ export type ItemType =
   | 'link'           // Generic URL: Portfolio, Project Link
   
   // Visual Elements
-  | 'tag'            // Skill Chip: "React", "TypeScript" (rounded badge)
+  | 'tags'           // Multi-tag chips: "React", "TypeScript" (chip input)
   | 'rating'         // Skill Level: 4/5 stars, progress bar
   | 'separator'      // Horizontal Divider <hr />
   | 'image';         // Avatar or Company Logo
@@ -42,7 +42,7 @@ interface BaseItem {
 
 // Simple String Items (Heading, Text, Bullet, Location, Date, Phone, Email, Tag)
 export interface StringItem extends BaseItem {
-  type: 'heading' | 'sub-heading' | 'description' | 'location' | 'phone' | 'email' | 'tag';
+  type: 'heading' | 'sub-heading' | 'description' | 'location' | 'phone' | 'email';
   value: string; // The raw text content
 }
 
@@ -89,6 +89,15 @@ export interface SeparatorItem extends BaseItem {
   value: null; // No content, just the line
 }
 
+export interface TagsItem extends BaseItem {
+  type: 'tags';
+  value: {
+    name?: string;             // Optional group label ("Programming")
+    items: string[];           // Tag strings
+    display: 'text' | 'badge' | 'pill'; // Visual style
+  };
+}
+
 // The Union Type representing ANY item
 export type Item = 
   | StringItem 
@@ -96,7 +105,8 @@ export type Item =
   | LinkItem 
   | RatingItem 
   | ImageItem 
-  | SeparatorItem;
+  | SeparatorItem
+  | TagsItem;
 
 // --- The Content Wrapper ---
 export interface SectionContent {

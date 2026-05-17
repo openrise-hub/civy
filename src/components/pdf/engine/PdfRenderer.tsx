@@ -41,7 +41,7 @@ const renderSectionContent = (
               baseStyles.gridItem, 
               overrideStyles.gridItem, 
               { 
-                width: `${100 / columns}%`, 
+                width: item.type === 'tags' ? '100%' : `${100 / columns}%`, 
                 paddingRight: ((Number(baseStyles.grid?.gap) || 8) / 2) 
               }
             ] as Style[]}

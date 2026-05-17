@@ -8,6 +8,7 @@ import {
   isRatingItem, 
   isImageItem, 
   isSeparatorItem,
+  isTagsItem,
   formatDateRange 
 } from '@/lib/resume-helpers';
 import { 
@@ -17,7 +18,8 @@ import {
   LinkItem, 
   RatingItem, 
   ImageItem, 
-  SeparatorItem 
+  SeparatorItem,
+  TagsItem,
 } from '@/types/resume';
 
 import { 
@@ -95,13 +97,6 @@ export const baseStringItemRenderer: ItemRenderer = (item, styles, colors, _cust
       return (
         <Text style={[baseStyle, { color: colors.accents[3] }]}>
           📧 {item.value}
-        </Text>
-      );
-      
-    case 'tag':
-      return (
-        <Text style={[baseStyle, { backgroundColor: colors.accents[2], color: colors.text, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4, fontSize: 10 }]}>
-          {item.value}
         </Text>
       );
   }
@@ -216,23 +211,41 @@ export const baseSeparatorItemRenderer: ItemRenderer = (item, styles, colors, _c
   );
 };
 
+const baseTagsItemRenderer: ItemRenderer = (item, _styles, colors) => {
+  if (!isTagsItem(item)) return null;
+  const { name, items: tagItems, display } = item.value;
+
+  return (
+    <View style={{ marginBottom: 4 }}>
+      {name ? <Text style={{ fontWeight: 'bold', fontSize: 10, marginBottom: 2, color: colors.text }}>{name}</Text> : null}
+      {display === 'text' ? (
+        <Text style={{ fontSize: 12, color: colors.text }}>{tagItems.join(', ')}</Text>
+      ) : (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>
+          {tagItems.map((tag, i) => (
+            <Text key={i} style={{ backgroundColor: colors.accents[2], color: colors.text, paddingHorizontal: 8, paddingVertical: 2, borderRadius: display === 'pill' ? 999 : 4, fontSize: 10 }}>
+              {tag}
+            </Text>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+};
+
 export const baseItemRenderers: Record<string, ItemRenderer> = {
   heading: baseStringItemRenderer,
   'sub-heading': baseStringItemRenderer,
-  text: baseStringItemRenderer,
-  bullet: baseStringItemRenderer,
-  number: baseStringItemRenderer,
-  date: baseStringItemRenderer,
+  description: baseStringItemRenderer,
   location: baseStringItemRenderer,
   phone: baseStringItemRenderer,
   email: baseStringItemRenderer,
-  tag: baseStringItemRenderer,
   'date-range': baseDateRangeItemRenderer,
   link: baseLinkItemRenderer,
-  social: baseLinkItemRenderer,
   rating: baseRatingItemRenderer,
   image: baseImageItemRenderer,
   separator: baseSeparatorItemRenderer,
+  tags: baseTagsItemRenderer,
 };
 
 export const renderPdfItem = (

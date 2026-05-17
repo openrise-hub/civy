@@ -33,36 +33,68 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
       sections?: Resume["sections"];
     };
 
-    const sections = (resumeData.sections ?? []).map((section) => ({
-      ...section,
-      content: {
-        ...section.content,
-        items: section.content.items.map((item) => {
-          // Map old deprecated item types to new equivalents
-          const oldToNew: Record<string, string> = {
-            text: "description",
-            bullet: "description",
-            number: "description",
-            date: "tag",
-            social: "link",
-          };
-          const newType = oldToNew[item.type] || item.type;
+    const sections = (resumeData.sections ?? []).map((section) => {
+      const mapped = section.content.items.map((item) => {
+        // Map old deprecated item types to new equivalents
+        const oldToNew: Record<string, string> = {
+          text: "description",
+          bullet: "description",
+          number: "description",
+          date: "description",
+          social: "link",
+        };
+        const newType = oldToNew[item.type] || item.type;
 
-          if (item.type === "date-range" && "value" in item && item.value && typeof item.value === "object") {
-            const v = item.value as Record<string, unknown>;
-            return {
-              ...item,
-              type: "date-range" as const,
-              value: {
-                startDate: v.startDate === "Present" ? "" : (v.startDate as string),
-                endDate: v.endDate === "Present" ? undefined : (v.endDate as string | undefined),
-              },
-            } as Item;
+        if (item.type === "date-range" && "value" in item && item.value && typeof item.value === "object") {
+          const v = item.value as Record<string, unknown>;
+          return {
+            ...item,
+            type: "date-range" as const,
+            value: {
+              startDate: v.startDate === "Present" ? "" : (v.startDate as string),
+              endDate: v.endDate === "Present" ? undefined : (v.endDate as string | undefined),
+            },
+          } as Item;
+        }
+        return { ...item, type: newType } as Item;
+      });
+
+      // Merge old single-value 'tag' items into a single 'tags' item
+      const results: typeof mapped = [];
+      let pendingTags: string[] = [];
+      for (const item of mapped) {
+        if ((item as { type: string }).type === "tag") {
+          if ("value" in item && typeof item.value === "string") {
+            pendingTags.push(item.value);
           }
-          return { ...item, type: newType } as Item;
-        }),
-      },
-    }));
+        } else {
+          if (pendingTags.length > 0) {
+            results.push({
+              id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
+              visible: true,
+              type: "tags" as const,
+              value: { items: pendingTags, display: "pill" as const },
+            } as Item);
+            pendingTags = [];
+          }
+          results.push(item);
+        }
+      }
+      if (pendingTags.length > 0) {
+        results.push({
+          id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
+          visible: true,
+          type: "tags" as const,
+          value: { items: pendingTags, display: "pill" as const },
+        } as Item);
+        pendingTags = [];
+      }
+
+      return {
+        ...section,
+        content: { ...section.content, items: results },
+      };
+    });
 
     setResume({
       id: initialData.id,

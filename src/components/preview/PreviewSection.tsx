@@ -54,7 +54,9 @@ export function PreviewSection({ section, colors, isDimmed }: PreviewSectionProp
 
       <div style={getContentStyle()}>
         {items.map((item) => (
-          <PreviewItem key={item.id} item={item} colors={colors} />
+          <div key={item.id} style={layout === "grid" && item.type === "tags" ? { gridColumn: '1 / -1' } : undefined}>
+            <PreviewItem item={item} colors={colors} />
+          </div>
         ))}
       </div>
     </section>
