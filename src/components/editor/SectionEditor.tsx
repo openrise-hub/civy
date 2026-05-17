@@ -690,6 +690,12 @@ function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisi
             <SelectItem value="text">Text</SelectItem>
             <SelectItem value="badge">Badge</SelectItem>
             <SelectItem value="pill">Pill</SelectItem>
+            <SelectItem value="outline">Outline</SelectItem>
+            <SelectItem value="soft">Soft</SelectItem>
+            <SelectItem value="dot">Dot</SelectItem>
+            <SelectItem value="compact">Compact</SelectItem>
+            <SelectItem value="block">Block</SelectItem>
+            <SelectItem value="sep">Separated</SelectItem>
           </SelectContent>
         </Select>
       </div>

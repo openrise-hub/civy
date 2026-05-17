@@ -106,7 +106,7 @@ const tagsItemSchema = z.object({
   value: z.object({
     name: z.string().max(100).optional(),
     items: z.array(z.string().max(100)).max(50),
-    display: z.enum(["text", "badge", "pill"]),
+    display: z.enum(["text", "badge", "pill", "outline", "soft", "dot", "compact", "block", "sep"]),
   }),
 });
 
