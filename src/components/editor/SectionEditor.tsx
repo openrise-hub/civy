@@ -167,7 +167,7 @@ function DateRangeItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVi
 
   return (
     <div className={cn(
-      "space-y-3 p-3 rounded-lg border bg-card item-container transition-opacity",
+      "space-y-2 p-2.5 rounded-lg border bg-card item-container transition-opacity",
       item.visible === false && "opacity-50"
     )}>
       <div className="flex items-center justify-between">
@@ -410,7 +410,7 @@ function LinkItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisi
 
   return (
     <div className={cn(
-      "space-y-3 p-3 rounded-lg border bg-card item-container transition-opacity",
+      "space-y-2 p-2.5 rounded-lg border bg-card item-container transition-opacity",
       item.visible === false && "opacity-50"
     )}>
       <div className="flex items-center justify-between">
@@ -462,7 +462,7 @@ function RatingItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVi
 
   return (
     <div className={cn(
-      "space-y-3 p-3 rounded-lg border bg-card item-container transition-opacity",
+      "space-y-2 p-2.5 rounded-lg border bg-card item-container transition-opacity",
       item.visible === false && "opacity-50"
     )}>
       <div className="flex items-center justify-between">
@@ -549,7 +549,7 @@ function ImageItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVis
 
   return (
     <div className={cn(
-      "space-y-3 p-3 rounded-lg border bg-card item-container transition-opacity",
+      "space-y-2 p-2.5 rounded-lg border bg-card item-container transition-opacity",
       item.visible === false && "opacity-50"
     )}>
       <div className="flex items-center justify-between">
@@ -638,7 +638,7 @@ function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisi
 
   return (
     <div className={cn(
-      "space-y-3 p-3 rounded-lg border bg-card item-container transition-opacity",
+      "space-y-2 p-2.5 rounded-lg border bg-card item-container transition-opacity",
       item.visible === false && "opacity-50"
     )}>
       <div className="flex items-center justify-between">
@@ -742,7 +742,7 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
   }
 
   return (
-    <div className="flex items-center justify-center gap-1 p-2 rounded-lg border border-dashed bg-muted/30 add-item-toolbar">
+    <div className="flex items-center justify-center gap-1 p-1.5 rounded-lg border border-dashed bg-muted/30 add-item-toolbar">
       <button
         onClick={() => onAdd("heading")}
         title="Heading"

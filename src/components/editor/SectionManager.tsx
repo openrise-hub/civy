@@ -268,7 +268,7 @@ export function SectionManager() {
   if (!isMounted) {
     return (
       <div>
-        <div className="space-y-4">
+        <div className="space-y-3">
           {sections.map((section) => (
             <Card key={section.id}>
               <CardHeader className="pb-3">
@@ -303,7 +303,7 @@ export function SectionManager() {
         items={sections.map(section => ({ id: section.id }))}
         strategy={verticalListSortingStrategy}
       >
-        <div className="space-y-4">
+        <div className="space-y-3">
           {sections.map((section) => (
             <SortableSectionCard
               key={section.id}
