@@ -55,7 +55,7 @@ export function EditorSidebar() {
             <SidebarMenuItem>
               <div className="flex items-center justify-between px-2 py-1">
                 <div className="flex items-center gap-2">
-                  <UserNav />
+                  {!isCollapsed && <UserNav />}
                   {!isCollapsed && (
                      <div className="flex flex-col gap-0.5 leading-none overflow-hidden text-sm">
                        <span className="font-semibold truncate max-w-32">{t("user")}</span>
