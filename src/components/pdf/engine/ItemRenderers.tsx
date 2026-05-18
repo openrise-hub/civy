@@ -27,6 +27,15 @@ export interface PdfTranslations {
 }
 
 type PdfStyles = Record<string, Style | undefined>;
+
+function getConnectorFontSize(styles: PdfStyles): number | undefined {
+  return (styles as Record<string, unknown>).connectorFontSize as number | undefined;
+}
+
+function getLinkDecoration(styles: PdfStyles): 'underline' | 'none' {
+  const val = (styles as Record<string, unknown>).linkDecoration;
+  return val === 'none' ? 'none' : 'underline';
+}
 type PdfColors = TemplateConfig['colors'];
 
 export type ItemRenderer = (
@@ -39,8 +48,10 @@ export type ItemRenderer = (
 
 // --- Renderers ---
 
-const stringItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers, _translations) => {
+const stringItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers, translations) => {
   if (!isStringItem(item)) return null;
+
+  const connFontSize = getConnectorFontSize(styles);
 
   switch (item.type) {
     case 'heading':
@@ -66,22 +77,22 @@ const stringItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers
 
     case 'location':
       return (
-        <Text style={{ color: colors.connections, fontSize: 10 }}>
-          {'📍'} {item.value}
+        <Text style={{ color: colors.connections, fontSize: connFontSize }}>
+          {translations?.location || 'Location'}: {item.value}
         </Text>
       );
 
     case 'phone':
       return (
-        <Text style={{ color: colors.connections, fontSize: 10 }}>
-          {'📱'} {item.value}
+        <Text style={{ color: colors.connections, fontSize: connFontSize }}>
+          {translations?.phone || 'Phone'}: {item.value}
         </Text>
       );
 
     case 'email':
       return (
-        <Text style={{ color: colors.connections, fontSize: 10 }}>
-          {'📧'} {item.value}
+        <Text style={{ color: colors.connections, fontSize: connFontSize }}>
+          {translations?.email || 'Email'}: {item.value}
         </Text>
       );
 
@@ -90,25 +101,25 @@ const stringItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers
   }
 };
 
-const dateRangeItemRenderer: ItemRenderer = (item, _styles, colors, _customRenderers, translations) => {
+const dateRangeItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers, translations) => {
   if (!isDateRangeItem(item)) return null;
 
   const formatted = formatDateRange(item.value, (key) => translations?.[key] || "Present");
 
   return (
-    <Text style={{ fontStyle: 'italic', color: colors.connections, fontSize: 10 }}>
+    <Text style={{ fontStyle: 'italic', color: colors.connections, fontSize: getConnectorFontSize(styles) }}>
       {formatted}
     </Text>
   );
 };
 
-const linkItemRenderer: ItemRenderer = (item, _styles, colors, _customRenderers, _translations) => {
+const linkItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers, _translations) => {
   if (!isLinkItem(item)) return null;
 
   return (
     <Link
       src={item.value.url}
-      style={{ color: colors.links, textDecoration: 'underline' }}
+      style={{ color: colors.links, textDecoration: getLinkDecoration(styles) }}
     >
       {item.value.label || item.value.url}
     </Link>
