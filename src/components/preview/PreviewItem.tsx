@@ -208,7 +208,8 @@ export function PreviewItem({ item, config }: PreviewItemProps) {
 }
 
 function StringItemPreview({ item, config }: { item: StringItem; config: TemplateConfig }) {
-  const { colors, typography } = config;
+  const { colors, typography, header } = config;
+  const showIcons = header.connections.showIcons;
 
   switch (item.type) {
     case "heading":
@@ -247,7 +248,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
           fontSize: typography.fontSize.connections,
           fontFamily: typography.fontFamily.connections,
         }}>
-          📍{item.value}
+          {showIcons ? "\uD83D\uDCCD" : ""}{item.value}
         </span>
       );
 
@@ -258,7 +259,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
           fontSize: typography.fontSize.connections,
           fontFamily: typography.fontFamily.connections,
         }}>
-          📱{item.value}
+          {showIcons ? "\uD83D\uDCF1" : ""}{item.value}
         </span>
       );
 
@@ -269,7 +270,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
           fontSize: typography.fontSize.connections,
           fontFamily: typography.fontFamily.connections,
         }}>
-          📧{item.value}
+          {showIcons ? "\uD83D\uDCE7" : ""}{item.value}
         </span>
       );
 
@@ -311,6 +312,7 @@ function LinkPreview({ item, config }: { item: LinkItem; config: TemplateConfig 
       }}
     >
       {item.value.label || item.value.url}
+      {config.links.showExternalLinkIcon && " \u2197"}
     </a>
   );
 }
