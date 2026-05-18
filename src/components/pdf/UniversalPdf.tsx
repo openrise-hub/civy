@@ -10,7 +10,7 @@ import { PdfTranslations } from './engine/ItemRenderers';
 interface UniversalPdfProps {
   resume: Resume;
   templateName?: string;
-  templateConfig?: TemplateConfig;
+  templateConfig?: Partial<TemplateConfig>;
   translations: PdfTranslations;
 }
 
@@ -23,10 +23,7 @@ export const UniversalPdf = ({
   let TemplateComponent: React.ComponentType<{ resume: Resume; translations: PdfTranslations }>;
 
   try {
-    const userOverrides = templateConfig
-      ? (templateConfig as Partial<TemplateConfig>)
-      : undefined;
-    const { Template } = resolvePdfTemplate(templateName, userOverrides);
+    const { Template } = resolvePdfTemplate(templateName, templateConfig);
     TemplateComponent = Template as React.ComponentType<{ resume: Resume; translations: PdfTranslations }>;
   } catch (error) {
     console.error(`Failed to load template "${templateName}":`, error);

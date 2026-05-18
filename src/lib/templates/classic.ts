@@ -37,7 +37,7 @@ export const classicTemplate: TemplateConfig = {
     },
     fontSize: {
       body: "10pt",
-      name: "30pt",
+      name: "21pt",
       headline: "10pt",
       connections: "10pt",
       sectionTitles: "1.4em",
@@ -67,7 +67,7 @@ export const classicTemplate: TemplateConfig = {
     photoPosition: "left",
     photoSpaceLeft: "0.4cm",
     photoSpaceRight: "0.4cm",
-    spaceBelowName: "0.7cm",
+    spaceBelowName: "0.4cm",
     spaceBelowHeadline: "0.7cm",
     spaceBelowConnections: "0.7cm",
     connections: {

@@ -150,7 +150,7 @@ const personalInfoSchema = z.object({
 
 const metadataSchema = z.object({
   template: z.enum(templateValues),
-  templateConfig: templateConfigSchema.optional(),
+  templateConfig: templateConfigSchema.partial().optional(),
   typography: z.object({
     fontFamily: z.string().max(50),
     fontSize: z.enum(["sm", "md", "lg"]),

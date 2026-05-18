@@ -26,6 +26,12 @@ function replacePlaceholders(template: string, values: Record<string, string>): 
   return template.replace(/\b([A-Z_]+)\b/g, (match) => values[match] || match);
 }
 
+function parseLineSpacing(val: string): string {
+  const num = parseFloat(val);
+  if (val.endsWith("em") || val.endsWith("pt")) return String(1 + num);
+  return val;
+}
+
 export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
   const config = getTemplateConfig(resume);
   const { colors, page, typography, templates: tmpl } = config;
@@ -56,7 +62,7 @@ export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
         boxShadow: "0 2px 12px rgba(0, 0, 0, 0.1)",
         fontFamily: typography.fontFamily.body,
         fontSize: typography.fontSize.body,
-        lineHeight: typography.lineSpacing,
+        lineHeight: parseLineSpacing(typography.lineSpacing),
         color: colors.body,
         boxSizing: "border-box",
         textAlign: typography.alignment === "justified" ? "justify" : typography.alignment,

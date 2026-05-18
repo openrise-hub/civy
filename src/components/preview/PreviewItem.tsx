@@ -13,6 +13,12 @@ import {
   formatDateRange,
 } from "@/lib/resume-helpers";
 
+function parseLineSpacing(val: string): string {
+  const num = parseFloat(val);
+  if (val.endsWith("em") || val.endsWith("pt")) return String(1 + num);
+  return val;
+}
+
 interface PreviewItemProps {
   item: Item;
   config: TemplateConfig;
@@ -25,7 +31,7 @@ function DescriptionPreview({ text, config }: { text: string; config: TemplateCo
     color: colors.body,
     margin: 0,
     fontSize: typography.fontSize.body,
-    lineHeight: typography.lineSpacing,
+    lineHeight: parseLineSpacing(typography.lineSpacing),
   };
   const lines = text.split("\n");
   const elements: React.ReactNode[] = [];

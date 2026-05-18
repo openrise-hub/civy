@@ -24,7 +24,7 @@ interface PdfCanvasPreviewProps {
   resume: Resume;
   translations: PdfTranslations;
   templateName?: string;
-  templateConfig?: TemplateConfig;
+  templateConfig?: Partial<TemplateConfig>;
   zoom?: number;
 }
 
