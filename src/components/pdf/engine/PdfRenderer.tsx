@@ -24,9 +24,19 @@ function parseFontSize(val: string): number {
   return num || 10;
 }
 
+// Parse lineSpacing: @react-pdf/renderer expects a unitless lineHeight multiplier.
+// Unitless values ("1.5") are used as-is. Suffixed values represent ADDITIONAL
+// spacing between lines, so "0.6em" becomes 1.6 (1 + 0.6).
+function parseLineSpacing(val: string): number {
+  const num = parseFloat(val);
+  if (val.endsWith('em')) return 1 + num;
+  if (val.endsWith('pt')) return 1 + num / 10;
+  return num || 1.4;
+}
+
 // Build styles from TemplateConfig for @react-pdf/renderer
 function buildStyles(config: TemplateConfig) {
-  const { colors, typography, page, sectionTitles, header, entries } = config;
+  const { colors, typography, page, sectionTitles, header, entries, links } = config;
 
   const fontSize = {
     body: parseFontSize(typography.fontSize.body),
@@ -44,7 +54,7 @@ function buildStyles(config: TemplateConfig) {
       paddingRight: parseDimension(page.rightMargin),
       fontFamily: typography.fontFamily.body,
       fontSize: fontSize.body,
-      lineHeight: typography.lineSpacing,
+      lineHeight: parseLineSpacing(typography.lineSpacing),
       backgroundColor: colors.body === 'rgb(31, 41, 55)' ? '#ffffff' : '#ffffff',
       color: colors.body,
     },
@@ -178,6 +188,8 @@ function buildStyles(config: TemplateConfig) {
       color: colors.topNote,
       marginBottom: 12,
     } : undefined,
+    connectorFontSize: fontSize.connections,
+    linkDecoration: links.underline ? 'underline' as const : 'none' as const,
   };
 }
 
@@ -202,7 +214,7 @@ const renderSectionContent = (
               width: item.type === 'tags' ? '100%' : `${100 / columns}%`,
             }}
           >
-            {renderPdfItem(item, styles, colors, undefined, translations)}
+            {renderPdfItem(item, styles as unknown as Record<string, Style | undefined>, colors, undefined, translations)}
           </View>
         ))}
       </View>
@@ -214,7 +226,7 @@ const renderSectionContent = (
       <View style={styles.inline}>
         {visibleItems.map((item: Item) => (
           <View key={item.id}>
-            {renderPdfItem(item, styles, colors, undefined, translations)}
+            {renderPdfItem(item, styles as unknown as Record<string, Style | undefined>, colors, undefined, translations)}
           </View>
         ))}
       </View>
@@ -225,7 +237,7 @@ const renderSectionContent = (
     <View>
       {visibleItems.map((item: Item) => (
         <View key={item.id} style={styles.listItem}>
-          {renderPdfItem(item, styles, colors, undefined, translations)}
+          {renderPdfItem(item, styles as unknown as Record<string, Style | undefined>, colors, undefined, translations)}
         </View>
       ))}
     </View>
@@ -285,10 +297,17 @@ export const PdfRenderer = ({
           <View style={styles.contactRow}>
             {resume.personal.details
               .filter((item) => item.visible !== false)
-              .map((item) => (
-                <View key={item.id} style={styles.contactItem}>
-                  {renderPdfItem(item, styles, colors, undefined, translations)}
-                </View>
+              .map((item, idx, arr) => (
+                <React.Fragment key={item.id}>
+                  <View style={styles.contactItem}>
+                    {renderPdfItem(item, styles as unknown as Record<string, Style | undefined>, colors, undefined, translations)}
+                  </View>
+                  {templateConfig.header.connections.separator && idx < arr.length - 1 && (
+                    <Text style={{ color: colors.connections, fontSize: styles.connectorFontSize }}>
+                      {templateConfig.header.connections.separator}
+                    </Text>
+                  )}
+                </React.Fragment>
               ))}
           </View>
         </View>

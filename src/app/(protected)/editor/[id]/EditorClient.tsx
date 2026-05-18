@@ -10,9 +10,7 @@ import { useResumeStore } from "@/stores/useResumeStore";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SaveProvider } from "@/contexts/SaveContext";
-import { getTemplateConfig } from "@/lib/templates/registry";
 import type { Resume, Item } from "@/types/resume";
-import type { TemplateConfig } from "@/types/template";
 
 type EditorClientProps = {
   resumeId: string;
@@ -101,8 +99,6 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
 
     const metadata = (resumeData.metadata ?? {}) as Resume["metadata"];
     const templateName = metadata.template || "modern";
-    const templateConfig: TemplateConfig =
-      metadata.templateConfig ?? getTemplateConfig(templateName);
 
     setResume({
       id: initialData.id,
@@ -111,7 +107,7 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
       isPublic: initialData.is_public,
       metadata: {
         template: templateName,
-        templateConfig,
+        templateConfig: metadata.templateConfig,
         typography: metadata.typography ?? { fontFamily: "inter", fontSize: "md" },
         colors: metadata.colors ?? { background: "#ffffff", text: "#1f2937", accents: [] },
       },

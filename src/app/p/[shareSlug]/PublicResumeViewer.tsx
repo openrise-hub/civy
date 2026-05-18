@@ -6,9 +6,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import type { Resume } from "@/types/resume";
-import type { TemplateConfig } from "@/types/template";
 import type { PublicResumeData } from "@/lib/resumes/actions";
-import { getTemplateConfig } from "@/lib/templates/registry";
 import { DownloadIcon, EyeIcon } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { UniversalPdf } from "@/components/pdf/UniversalPdf";
@@ -53,8 +51,6 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
 
     const metadata = (data.metadata ?? {}) as Resume["metadata"];
     const templateName = metadata.template || "modern";
-    const templateConfig: TemplateConfig =
-      metadata.templateConfig ?? getTemplateConfig(templateName);
 
     return {
       id: resume.id,
@@ -64,7 +60,7 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
       metadata: {
         ...metadata,
         template: templateName,
-        templateConfig,
+        templateConfig: metadata.templateConfig,
         typography: metadata.typography ?? { fontFamily: "inter", fontSize: "md" },
         colors: metadata.colors ?? { background: "#ffffff", text: "#1f2937", accents: [] },
       },
@@ -124,6 +120,7 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
           resume={resumeData} 
           translations={translations}
           templateName={resumeData.metadata.template}
+          templateConfig={resumeData.metadata.templateConfig}
         />
       </main>
 

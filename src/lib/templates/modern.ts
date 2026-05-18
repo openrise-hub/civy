@@ -25,7 +25,7 @@ export const modernTemplate: TemplateConfig = {
   },
 
   typography: {
-    lineSpacing: "1.5",
+    lineSpacing: "1.8",
     alignment: "left",
     dateAndLocationColumnAlignment: "right",
     fontFamily: {

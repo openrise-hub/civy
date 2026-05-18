@@ -52,9 +52,7 @@ export function PreviewHeader({ personal, config }: PreviewHeaderProps) {
           display: "flex",
           flexWrap: "wrap",
           justifyContent: header.alignment === "center" ? "center" : "flex-start",
-          gap: header.connections.separator
-            ? `4px ${header.connections.spaceBetweenConnections}`
-            : `${header.connections.spaceBetweenConnections}`,
+          gap: `${header.connections.spaceBetweenConnections}`,
           fontSize: typography.fontSize.connections,
           fontFamily: typography.fontFamily.connections,
           color: colors.connections,

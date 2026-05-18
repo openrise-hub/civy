@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid'; 
 import { Resume, Section, Item, PersonalInfo, ItemType } from '@/types/resume';
 import { RESUME_LIMITS } from '@/constants/limits';
-import { getTemplateConfig } from '@/lib/templates/registry';
 
 // --- Default Templates ---
 // Used when creating new sections.
@@ -101,7 +100,6 @@ const initialResume: Resume = {
   isPublic: false,
   metadata: {
     template: 'modern',
-    templateConfig: getTemplateConfig('modern'),
     typography: { fontFamily: 'inter', fontSize: 'md' },
     colors: { 
       background: '#ffffff',
@@ -143,19 +141,16 @@ export const useResumeStore = create<ResumeStore>((set) => ({
     })),
 
   setTemplate: (name) =>
-    set((state) => {
-      const config = getTemplateConfig(name);
-      return {
-        resume: {
-          ...state.resume,
-          metadata: {
-            ...state.resume.metadata,
-            template: name,
-            templateConfig: config,
-          },
+    set((state) => ({
+      resume: {
+        ...state.resume,
+        metadata: {
+          ...state.resume.metadata,
+          template: name,
+          templateConfig: undefined,
         },
-      };
-    }),
+      },
+    })),
 
 
   addSection: (type = 'custom', title?: string) =>

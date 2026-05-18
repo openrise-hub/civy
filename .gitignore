@@ -44,6 +44,5 @@ AGENTS.md
 *.tsbuildinfo
 next-env.d.ts
 
-# roadmaps and audits
-ROADMAP.md
-
+*.md
+!README.md
