@@ -124,6 +124,7 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
           resume={resumeData} 
           translations={translations}
           templateName={resumeData.metadata.template}
+          templateConfig={resumeData.metadata.templateConfig}
         />
       </main>
 
