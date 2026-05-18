@@ -22,15 +22,25 @@ function getTemplateConfig(resume: Resume): TemplateConfig {
   return resolveTemplateConfig(resume.metadata.template || "modern");
 }
 
+function replacePlaceholders(template: string, values: Record<string, string>): string {
+  return template.replace(/\b([A-Z_]+)\b/g, (match) => values[match] || match);
+}
+
 export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
   const config = getTemplateConfig(resume);
-  const { colors, page, typography } = config;
+  const { colors, page, typography, templates: tmpl } = config;
 
   const pageSizes: Record<string, { w: number; h: number }> = {
     "a4": { w: 595, h: 842 },
     "us-letter": { w: 612, h: 792 },
   };
   const pageDims = pageSizes[page.size] || pageSizes.a4;
+
+  const today = new Date().toLocaleDateString();
+  const name = resume.personal.fullName;
+
+  const topNoteText = replacePlaceholders(tmpl.topNote, { NAME: name, CURRENT_DATE: today });
+  const footerText = replacePlaceholders(tmpl.footer, { NAME: name, PAGE_NUMBER: "1", TOTAL_PAGES: "1", CURRENT_DATE: today });
 
   return (
     <div
@@ -59,7 +69,7 @@ export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
           marginBottom: 12,
           fontFamily: typography.fontFamily.connections,
         }}>
-          Last updated {new Date().toLocaleDateString()}
+          {topNoteText}
         </div>
       )}
 
@@ -82,7 +92,7 @@ export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
           fontFamily: typography.fontFamily.connections,
           marginTop: 24,
         }}>
-          {resume.personal.fullName} — 1 / 1
+          {footerText}
         </div>
       )}
     </div>

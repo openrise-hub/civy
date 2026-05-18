@@ -19,7 +19,8 @@ interface PreviewItemProps {
 }
 
 function DescriptionPreview({ text, config }: { text: string; config: TemplateConfig }) {
-  const { colors, typography } = config;
+  const { colors, typography, entries } = config;
+  const { highlights } = entries;
   const baseStyle: React.CSSProperties = {
     color: colors.body,
     margin: 0,
@@ -31,9 +32,16 @@ function DescriptionPreview({ text, config }: { text: string; config: TemplateCo
   let listItems: React.ReactNode[] = [];
   let listType: "bullet" | "number" | null = null;
 
+  const bulletChar = highlights.bullet || "\u2022";
+  const escapedBullet = bulletChar.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const bulletRegex = new RegExp(`^${escapedBullet} (.*)`);
+  const dashRegex = /^- (.*)/;
+  const spaceBetween = highlights.spaceBetweenItems || "0.1em";
+  const spaceLeft = highlights.spaceLeft || "0.15cm";
+
   const flushList = () => {
     if (listItems.length === 0) return;
-    const style = { ...baseStyle, paddingLeft: "20px", margin: "2px 0" };
+    const style: React.CSSProperties = { ...baseStyle, paddingLeft: spaceLeft, margin: `${highlights.spaceAbove || "0cm"} 0` };
     elements.push(
       React.createElement(
         listType === "bullet" ? "ul" : "ol",
@@ -46,7 +54,7 @@ function DescriptionPreview({ text, config }: { text: string; config: TemplateCo
   };
 
   for (const line of lines) {
-    const bulletMatch = line.match(/^- (.*)/);
+    const bulletMatch = line.match(bulletRegex) || line.match(dashRegex);
     const numberMatch = line.match(/^(\d+)\. (.*)/);
 
     if (bulletMatch) {
@@ -54,7 +62,7 @@ function DescriptionPreview({ text, config }: { text: string; config: TemplateCo
       listItems.push(
         React.createElement("li", {
           key: listItems.length,
-          style: { ...baseStyle, margin: "1px 0" },
+          style: { ...baseStyle, margin: `${spaceBetween} 0` },
         }, bulletMatch[1])
       );
     } else if (numberMatch) {
@@ -62,7 +70,7 @@ function DescriptionPreview({ text, config }: { text: string; config: TemplateCo
       listItems.push(
         React.createElement("li", {
           key: listItems.length,
-          style: { ...baseStyle, margin: "1px 0" },
+          style: { ...baseStyle, margin: `${spaceBetween} 0` },
         }, numberMatch[2])
       );
     } else {
