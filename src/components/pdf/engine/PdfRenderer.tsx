@@ -261,100 +261,87 @@ export const PdfRenderer = ({
   const { colors, templates: tmpl } = templateConfig;
   const pageKey = templateConfig.page.size === 'us-letter' ? 'LETTER' : 'A4' as const;
 
-  const visibleSections = resume.sections.filter((s) => s.visible !== false);
-
-  // Paginate: put sections across pages, keeping each section intact.
-  // Estimate sections per page based on content density.
-  const sectionsPerPage = templateConfig.sections.allowPageBreak ? 2 : 3;
-  const sectionPages: (typeof visibleSections)[] = [];
-  for (let i = 0; i < visibleSections.length; i += sectionsPerPage) {
-    sectionPages.push(visibleSections.slice(i, i + sectionsPerPage));
-  }
-  const totalPages = sectionPages.length || 1;
-
-  const replaceValues = (template: string, pageNumber: number | string) =>
-    formatTemplateString(template, {
-      NAME: resume.personal.fullName,
-      PAGE_NUMBER: String(pageNumber),
-      TOTAL_PAGES: String(totalPages),
-      CURRENT_DATE: new Date().toLocaleDateString(),
-    });
-
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.nameRow}>
-        <Text style={styles.name}>{resume.personal.fullName}</Text>
-      </View>
-      {resume.personal.jobTitle && (
-        <View style={styles.headlineRow}>
-          <Text style={styles.headline}>{resume.personal.jobTitle}</Text>
-        </View>
-      )}
-      <View style={styles.contactRow}>
-        {resume.personal.details
-          .filter((item) => item.visible !== false)
-          .map((item, idx, arr) => (
-            <React.Fragment key={item.id}>
-              <View style={styles.contactItem}>
-                {renderPdfItem(item, styles as unknown as Record<string, Style | undefined>, colors, undefined, translations)}
-              </View>
-              {templateConfig.header.connections.separator && idx < arr.length - 1 && (
-                <Text style={{ color: colors.connections, fontSize: styles.connectorFontSize }}>
-                  {templateConfig.header.connections.separator}
-                </Text>
-              )}
-            </React.Fragment>
-          ))}
-      </View>
-    </View>
-  );
-
-  const renderSection = (section: (typeof visibleSections)[number]) => (
-    <View key={section.id} style={styles.section} wrap={false}>
-      <Text style={styles.sectionTitle}>
-        {section.title.toUpperCase()}
-      </Text>
-      <View style={styles.sectionContent}>
-        {renderSectionContent(section.content, styles, colors, translations)}
-      </View>
-    </View>
-  );
-
-  const renderPage = (pageIdx: number) => {
-    const pageSections = sectionPages[pageIdx] || [];
-    return (
-      <Page key={pageIdx} size={pageKey} style={styles.page} wrap={false}>
-        {pageIdx === 0 && templateConfig.page.showTopNote && styles.topNote && (
-          <Text style={styles.topNote}>{replaceValues(tmpl.topNote, pageIdx + 1)}</Text>
-        )}
-
-        {pageIdx === 0 && renderHeader()}
-
-        {pageSections.map(renderSection)}
-
-        {templateConfig.page.showFooter && styles.footer && (
-          <Text
-            style={styles.footer}
-            fixed
-            render={({ pageNumber, totalPages: total }) => (
-              <Text style={styles.footer}>
-                {formatTemplateString(tmpl.footer, {
-                  NAME: resume.personal.fullName,
-                  PAGE_NUMBER: String(pageNumber),
-                  TOTAL_PAGES: String(total),
-                  CURRENT_DATE: new Date().toLocaleDateString(),
-                })}
-              </Text>
-            )}
-          />
-        )}
-      </Page>
-    );
-  };
+  const footerRender = templateConfig.page.showFooter && styles.footer
+    ? (pageNumber: number, totalPages: number) => (
+        <Text style={styles.footer}>
+          {formatTemplateString(tmpl.footer, {
+            NAME: resume.personal.fullName,
+            PAGE_NUMBER: String(pageNumber),
+            TOTAL_PAGES: String(totalPages),
+            CURRENT_DATE: new Date().toLocaleDateString(),
+          })}
+        </Text>
+      )
+    : undefined;
 
   return (
     <Document>
-      {Array.from({ length: totalPages }, (_, i) => renderPage(i))}
+      <Page size={pageKey} style={styles.page} wrap>
+        {/* Top Note (page 1 only) */}
+        {templateConfig.page.showTopNote && styles.topNote && (
+          <Text style={styles.topNote}>
+            {formatTemplateString(tmpl.topNote, {
+              NAME: resume.personal.fullName,
+              CURRENT_DATE: new Date().toLocaleDateString(),
+            })}
+          </Text>
+        )}
+
+        {/* Header (page 1 only, kept together) */}
+        <View wrap={false}>
+          <View style={styles.header}>
+            <View style={styles.nameRow}>
+              <Text style={styles.name}>{resume.personal.fullName}</Text>
+            </View>
+            {resume.personal.jobTitle && (
+              <View style={styles.headlineRow}>
+                <Text style={styles.headline}>{resume.personal.jobTitle}</Text>
+              </View>
+            )}
+            <View style={styles.contactRow}>
+              {resume.personal.details
+                .filter((item) => item.visible !== false)
+                .map((item, idx, arr) => (
+                  <React.Fragment key={item.id}>
+                    <View style={styles.contactItem}>
+                      {renderPdfItem(item, styles as unknown as Record<string, Style | undefined>, colors, undefined, translations)}
+                    </View>
+                    {templateConfig.header.connections.separator && idx < arr.length - 1 && (
+                      <Text style={{ color: colors.connections, fontSize: styles.connectorFontSize }}>
+                        {templateConfig.header.connections.separator}
+                      </Text>
+                    )}
+                  </React.Fragment>
+                ))}
+            </View>
+          </View>
+        </View>
+
+        {/* Sections (each kept intact, flows across pages) */}
+        {resume.sections
+          .filter((s) => s.visible !== false)
+          .map((section) => (
+            <View key={section.id} style={styles.section} wrap={false}>
+              <Text style={styles.sectionTitle}>
+                {section.title.toUpperCase()}
+              </Text>
+              <View style={styles.sectionContent}>
+                {renderSectionContent(section.content, styles, colors, translations)}
+              </View>
+            </View>
+          ))}
+
+        {/* Footer (fixed, appears on every page) */}
+        {footerRender && (
+          <Text
+            style={styles.footer}
+            fixed
+            render={({ pageNumber, totalPages }) =>
+              footerRender(pageNumber, totalPages)
+            }
+          />
+        )}
+      </Page>
     </Document>
   );
 };
