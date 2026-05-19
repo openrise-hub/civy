@@ -57,6 +57,7 @@ function buildStyles(config: TemplateConfig) {
       lineHeight: parseLineSpacing(typography.lineSpacing),
       backgroundColor: colors.body === 'rgb(31, 41, 55)' ? '#ffffff' : '#ffffff',
       color: colors.body,
+      height: page.size === 'a4' ? 842 : 792,
     },
     name: {
       fontSize: fontSize.name,
