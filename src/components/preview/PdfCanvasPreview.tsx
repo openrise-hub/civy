@@ -120,57 +120,68 @@ export function PdfCanvasPreview({
     }
 
     try {
-      const page = await pdfDoc.getPage(1);
       const visibleCanvas = canvasRef.current;
-      
-      // Get container width from the rigidly styled outer wrapper
       const containerWidth = wrapperRef.current.clientWidth;
-      
-      // Get original page dimensions
-      const viewport = page.getViewport({ scale: 1 });
-      
-      // Calculate scale to fit container width with padding
-      const padding = 32; // 16px on each side
+      const padding = 32;
       const availableWidth = containerWidth - padding;
-      const baseScale = availableWidth / viewport.width;
+      const numPages = pdfDoc.numPages;
+
+      // Get the first page's viewport to calculate the common scale
+      const firstPage = await pdfDoc.getPage(1);
+      const firstViewport = firstPage.getViewport({ scale: 1 });
+      const baseScale = availableWidth / firstViewport.width;
       const scale = baseScale * zoom;
-      
-      // Apply scale
-      const scaledViewport = page.getViewport({ scale });
 
-      // Create offscreen canvas for double buffering
-      if (!offscreenCanvasRef.current) {
-        offscreenCanvasRef.current = document.createElement("canvas");
+      // Calculate total canvas dimensions by pre-computing all page viewports
+      const pageViewports: pdfjs.PageViewport[] = [];
+      let totalHeight = 0;
+      let maxWidth = 0;
+      const pageGap = 16; // visual gap between pages
+
+      for (let i = 1; i <= numPages; i++) {
+        const page = i === 1 ? firstPage : await pdfDoc.getPage(i);
+        const viewport = page.getViewport({ scale });
+        pageViewports.push(viewport);
+        totalHeight += viewport.height + (i < numPages ? pageGap : 0);
+        maxWidth = Math.max(maxWidth, viewport.width);
       }
-      const offscreenCanvas = offscreenCanvasRef.current;
-      const offscreenContext = offscreenCanvas.getContext("2d");
 
-      if (!offscreenContext) return;
-
-      // Set offscreen canvas dimensions
-      offscreenCanvas.width = scaledViewport.width;
-      offscreenCanvas.height = scaledViewport.height;
-
-      // Render to offscreen canvas
-      renderTaskRef.current = page.render({
-        canvasContext: offscreenContext,
-        viewport: scaledViewport,
-        canvas: offscreenCanvas,
-      });
-
-      await renderTaskRef.current.promise;
-
-      // Now copy to visible canvas (this is instant, no flicker)
+      // Set visible canvas dimensions to fit all pages
+      visibleCanvas.width = maxWidth;
+      visibleCanvas.height = totalHeight;
       const visibleContext = visibleCanvas.getContext("2d");
-      if (visibleContext) {
-        // Only resize visible canvas after offscreen render is complete
-        visibleCanvas.width = scaledViewport.width;
-        visibleCanvas.height = scaledViewport.height;
-        // Immediately draw the offscreen content
-        visibleContext.drawImage(offscreenCanvas, 0, 0);
+      if (!visibleContext) return;
+
+      // Clear the canvas
+      visibleContext.clearRect(0, 0, visibleCanvas.width, visibleCanvas.height);
+
+      // Render each page at the correct y offset
+      let yOffset = 0;
+      for (let i = 0; i < pageViewports.length; i++) {
+        const viewport = pageViewports[i];
+
+        // Create offscreen canvas for double-buffered rendering of this page
+        const offscreenCanvas = document.createElement("canvas");
+        const offscreenContext = offscreenCanvas.getContext("2d");
+        if (!offscreenContext) continue;
+
+        offscreenCanvas.width = viewport.width;
+        offscreenCanvas.height = viewport.height;
+
+        const page = i === 0 ? firstPage : await pdfDoc.getPage(i + 1);
+        renderTaskRef.current = page.render({
+          canvasContext: offscreenContext,
+          viewport,
+          canvas: offscreenCanvas,
+        });
+
+        await renderTaskRef.current.promise;
+
+        // Draw page onto visible canvas at current y offset
+        visibleContext.drawImage(offscreenCanvas, (maxWidth - viewport.width) / 2, yOffset);
+        yOffset += viewport.height + pageGap;
       }
     } catch (err) {
-      // Ignore cancelled renders
       if (err instanceof Error && err.message.includes("cancelled")) {
         return;
       }
