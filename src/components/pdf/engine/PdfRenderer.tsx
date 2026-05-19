@@ -321,8 +321,8 @@ export const PdfRenderer = ({
         {resume.sections
           .filter((s) => s.visible !== false)
           .map((section) => (
-            <View key={section.id} style={styles.section} wrap={false}>
-              <Text style={styles.sectionTitle}>
+            <View key={section.id} style={styles.section}>
+              <Text style={styles.sectionTitle} minPresenceAhead={40}>
                 {section.title.toUpperCase()}
               </Text>
               <View style={styles.sectionContent}>
