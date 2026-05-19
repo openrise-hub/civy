@@ -67,7 +67,7 @@ export function PdfCanvasPreview({
       console.error("Error generating PDF:", err);
       throw err;
     }
-  }, [resume, templateName, translations]);
+  }, [resume, templateName, templateConfig, translations]);
 
   // Load PDF document - debounced to prevent blinking
   useEffect(() => {
