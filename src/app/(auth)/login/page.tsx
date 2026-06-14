@@ -80,6 +80,7 @@ function LoginForm() {
   const next = searchParams.get("next") || undefined;
   const errorParam = searchParams.get("error");
   const tabParam = searchParams.get("tab");
+  const messageParam = searchParams.get("message");
   const t = useTranslations("auth");
 
   const [email, setEmail] = useState("");
@@ -87,7 +88,9 @@ function LoginForm() {
   const [displayName, setDisplayName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(errorParam);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(
+    messageParam ? t(messageParam as "alreadyRegistered") : null
+  );
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [showResend, setShowResend] = useState(false);

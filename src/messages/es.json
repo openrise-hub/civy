@@ -115,7 +115,8 @@
     "sending": "Enviando...",
     "saving": "Guardando...",
     "resendVerification": "Reenviar correo de verificación",
-    "verificationResent": "¡Correo de verificación enviado! Revisa tu bandeja de entrada."
+    "verificationResent": "¡Correo de verificación enviado! Revisa tu bandeja de entrada.",
+    "alreadyRegistered": "Ya existe una cuenta con este correo. Inicia sesión a continuación."
   },
   "dashboard": {
     "title": "Mis Currículums",

@@ -84,7 +84,7 @@ export async function signUpWithEmail(email: string, password: string, displayNa
 
   if (error) {
     if (error.message.toLowerCase().includes("already registered")) {
-      return { success: "If this email is available, a confirmation email has been sent." };
+      redirect(`/login?tab=signin&message=already-registered`);
     }
     return { error: error.message };
   }
