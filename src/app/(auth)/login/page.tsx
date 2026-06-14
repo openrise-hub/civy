@@ -8,15 +8,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Linkedin } from "lucide-react";
-import { 
-  signInWithOAuth, 
+import {
   signInWithEmail, 
   signUpWithEmail,
   resendVerification,
-  type OAuthProvider 
 } from "@/lib/auth/actions";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { LoginIllustration } from "@/components/auth/LoginIllustration";
+
+type OAuthProvider = 
+  | "google" 
+  | "github" 
+  | "discord" 
+  | "linkedin_oidc" 
+  | "azure" 
+  | "slack_oidc";
 
 // Brand Icons
 const GoogleIcon = () => (
@@ -98,9 +105,24 @@ function LoginForm() {
   const handleOAuth = async (provider: OAuthProvider) => {
     setLoading(true);
     setError(null);
-    const result = await signInWithOAuth(provider, next);
-    if (result?.error) {
-      setError(result.error);
+    try {
+      const supabase = createClient();
+      const origin = window.location.origin;
+      const redirectTo = next
+        ? `${origin}/callback?next=${encodeURIComponent(next)}`
+        : `${origin}/callback`;
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo },
+      });
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    } catch {
+      setError("Failed to initiate sign in");
       setLoading(false);
     }
   };

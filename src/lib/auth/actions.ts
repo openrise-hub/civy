@@ -17,38 +17,6 @@ async function getOrigin(): Promise<string> {
   return origin;
 }
 
-export type OAuthProvider = 
-  | "google" 
-  | "github" 
-  | "discord" 
-  | "linkedin_oidc" 
-  | "azure" 
-  | "slack_oidc";
-
-export async function signInWithOAuth(provider: OAuthProvider, next?: string) {
-  const supabase = await createClient();
-  const origin = await getOrigin();
-
-  const redirectTo = next 
-    ? `${origin}/callback?next=${encodeURIComponent(next)}`
-    : `${origin}/callback`;
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider,
-    options: {
-      redirectTo,
-    },
-  });
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  if (data.url) {
-    redirect(data.url);
-  }
-}
-
 export async function signInWithEmail(email: string, password: string, next?: string) {
   const supabase = await createClient();
 
