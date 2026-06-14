@@ -115,7 +115,8 @@
     "sending": "Sending...",
     "saving": "Saving...",
     "resendVerification": "Resend verification email",
-    "verificationResent": "Verification email sent! Check your inbox."
+    "verificationResent": "Verification email sent! Check your inbox.",
+    "alreadyRegistered": "An account with this email already exists. Please sign in below."
   },
   "dashboard": {
     "title": "My Resumes",
@@ -132,6 +133,7 @@
     "upgradeTitle": "Unlock Unlimited Resumes",
     "upgradeDescription": "Upgrade to Pro to create unlimited resumes and access premium templates.",
     "upgradeButton": "Upgrade to Pro",
+    "emailConfirmed": "Email confirmed! Welcome to Civy.",
     "deleteError": "Could not delete resume",
     "deleteSuccess": "Resume deleted successfully",
     "duplicate": "Duplicate",

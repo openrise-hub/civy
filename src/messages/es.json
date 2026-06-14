@@ -115,7 +115,8 @@
     "sending": "Enviando...",
     "saving": "Guardando...",
     "resendVerification": "Reenviar correo de verificación",
-    "verificationResent": "¡Correo de verificación enviado! Revisa tu bandeja de entrada."
+    "verificationResent": "¡Correo de verificación enviado! Revisa tu bandeja de entrada.",
+    "alreadyRegistered": "Ya existe una cuenta con este correo. Inicia sesión a continuación."
   },
   "dashboard": {
     "title": "Mis Currículums",
@@ -133,6 +134,7 @@
     "upgradeDescription": "Pásate a Pro para crear currículums ilimitados y acceder a plantillas premium.",
     "upgradeButton": "Pasarse a Pro",
     "deleteError": "No se pudo eliminar el currículum",
+    "emailConfirmed": "¡Correo confirmado! Bienvenido a Civy.",
     "deleteSuccess": "Currículum eliminado con éxito",
     "duplicate": "Duplicar",
     "duplicateSuccess": "Currículum duplicado",
