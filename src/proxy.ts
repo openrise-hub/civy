@@ -28,6 +28,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Skip auth check for public routes — no session refresh needed
+  if (publicRoutes.includes(pathname) || pathname.startsWith("/p/")) {
+    return NextResponse.next();
+  }
+
   let response = NextResponse.next({
     request,
   });
@@ -59,11 +64,6 @@ export async function proxy(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  // Skip auth check for public routes
-  if (publicRoutes.includes(pathname) || pathname.startsWith("/p/")) {
-    return response;
-  }
 
   // Redirect to login if not authenticated
   if (!user) {

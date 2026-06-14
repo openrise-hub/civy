@@ -4,6 +4,19 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
+async function getOrigin(): Promise<string> {
+  const origin = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!origin) {
+    const headerOrigin = (await headers()).get("origin");
+    if (headerOrigin) return headerOrigin;
+    throw new Error(
+      "NEXT_PUBLIC_SITE_URL is not set and no origin header was found. " +
+      "Set NEXT_PUBLIC_SITE_URL in your environment to enable OAuth and email flows."
+    );
+  }
+  return origin;
+}
+
 export type OAuthProvider = 
   | "google" 
   | "github" 
@@ -14,11 +27,7 @@ export type OAuthProvider =
 
 export async function signInWithOAuth(provider: OAuthProvider, next?: string) {
   const supabase = await createClient();
-  const headersList = await headers();
-  // OAuth must use the actual origin so the PKCE code verifier cookie
-  // is set on the same domain that receives the callback. Fall back to
-  // NEXT_PUBLIC_SITE_URL only when origin is missing (e.g. server-to-server).
-  const origin = headersList.get("origin") || process.env.NEXT_PUBLIC_SITE_URL || "";
+  const origin = await getOrigin();
 
   const redirectTo = next 
     ? `${origin}/callback?next=${encodeURIComponent(next)}`
@@ -57,11 +66,7 @@ export async function signInWithEmail(email: string, password: string, next?: st
 
 export async function signUpWithEmail(email: string, password: string, displayName?: string, next?: string) {
   const supabase = await createClient();
-  const headersList = await headers();
-  const origin =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    headersList.get("origin") ||
-    "";
+  const origin = await getOrigin();
 
   const emailRedirectTo = next
     ? `${origin}/callback?next=${next}`
@@ -77,6 +82,9 @@ export async function signUpWithEmail(email: string, password: string, displayNa
   });
 
   if (error) {
+    if (error.message.toLowerCase().includes("already registered")) {
+      return { success: "If this email is available, a confirmation email has been sent." };
+    }
     return { error: error.message };
   }
 
@@ -97,11 +105,7 @@ export async function getUser() {
 
 export async function resetPassword(email: string) {
   const supabase = await createClient();
-  const headersList = await headers();
-  const origin =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    headersList.get("origin") ||
-    "";
+  const origin = await getOrigin();
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/callback?next=/reset-password`,

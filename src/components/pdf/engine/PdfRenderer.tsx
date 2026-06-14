@@ -57,6 +57,7 @@ function buildStyles(config: TemplateConfig) {
       lineHeight: parseLineSpacing(typography.lineSpacing),
       backgroundColor: colors.body === 'rgb(31, 41, 55)' ? '#ffffff' : '#ffffff',
       color: colors.body,
+      height: page.size === 'a4' ? 842 : 792,
     },
     name: {
       fontSize: fontSize.name,
@@ -258,66 +259,71 @@ export const PdfRenderer = ({
   translations: PdfTranslations;
 }) => {
   const styles = buildStyles(templateConfig);
-  const { colors, templates: tmpl, pageKey } = {
-    ...templateConfig,
-    pageKey: templateConfig.page.size === 'us-letter' ? 'LETTER' : 'A4',
-  };
+  const { colors, templates: tmpl } = templateConfig;
+  const pageKey = templateConfig.page.size === 'us-letter' ? 'LETTER' : 'A4' as const;
 
-  const totalPages = 1; // Will be dynamic if we support multi-page
-  const footerText = formatTemplateString(tmpl.footer, {
-    NAME: resume.personal.fullName,
-    PAGE_NUMBER: '1',
-    TOTAL_PAGES: String(totalPages),
-    CURRENT_DATE: new Date().toLocaleDateString(),
-  });
-
-  const topNoteText = formatTemplateString(tmpl.topNote, {
-    NAME: resume.personal.fullName,
-    CURRENT_DATE: new Date().toLocaleDateString(),
-  });
+  const footerRender = templateConfig.page.showFooter && styles.footer
+    ? (pageNumber: number, totalPages: number) => (
+        <Text style={styles.footer}>
+          {formatTemplateString(tmpl.footer, {
+            NAME: resume.personal.fullName,
+            PAGE_NUMBER: String(pageNumber),
+            TOTAL_PAGES: String(totalPages),
+            CURRENT_DATE: new Date().toLocaleDateString(),
+          })}
+        </Text>
+      )
+    : undefined;
 
   return (
     <Document>
-      <Page size={pageKey as 'A4' | 'LETTER'} style={styles.page}>
-        {/* Top Note */}
+      <Page size={pageKey} style={styles.page} wrap>
+        {/* Top Note (page 1 only) */}
         {templateConfig.page.showTopNote && styles.topNote && (
-          <Text style={styles.topNote}>{topNoteText}</Text>
+          <Text style={styles.topNote}>
+            {formatTemplateString(tmpl.topNote, {
+              NAME: resume.personal.fullName,
+              CURRENT_DATE: new Date().toLocaleDateString(),
+            })}
+          </Text>
         )}
 
-        {/* Header Section */}
-        <View style={styles.header}>
-          <View style={styles.nameRow}>
-            <Text style={styles.name}>{resume.personal.fullName}</Text>
-          </View>
-          {resume.personal.jobTitle && (
-            <View style={styles.headlineRow}>
-              <Text style={styles.headline}>{resume.personal.jobTitle}</Text>
+        {/* Header (page 1 only, kept together) */}
+        <View wrap={false}>
+          <View style={styles.header}>
+            <View style={styles.nameRow}>
+              <Text style={styles.name}>{resume.personal.fullName}</Text>
             </View>
-          )}
-          <View style={styles.contactRow}>
-            {resume.personal.details
-              .filter((item) => item.visible !== false)
-              .map((item, idx, arr) => (
-                <React.Fragment key={item.id}>
-                  <View style={styles.contactItem}>
-                    {renderPdfItem(item, styles as unknown as Record<string, Style | undefined>, colors, undefined, translations)}
-                  </View>
-                  {templateConfig.header.connections.separator && idx < arr.length - 1 && (
-                    <Text style={{ color: colors.connections, fontSize: styles.connectorFontSize }}>
-                      {templateConfig.header.connections.separator}
-                    </Text>
-                  )}
-                </React.Fragment>
-              ))}
+            {resume.personal.jobTitle && (
+              <View style={styles.headlineRow}>
+                <Text style={styles.headline}>{resume.personal.jobTitle}</Text>
+              </View>
+            )}
+            <View style={styles.contactRow}>
+              {resume.personal.details
+                .filter((item) => item.visible !== false)
+                .map((item, idx, arr) => (
+                  <React.Fragment key={item.id}>
+                    <View style={styles.contactItem}>
+                      {renderPdfItem(item, styles as unknown as Record<string, Style | undefined>, colors, undefined, translations)}
+                    </View>
+                    {templateConfig.header.connections.separator && idx < arr.length - 1 && (
+                      <Text style={{ color: colors.connections, fontSize: styles.connectorFontSize }}>
+                        {templateConfig.header.connections.separator}
+                      </Text>
+                    )}
+                  </React.Fragment>
+                ))}
+            </View>
           </View>
         </View>
 
-        {/* Sections */}
+        {/* Sections (each kept intact, flows across pages) */}
         {resume.sections
           .filter((s) => s.visible !== false)
           .map((section) => (
             <View key={section.id} style={styles.section}>
-              <Text style={styles.sectionTitle}>
+              <Text style={styles.sectionTitle} minPresenceAhead={40}>
                 {section.title.toUpperCase()}
               </Text>
               <View style={styles.sectionContent}>
@@ -326,21 +332,14 @@ export const PdfRenderer = ({
             </View>
           ))}
 
-        {/* Footer */}
-        {templateConfig.page.showFooter && styles.footer && (
+        {/* Footer (fixed, appears on every page) */}
+        {footerRender && (
           <Text
             style={styles.footer}
             fixed
-            render={({ pageNumber, totalPages: total }) => (
-              <Text style={styles.footer}>
-                {formatTemplateString(tmpl.footer, {
-                  NAME: resume.personal.fullName,
-                  PAGE_NUMBER: String(pageNumber),
-                  TOTAL_PAGES: String(total),
-                  CURRENT_DATE: new Date().toLocaleDateString(),
-                })}
-              </Text>
-            )}
+            render={({ pageNumber, totalPages }) =>
+              footerRender(pageNumber, totalPages)
+            }
           />
         )}
       </Page>
