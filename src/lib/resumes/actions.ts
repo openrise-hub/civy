@@ -19,6 +19,8 @@ export type ResumeListItem = {
 const defaultResumeData = {
   metadata: {
     template: "modern",
+    showFooter: false,
+    showTopNote: false,
     typography: { fontFamily: "inter", fontSize: "md" },
     colors: {
       background: "#ffffff",

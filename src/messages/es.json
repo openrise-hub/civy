@@ -39,7 +39,10 @@
       "limitFree": "Los usuarios gratuitos solo pueden guardar 2 plantillas. Pásate a Pro para tener plantillas ilimitadas.",
       "limitPro": "Has alcanzado el límite máximo de 50 plantillas personalizadas.",
       "saveError": "Error al guardar la plantilla. Por favor, inténtalo de nuevo.",
-      "lowContrast": "Bajo contraste ({ratio}:1). Considera ajustar los colores para mayor legibilidad."
+      "lowContrast": "Bajo contraste ({ratio}:1). Considera ajustar los colores para mayor legibilidad.",
+      "pageOptions": "Opciones de página",
+      "showFooter": "Mostrar pie de página",
+      "showTopNote": "Mostrar nota \"Última actualización\""
     },
     "a11y": {
       "autosaved": "CV autoguardado",

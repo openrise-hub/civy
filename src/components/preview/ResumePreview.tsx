@@ -35,6 +35,8 @@ function parseLineSpacing(val: string): string {
 export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
   const config = getTemplateConfig(resume);
   const { colors, page, typography, templates: tmpl } = config;
+  const showFooter = resume.metadata.showFooter ?? config.page.showFooter;
+  const showTopNote = resume.metadata.showTopNote ?? config.page.showTopNote;
 
   const pageSizes: Record<string, { w: number; h: number }> = {
     "a4": { w: 595, h: 842 },
@@ -68,7 +70,7 @@ export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
         textAlign: typography.alignment === "justified" ? "justify" : typography.alignment,
       }}
     >
-      {page.showTopNote && (
+      {showTopNote && (
         <div style={{
           fontSize: typography.fontSize.connections,
           color: colors.topNote,
@@ -90,7 +92,7 @@ export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
         />
       ))}
 
-      {page.showFooter && (
+      {showFooter && (
         <div style={{
           textAlign: "center",
           fontSize: typography.fontSize.connections,

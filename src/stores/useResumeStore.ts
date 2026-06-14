@@ -100,6 +100,8 @@ const initialResume: Resume = {
   isPublic: false,
   metadata: {
     template: 'modern',
+    showFooter: false,
+    showTopNote: false,
     typography: { fontFamily: 'inter', fontSize: 'md' },
     colors: { 
       background: '#ffffff',

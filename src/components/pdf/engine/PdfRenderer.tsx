@@ -261,8 +261,10 @@ export const PdfRenderer = ({
   const styles = buildStyles(templateConfig);
   const { colors, templates: tmpl } = templateConfig;
   const pageKey = templateConfig.page.size === 'us-letter' ? 'LETTER' : 'A4' as const;
+  const showFooter = resume.metadata.showFooter ?? templateConfig.page.showFooter;
+  const showTopNote = resume.metadata.showTopNote ?? templateConfig.page.showTopNote;
 
-  const footerRender = templateConfig.page.showFooter && styles.footer
+  const footerRender = showFooter && styles.footer
     ? (pageNumber: number, totalPages: number) => (
         <Text style={styles.footer}>
           {formatTemplateString(tmpl.footer, {
@@ -279,7 +281,7 @@ export const PdfRenderer = ({
     <Document>
       <Page size={pageKey} style={styles.page} wrap>
         {/* Top Note (page 1 only) */}
-        {templateConfig.page.showTopNote && styles.topNote && (
+        {showTopNote && styles.topNote && (
           <Text style={styles.topNote}>
             {formatTemplateString(tmpl.topNote, {
               NAME: resume.personal.fullName,

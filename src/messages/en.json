@@ -39,7 +39,10 @@
       "limitFree": "Free users can only save 2 templates. Upgrade to Pro for unlimited templates.",
       "limitPro": "You have reached the maximum limit of 50 custom templates.",
       "saveError": "Failed to save template. Please try again.",
-      "lowContrast": "Low contrast ({ratio}:1). Consider adjusting colors for readability."
+      "lowContrast": "Low contrast ({ratio}:1). Consider adjusting colors for readability.",
+      "pageOptions": "Page Options",
+      "showFooter": "Show footer",
+      "showTopNote": "Show \"Last updated\" note"
     },
     "a11y": {
       "autosaved": "CV Autosaved",

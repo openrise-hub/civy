@@ -150,6 +150,8 @@ export interface Resume {
   metadata: {
     template: string;
     templateConfig?: Partial<TemplateConfig>;
+    showFooter: boolean;
+    showTopNote: boolean;
     typography: { fontFamily: string; fontSize: 'sm' | 'md' | 'lg' };
   colors: { 
       background: string;   // Paper color
