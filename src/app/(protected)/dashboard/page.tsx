@@ -13,8 +13,15 @@ import { UserNav } from "@/components/UserNav";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { ResumeDashboardClient } from "./ResumeDashboardClient";
 import { getFolders } from "@/lib/folders/actions";
+import { EmailConfirmedBanner } from "./EmailConfirmedBanner";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ confirmed?: string }>;
+}) {
+  const params = await searchParams;
+  const confirmed = params.confirmed === "true";
   const user = await getUser();
   const t = await getTranslations("dashboard");
 
@@ -36,6 +43,7 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-dvh bg-background">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+        {confirmed && <EmailConfirmedBanner />}
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold">{t("title")}</h1>

@@ -132,6 +132,7 @@
     "upgradeTitle": "Unlock Unlimited Resumes",
     "upgradeDescription": "Upgrade to Pro to create unlimited resumes and access premium templates.",
     "upgradeButton": "Upgrade to Pro",
+    "emailConfirmed": "Email confirmed! Welcome to Civy.",
     "deleteError": "Could not delete resume",
     "deleteSuccess": "Resume deleted successfully",
     "duplicate": "Duplicate",

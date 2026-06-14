@@ -133,6 +133,7 @@
     "upgradeDescription": "Pásate a Pro para crear currículums ilimitados y acceder a plantillas premium.",
     "upgradeButton": "Pasarse a Pro",
     "deleteError": "No se pudo eliminar el currículum",
+    "emailConfirmed": "¡Correo confirmado! Bienvenido a Civy.",
     "deleteSuccess": "Currículum eliminado con éxito",
     "duplicate": "Duplicar",
     "duplicateSuccess": "Currículum duplicado",
