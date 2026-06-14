@@ -68,9 +68,10 @@ export async function signUpWithEmail(email: string, password: string, displayNa
   const supabase = await createClient();
   const origin = await getOrigin();
 
-  const emailRedirectTo = next
-    ? `${origin}/callback?next=${next}`
-    : `${origin}/callback`;
+  const baseUrl = `${origin}/callback`;
+  const params = new URLSearchParams({ source: "signup" });
+  if (next) params.set("next", next);
+  const emailRedirectTo = `${baseUrl}?${params.toString()}`;
 
   const { error } = await supabase.auth.signUp({
     email,
