@@ -1,6 +1,6 @@
 "use client";
 
-import { Resume } from "@/types/resume";
+import { Resume, Section } from "@/types/resume";
 import type { TemplateConfig } from "@/types/template";
 import { resolveTemplateConfig } from "@/lib/templates/resolver";
 import { PreviewHeader } from "./PreviewHeader";
@@ -32,6 +32,17 @@ function parseLineSpacing(val: string): string {
   return val;
 }
 
+function splitSectionsIntoPages(
+  sections: Section[],
+  perPage: number
+): Section[][] {
+  const pages: Section[][] = [];
+  for (let i = 0; i < sections.length; i += perPage) {
+    pages.push(sections.slice(i, i + perPage));
+  }
+  return pages.length > 0 ? pages : [[]];
+}
+
 export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
   const config = getTemplateConfig(resume);
   const { colors, page, typography, templates: tmpl } = config;
@@ -50,59 +61,70 @@ export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
   const topNoteText = replacePlaceholders(tmpl.topNote, { NAME: name, CURRENT_DATE: today });
   const footerText = replacePlaceholders(tmpl.footer, { NAME: name, PAGE_NUMBER: "1", TOTAL_PAGES: "1", CURRENT_DATE: today });
 
+  const visibleSections = resume.sections.filter((s) => s.visible !== false);
+  const sectionsPerPage = config.sections.allowPageBreak ? 2 : 3;
+  const pages = splitSectionsIntoPages(visibleSections, sectionsPerPage);
+
+  const pageStyle = {
+    width: `${pageDims.w}px`,
+    height: `${pageDims.h}px`,
+    paddingTop: page.topMargin,
+    paddingBottom: page.bottomMargin,
+    paddingLeft: page.leftMargin,
+    paddingRight: page.rightMargin,
+    margin: "16px auto 0 auto",
+    backgroundColor: "#ffffff",
+    boxShadow: "0 2px 12px rgba(0, 0, 0, 0.1)",
+    fontFamily: typography.fontFamily.body,
+    fontSize: typography.fontSize.body,
+    lineHeight: parseLineSpacing(typography.lineSpacing),
+    color: colors.body,
+    boxSizing: "border-box" as const,
+    textAlign: (typography.alignment === "justified" ? "justify" : typography.alignment) as React.CSSProperties["textAlign"],
+    overflow: "hidden" as const,
+  };
+
   return (
-    <div
-      style={{
-        width: `${pageDims.w}px`,
-        minHeight: `${pageDims.h}px`,
-        paddingTop: page.topMargin,
-        paddingBottom: page.bottomMargin,
-        paddingLeft: page.leftMargin,
-        paddingRight: page.rightMargin,
-        margin: "16px auto",
-        backgroundColor: "#ffffff",
-        boxShadow: "0 2px 12px rgba(0, 0, 0, 0.1)",
-        fontFamily: typography.fontFamily.body,
-        fontSize: typography.fontSize.body,
-        lineHeight: parseLineSpacing(typography.lineSpacing),
-        color: colors.body,
-        boxSizing: "border-box",
-        textAlign: typography.alignment === "justified" ? "justify" : typography.alignment,
-      }}
-    >
-      {showTopNote && (
-        <div style={{
-          fontSize: typography.fontSize.connections,
-          color: colors.topNote,
-          marginBottom: 12,
-          fontFamily: typography.fontFamily.connections,
-        }}>
-          {topNoteText}
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingBottom: 16 }}>
+      {pages.map((pageSections, pageIdx) => (
+        <div key={pageIdx} style={pageStyle}>
+          {pageIdx === 0 && showTopNote && (
+            <div style={{
+              fontSize: typography.fontSize.connections,
+              color: colors.topNote,
+              marginBottom: 12,
+              fontFamily: typography.fontFamily.connections,
+            }}>
+              {topNoteText}
+            </div>
+          )}
+
+          {pageIdx === 0 && (
+            <PreviewHeader personal={resume.personal} config={config} />
+          )}
+
+          {pageSections.map((section) => (
+            <PreviewSection
+              key={section.id}
+              section={section}
+              config={config}
+              isDimmed={!!activeSectionId && activeSectionId !== section.id}
+            />
+          ))}
+
+          {showFooter && pageIdx === pages.length - 1 && (
+            <div style={{
+              textAlign: "center",
+              fontSize: typography.fontSize.connections,
+              color: colors.footer,
+              fontFamily: typography.fontFamily.connections,
+              marginTop: 24,
+            }}>
+              {footerText}
+            </div>
+          )}
         </div>
-      )}
-
-      <PreviewHeader personal={resume.personal} config={config} />
-
-      {resume.sections.map((section) => (
-        <PreviewSection
-          key={section.id}
-          section={section}
-          config={config}
-          isDimmed={!!activeSectionId && activeSectionId !== section.id}
-        />
       ))}
-
-      {showFooter && (
-        <div style={{
-          textAlign: "center",
-          fontSize: typography.fontSize.connections,
-          color: colors.footer,
-          fontFamily: typography.fontFamily.connections,
-          marginTop: 24,
-        }}>
-          {footerText}
-        </div>
-      )}
     </div>
   );
 }
