@@ -69,9 +69,9 @@ export const classicTemplate: TemplateConfig = {
     photoPosition: "left",
     photoSpaceLeft: "0.4cm",
     photoSpaceRight: "0.4cm",
-    spaceBelowName: "0.4cm",
-    spaceBelowHeadline: "0.7cm",
-    spaceBelowConnections: "0.7cm",
+    spaceBelowName: "0.15cm",
+    spaceBelowHeadline: "0.15cm",
+    spaceBelowConnections: "0.35cm",
     connections: {
       phoneNumberFormat: "national",
       hyperlink: true,
