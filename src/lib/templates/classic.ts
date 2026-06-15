@@ -37,10 +37,11 @@ export const classicTemplate: TemplateConfig = {
     },
     fontSize: {
       body: "10pt",
-      name: "21pt",
+      name: "20pt",
+      entryHeading: "12pt",
       headline: "10pt",
       connections: "10pt",
-      sectionTitles: "1.4em",
+      sectionTitles: "14pt",
     },
     smallCaps: {
       name: false,
@@ -50,6 +51,7 @@ export const classicTemplate: TemplateConfig = {
     },
     bold: {
       name: true,
+      entryHeading: false,
       headline: false,
       connections: false,
       sectionTitles: true,

@@ -36,11 +36,12 @@ export const academicTemplate: TemplateConfig = {
       sectionTitles: "Inter",
     },
     fontSize: {
-      body: "9pt",
-      name: "20pt",
+      body: "10pt",
+      name: "16pt",
+      entryHeading: "12pt",
       headline: "11pt",
       connections: "8pt",
-      sectionTitles: "10pt",
+      sectionTitles: "14pt",
     },
     smallCaps: {
       name: false,
@@ -50,6 +51,7 @@ export const academicTemplate: TemplateConfig = {
     },
     bold: {
       name: true,
+      entryHeading: false,
       headline: false,
       connections: false,
       sectionTitles: true,

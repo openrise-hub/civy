@@ -37,10 +37,11 @@ export const minimalTemplate: TemplateConfig = {
     },
     fontSize: {
       body: "10pt",
-      name: "22pt",
+      name: "16pt",
+      entryHeading: "12pt",
       headline: "12pt",
       connections: "9pt",
-      sectionTitles: "10pt",
+      sectionTitles: "14pt",
     },
     smallCaps: {
       name: false,
@@ -50,6 +51,7 @@ export const minimalTemplate: TemplateConfig = {
     },
     bold: {
       name: true,
+      entryHeading: false,
       headline: false,
       connections: false,
       sectionTitles: false,

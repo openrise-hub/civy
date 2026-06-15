@@ -37,10 +37,11 @@ export const executiveTemplate: TemplateConfig = {
     },
     fontSize: {
       body: "11pt",
-      name: "30pt",
+      name: "20pt",
+      entryHeading: "13pt",
       headline: "15pt",
       connections: "10pt",
-      sectionTitles: "11pt",
+      sectionTitles: "16pt",
     },
     smallCaps: {
       name: false,
@@ -50,6 +51,7 @@ export const executiveTemplate: TemplateConfig = {
     },
     bold: {
       name: true,
+      entryHeading: false,
       headline: false,
       connections: false,
       sectionTitles: true,
