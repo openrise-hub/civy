@@ -37,10 +37,11 @@ export const creativeTemplate: TemplateConfig = {
     },
     fontSize: {
       body: "10pt",
-      name: "26pt",
+      name: "18pt",
+      entryHeading: "13pt",
       headline: "13pt",
       connections: "9pt",
-      sectionTitles: "11pt",
+      sectionTitles: "15pt",
     },
     smallCaps: {
       name: true,
@@ -50,6 +51,7 @@ export const creativeTemplate: TemplateConfig = {
     },
     bold: {
       name: false,
+      entryHeading: false,
       headline: false,
       connections: false,
       sectionTitles: false,

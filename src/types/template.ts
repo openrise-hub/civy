@@ -48,6 +48,7 @@ export interface FontFamilyConfig {
 export interface FontSizeConfig {
   body: string;
   name: string;
+  entryHeading: string;
   headline: string;
   connections: string;
   sectionTitles: string;
@@ -62,6 +63,7 @@ export interface SmallCapsConfig {
 
 export interface BoldConfig {
   name: boolean;
+  entryHeading: boolean;
   headline: boolean;
   connections: boolean;
   sectionTitles: boolean;

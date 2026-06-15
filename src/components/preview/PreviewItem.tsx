@@ -222,8 +222,8 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
       return (
         <h3 style={{
           color: colors.name,
-          fontSize: typography.fontSize.name,
-          fontWeight: typography.bold.name ? 600 : 400,
+          fontSize: typography.fontSize.entryHeading,
+          fontWeight: typography.bold.entryHeading ? 600 : 400,
           margin: 0,
           fontFamily: typography.fontFamily.name,
         }}>

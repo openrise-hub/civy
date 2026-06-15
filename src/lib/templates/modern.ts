@@ -37,10 +37,11 @@ export const modernTemplate: TemplateConfig = {
     },
     fontSize: {
       body: "10pt",
-      name: "24pt",
-      headline: "14pt",
+      name: "18pt",
+      entryHeading: "12pt",
+      headline: "13pt",
       connections: "9pt",
-      sectionTitles: "10pt",
+      sectionTitles: "14pt",
     },
     smallCaps: {
       name: false,
@@ -50,6 +51,7 @@ export const modernTemplate: TemplateConfig = {
     },
     bold: {
       name: true,
+      entryHeading: false,
       headline: false,
       connections: false,
       sectionTitles: true,

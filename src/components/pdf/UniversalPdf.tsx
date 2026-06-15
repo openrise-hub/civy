@@ -6,6 +6,7 @@ import type { TemplateConfig } from '@/types/template';
 import { resolvePdfTemplate } from './engine/TemplateResolver';
 import { Text, Document, Page } from '@react-pdf/renderer';
 import { PdfTranslations } from './engine/ItemRenderers';
+import "@/lib/fonts/register";
 
 interface UniversalPdfProps {
   resume: Resume;

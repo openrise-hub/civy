@@ -4,6 +4,7 @@ import type { Resume, SectionContent, Item } from '@/types/resume';
 import type { TemplateConfig } from '@/types/template';
 import { PdfTranslations, renderPdfItem } from './ItemRenderers';
 import { Style } from '@react-pdf/types';
+import "@/lib/fonts/register";
 
 // Helper to convert CSS-like values to numbers where possible
 function parseDimension(val: string): number {
@@ -41,6 +42,7 @@ function buildStyles(config: TemplateConfig) {
   const fontSize = {
     body: parseFontSize(typography.fontSize.body),
     name: parseFontSize(typography.fontSize.name),
+    entryHeading: parseFontSize(typography.fontSize.entryHeading),
     headline: parseFontSize(typography.fontSize.headline),
     connections: parseFontSize(typography.fontSize.connections),
     sectionTitles: parseFontSize(typography.fontSize.sectionTitles),
@@ -65,6 +67,12 @@ function buildStyles(config: TemplateConfig) {
       fontWeight: typography.bold.name ? 'bold' : 'normal',
       color: colors.name,
       fontStyle: typography.smallCaps.name ? undefined : undefined,
+    },
+    entryHeading: {
+      fontSize: fontSize.entryHeading,
+      fontFamily: typography.fontFamily.name,
+      fontWeight: typography.bold.entryHeading ? 'bold' : 'normal',
+      color: colors.name,
     },
     headline: {
       fontSize: fontSize.headline,

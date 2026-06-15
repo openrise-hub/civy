@@ -37,10 +37,11 @@ export const professionalTemplate: TemplateConfig = {
     },
     fontSize: {
       body: "10pt",
-      name: "26pt",
+      name: "18pt",
+      entryHeading: "12pt",
       headline: "14pt",
       connections: "9pt",
-      sectionTitles: "11pt",
+      sectionTitles: "15pt",
     },
     smallCaps: {
       name: false,
@@ -50,6 +51,7 @@ export const professionalTemplate: TemplateConfig = {
     },
     bold: {
       name: true,
+      entryHeading: false,
       headline: false,
       connections: false,
       sectionTitles: true,
