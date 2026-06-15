@@ -42,6 +42,7 @@ function buildStyles(config: TemplateConfig) {
   const fontSize = {
     body: parseFontSize(typography.fontSize.body),
     name: parseFontSize(typography.fontSize.name),
+    entryHeading: parseFontSize(typography.fontSize.entryHeading),
     headline: parseFontSize(typography.fontSize.headline),
     connections: parseFontSize(typography.fontSize.connections),
     sectionTitles: parseFontSize(typography.fontSize.sectionTitles),
@@ -66,6 +67,12 @@ function buildStyles(config: TemplateConfig) {
       fontWeight: typography.bold.name ? 'bold' : 'normal',
       color: colors.name,
       fontStyle: typography.smallCaps.name ? undefined : undefined,
+    },
+    entryHeading: {
+      fontSize: fontSize.entryHeading,
+      fontFamily: typography.fontFamily.name,
+      fontWeight: typography.bold.entryHeading ? 'bold' : 'normal',
+      color: colors.name,
     },
     headline: {
       fontSize: fontSize.headline,

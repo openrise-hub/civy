@@ -56,7 +56,7 @@ const stringItemRenderer: ItemRenderer = (item, styles, colors, _customRenderers
   switch (item.type) {
     case 'heading':
       return (
-        <Text style={[styles.name || {}, { fontWeight: 'bold' }]}>
+        <Text style={[styles.entryHeading || {}, { fontWeight: 'bold' }]}>
           {item.value}
         </Text>
       );
