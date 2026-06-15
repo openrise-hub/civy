@@ -42,7 +42,9 @@
       "lowContrast": "Low contrast ({ratio}:1). Consider adjusting colors for readability.",
       "pageOptions": "Page Options",
       "showFooter": "Show footer",
-      "showTopNote": "Show \"Last updated\" note"
+      "showTopNote": "Show \"Last updated\" note",
+      "sectionGuideTitle": "Available Sections",
+      "sectionGuideDesc": "These are the default section types you can add to your resume. Each one comes pre-filled with starter content to help you get going."
     },
     "a11y": {
       "autosaved": "CV Autosaved",

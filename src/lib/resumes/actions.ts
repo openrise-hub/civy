@@ -97,7 +97,7 @@ export async function createResume(): Promise<void> {
     .from("resumes")
     .insert({
       user_id: user.id,
-      title: "Untitled Resume",
+      title: "My First Resume",
       data: defaultResumeData,
     })
     .select("id")

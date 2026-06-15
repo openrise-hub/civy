@@ -42,7 +42,9 @@
       "lowContrast": "Bajo contraste ({ratio}:1). Considera ajustar los colores para mayor legibilidad.",
       "pageOptions": "Opciones de página",
       "showFooter": "Mostrar pie de página",
-      "showTopNote": "Mostrar nota \"Última actualización\""
+      "showTopNote": "Mostrar nota \"Última actualización\"",
+      "sectionGuideTitle": "Secciones disponibles",
+      "sectionGuideDesc": "Estos son los tipos de sección que puedes añadir a tu currículum. Cada una incluye contenido inicial para ayudarte a empezar."
     },
     "a11y": {
       "autosaved": "CV autoguardado",

@@ -21,7 +21,6 @@ import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import {
-  FileTextIcon,
   BriefcaseIcon,
   GraduationCapIcon,
   WrenchIcon,
@@ -36,6 +35,7 @@ import { useUser } from "@/contexts/UserContext";
 import { VersionHistory } from "@/components/editor/VersionHistory";
 import { ResumeSettingsDialog } from "@/components/editor/ResumeSettingsDialog";
 import { TemplatePicker } from "@/components/editor/TemplatePicker";
+import { SectionGuide } from "@/components/editor/SectionGuide";
 import { UserNav } from "@/components/UserNav";
 
 export function EditorSidebar() {
@@ -110,10 +110,7 @@ export function EditorSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton tooltip={isCollapsed ? t("sections") : undefined}>
-                    <FileTextIcon />
-                    <span>{t("sections")}</span>
-                  </SidebarMenuButton>
+                  <SectionGuide isCollapsed={isCollapsed} />
                 </SidebarMenuItem>
 
                 <SidebarMenuItem>
