@@ -52,6 +52,7 @@ const fontFamilyConfigSchema = z.object({
 const fontSizeConfigSchema = z.object({
   body: z.string(),
   name: z.string(),
+  entryHeading: z.string(),
   headline: z.string(),
   connections: z.string(),
   sectionTitles: z.string(),
@@ -66,6 +67,7 @@ const smallCapsConfigSchema = z.object({
 
 const boldConfigSchema = z.object({
   name: z.boolean(),
+  entryHeading: z.boolean(),
   headline: z.boolean(),
   connections: z.boolean(),
   sectionTitles: z.boolean(),
