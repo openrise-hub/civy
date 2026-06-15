@@ -4,6 +4,7 @@ import type { Resume, SectionContent, Item } from '@/types/resume';
 import type { TemplateConfig } from '@/types/template';
 import { PdfTranslations, renderPdfItem } from './ItemRenderers';
 import { Style } from '@react-pdf/types';
+import "@/lib/fonts/register";
 
 // Helper to convert CSS-like values to numbers where possible
 function parseDimension(val: string): number {
