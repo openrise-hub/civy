@@ -69,9 +69,9 @@ export const creativeTemplate: TemplateConfig = {
     photoPosition: "left",
     photoSpaceLeft: "0.4cm",
     photoSpaceRight: "0.4cm",
-    spaceBelowName: "0.4cm",
-    spaceBelowHeadline: "0.3cm",
-    spaceBelowConnections: "0.5cm",
+    spaceBelowName: "0.1cm",
+    spaceBelowHeadline: "0.1cm",
+    spaceBelowConnections: "0.3cm",
     connections: {
       phoneNumberFormat: "national",
       hyperlink: true,

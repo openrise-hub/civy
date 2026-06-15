@@ -69,9 +69,9 @@ export const executiveTemplate: TemplateConfig = {
     photoPosition: "left",
     photoSpaceLeft: "0.4cm",
     photoSpaceRight: "0.4cm",
-    spaceBelowName: "0.6cm",
-    spaceBelowHeadline: "0.4cm",
-    spaceBelowConnections: "0.8cm",
+    spaceBelowName: "0.15cm",
+    spaceBelowHeadline: "0.15cm",
+    spaceBelowConnections: "0.4cm",
     connections: {
       phoneNumberFormat: "national",
       hyperlink: true,

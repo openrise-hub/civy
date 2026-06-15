@@ -69,9 +69,9 @@ export const academicTemplate: TemplateConfig = {
     photoPosition: "left",
     photoSpaceLeft: "0.4cm",
     photoSpaceRight: "0.4cm",
-    spaceBelowName: "0.2cm",
-    spaceBelowHeadline: "0.2cm",
-    spaceBelowConnections: "0.3cm",
+    spaceBelowName: "0.1cm",
+    spaceBelowHeadline: "0.1cm",
+    spaceBelowConnections: "0.2cm",
     connections: {
       phoneNumberFormat: "national",
       hyperlink: true,
