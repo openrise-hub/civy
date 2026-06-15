@@ -108,6 +108,8 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
       metadata: {
         template: templateName,
         templateConfig: metadata.templateConfig,
+        showFooter: metadata.showFooter ?? false,
+        showTopNote: metadata.showTopNote ?? false,
         typography: metadata.typography ?? { fontFamily: "inter", fontSize: "md" },
         colors: metadata.colors ?? { background: "#ffffff", text: "#1f2937", accents: [] },
       },

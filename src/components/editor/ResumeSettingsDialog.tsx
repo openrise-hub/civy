@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { Field, FieldLabel } from "@/components/ui/field";
+import { Switch } from "@/components/ui/switch";
 
 export function ResumeSettingsDialog({ isCollapsed }: { isCollapsed: boolean }) {
   const t = useTranslations("editor.sidebar");
@@ -179,6 +180,36 @@ export function ResumeSettingsDialog({ isCollapsed }: { isCollapsed: boolean }) 
                   <p className="text-xs font-medium">{t("lowContrast", { ratio: contrastRatio.toFixed(1) })}</p>
                 </div>
               )}
+            </Field>
+
+            <Field>
+              <FieldLabel>{t("pageOptions")}</FieldLabel>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="show-topnote" className="text-sm cursor-pointer">
+                    {t("showTopNote")}
+                  </label>
+                  <Switch
+                    id="show-topnote"
+                    checked={metadata.showTopNote ?? false}
+                    onCheckedChange={(checked) =>
+                      updateMetadata({ showTopNote: checked })
+                    }
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="show-footer" className="text-sm cursor-pointer">
+                    {t("showFooter")}
+                  </label>
+                  <Switch
+                    id="show-footer"
+                    checked={metadata.showFooter ?? false}
+                    onCheckedChange={(checked) =>
+                      updateMetadata({ showFooter: checked })
+                    }
+                  />
+                </div>
+              </div>
             </Field>
 
             <Field>
