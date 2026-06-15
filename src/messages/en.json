@@ -44,7 +44,8 @@
       "showFooter": "Show footer",
       "showTopNote": "Show \"Last updated\" note",
       "sectionGuideTitle": "Available Sections",
-      "sectionGuideDesc": "These are the default section types you can add to your resume. Each one comes pre-filled with starter content to help you get going."
+      "sectionGuideDesc": "These are the default section types you can add to your resume. Each one comes pre-filled with starter content to help you get going.",
+      "autoPopulate": "Auto-populate with sample data"
     },
     "a11y": {
       "autosaved": "CV Autosaved",
