@@ -9,12 +9,12 @@ import "@/lib/fonts/register";
 // Helper to convert CSS-like values to numbers where possible
 function parseDimension(val: string): number {
   const num = parseFloat(val);
-  if (val.endsWith('pt')) return num * 1.333; // pt to px (approx)
-  if (val.endsWith('cm')) return num * 37.8;   // cm to px (approx)
-  if (val.endsWith('mm')) return num * 3.78;   // mm to px
-  if (val.endsWith('in')) return num * 96;     // in to px
-  if (val.endsWith('em')) return num * 12;     // em to px (approx at 12pt base)
-  if (val.endsWith('px')) return num;
+  if (val.endsWith('pt')) return num;
+  if (val.endsWith('cm')) return num * 28.35;
+  if (val.endsWith('mm')) return num * 2.835;
+  if (val.endsWith('in')) return num * 72;
+  if (val.endsWith('em')) return num * 10;
+  if (val.endsWith('px')) return num * 0.75;
   return num || 0;
 }
 
