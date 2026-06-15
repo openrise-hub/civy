@@ -28,9 +28,12 @@ import {
   PlusIcon,
   HomeIcon,
   HistoryIcon,
+  SparklesIcon,
 } from "lucide-react";
 import { useResumeStore, SECTION_TEMPLATES } from "@/stores/useResumeStore";
+import type { Resume } from "@/types/resume";
 import { RESUME_LIMITS } from "@/constants/limits";
+import { createJohnDoeResume } from "@/lib/sample-data";
 import { useUser } from "@/contexts/UserContext";
 import { VersionHistory } from "@/components/editor/VersionHistory";
 import { ResumeSettingsDialog } from "@/components/editor/ResumeSettingsDialog";
@@ -47,6 +50,27 @@ export function EditorSidebar() {
   const resumeId = useResumeStore((state) => state.resume.id);
   const atSectionLimit = sectionCount >= RESUME_LIMITS.MAX_SECTIONS;
   const { user } = useUser();
+  const setResume = useResumeStore((state) => state.setResume);
+  const resume = useResumeStore((state) => state.resume);
+
+  const handleAutoPopulate = () => {
+    const sample = createJohnDoeResume(resume.metadata.template || "modern");
+    setResume({
+      ...resume,
+      id: resume.id,
+      userId: resume.userId,
+      title: resume.title || "My First Resume",
+      isPublic: resume.isPublic,
+      personal: sample.personal || resume.personal,
+      sections: (sample.sections as Resume["sections"]) || resume.sections,
+      metadata: {
+        ...resume.metadata,
+        ...(sample.metadata || {}),
+      } as Resume["metadata"],
+      createdAt: resume.createdAt,
+      updatedAt: new Date().toISOString(),
+    });
+  };
 
   return (
     <TooltipProvider>
@@ -115,6 +139,16 @@ export function EditorSidebar() {
 
                 <SidebarMenuItem>
                   <TemplatePicker isCollapsed={isCollapsed} />
+                </SidebarMenuItem>
+
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    tooltip={isCollapsed ? t("autoPopulate") : undefined}
+                    onClick={handleAutoPopulate}
+                  >
+                    <SparklesIcon />
+                    <span>{t("autoPopulate")}</span>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
