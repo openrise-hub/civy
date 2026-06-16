@@ -135,7 +135,7 @@ export function PreviewSection({ section, config, isDimmed }: PreviewSectionProp
 
   return (
     <section style={{
-      marginBottom: parseFloat(config.sectionTitles.spaceAbove) * 37.8 + 4,
+      paddingBottom: parseFloat(config.sectionTitles.spaceAbove) * 37.8 + 4,
       opacity: isDimmed ? 0.35 : 1,
       transition: "opacity 0.2s ease",
       pageBreakInside: sects.allowPageBreak ? "auto" : "avoid",
