@@ -78,7 +78,8 @@
       "loading": "Loading preview...",
       "download": "Download PDF",
       "zoom": "Zoom",
-      "fitToWidth": "Fit to width"
+      "fitToWidth": "Fit to width",
+      "showGuides": "Show alignment guides"
     }
   },
   "resume": {

@@ -10,6 +10,7 @@ import { PreviewSection } from "./PreviewSection";
 interface ResumePreviewProps {
   resume: Resume;
   activeSectionId?: string | null;
+  showGuides?: boolean;
 }
 
 const PAGE_SIZES: Record<string, { w: number; h: number }> = {
@@ -46,7 +47,7 @@ function cssToPreviewPx(value: string): number {
   return num;
 }
 
-export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
+export function ResumePreview({ resume, activeSectionId, showGuides = false }: ResumePreviewProps) {
   const config = useMemo(
     () => getTemplateConfig(resume),
     [resume.metadata.template, resume.metadata.templateConfig]
@@ -257,8 +258,23 @@ export function ResumePreview({ resume, activeSectionId }: ResumePreviewProps) {
               paddingBottom: `${bottomMarginPx}px`,
               paddingLeft: `${leftMarginPx}px`,
               paddingRight: `${rightMarginPx}px`,
+              position: "relative" as const,
             }}
           >
+            {showGuides && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: `${topMarginPx}px`,
+                  left: `${leftMarginPx}px`,
+                  right: `${rightMarginPx}px`,
+                  bottom: `${bottomMarginPx}px`,
+                  border: "1px dashed rgba(148, 163, 184, 0.5)",
+                  pointerEvents: "none",
+                  zIndex: 1,
+                }}
+              />
+            )}
             {pageIdx === 0 && showTopNote && (
               <div
                 style={{
