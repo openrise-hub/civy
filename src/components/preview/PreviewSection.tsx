@@ -8,6 +8,7 @@ interface PreviewSectionProps {
   section: Section;
   config: TemplateConfig;
   isDimmed?: boolean;
+  isFirstOnPage?: boolean;
 }
 
 function renderSectionTitle(type: string, title: string, config: TemplateConfig) {
@@ -101,15 +102,15 @@ function renderSectionTitle(type: string, title: string, config: TemplateConfig)
   }
 }
 
-export function PreviewSection({ section, config, isDimmed }: PreviewSectionProps) {
+export function PreviewSection({ section, config, isDimmed, isFirstOnPage }: PreviewSectionProps) {
   if (!section.visible) return null;
 
   const { layout, columns = 1, items } = section.content;
-  const { sections: sects } = config;
+  const { sections: sects, entries } = config;
 
   const spacing = layout === "grid" || layout === "inline"
     ? sects.spaceBetweenTextBasedEntries
-    : sects.spaceBetweenRegularEntries;
+    : entries.spaceBetweenColumns;
 
   const getContentStyle = (): React.CSSProperties => {
     if (layout === "grid") {
@@ -135,12 +136,12 @@ export function PreviewSection({ section, config, isDimmed }: PreviewSectionProp
 
   return (
     <section style={{
-      marginBottom: parseFloat(config.sectionTitles.spaceAbove) * 37.8 + 4,
+      paddingBottom: parseFloat(config.sectionTitles.spaceAbove) * 37.8 + 4,
       opacity: isDimmed ? 0.35 : 1,
       transition: "opacity 0.2s ease",
       pageBreakInside: sects.allowPageBreak ? "auto" : "avoid",
     }}>
-      <div style={{ marginTop: config.sectionTitles.spaceAbove }}>
+      <div style={{ marginTop: isFirstOnPage ? 0 : config.sectionTitles.spaceAbove }}>
         {renderSectionTitle(config.sectionTitles.type, section.title, config)}
       </div>
 

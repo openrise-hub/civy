@@ -292,7 +292,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
               <PreviewHeader personal={resume.personal} config={config} />
             )}
 
-            {pageSections.map((section) => (
+            {pageSections.map((section, idx) => (
               <PreviewSection
                 key={section.id}
                 section={section}
@@ -300,6 +300,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
                 isDimmed={
                   !!activeSectionId && activeSectionId !== section.id
                 }
+                isFirstOnPage={idx === 0}
               />
             ))}
 
