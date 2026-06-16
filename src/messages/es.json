@@ -78,7 +78,8 @@
       "loading": "Cargando...",
       "download": "Descargar PDF",
       "zoom": "Zoom",
-      "fitToWidth": "Ajustar ancho"
+      "fitToWidth": "Ajustar ancho",
+      "showGuides": "Mostrar guias de alineacion"
     }
   },
   "resume": {

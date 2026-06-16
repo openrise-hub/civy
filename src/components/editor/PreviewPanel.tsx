@@ -5,19 +5,23 @@ import { Button } from "@/components/ui/button";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { DownloadButton } from "@/components/editor/DownloadButton";
 import { ResumePreview } from "@/components/preview/ResumePreview";
-import { ZoomInIcon, ZoomOutIcon } from "lucide-react";
+import { ZoomInIcon, ZoomOutIcon, RulerIcon } from "lucide-react";
 import { useState } from "react";
 
 function PreviewHeader({ 
   zoom, 
   onZoomIn, 
   onZoomOut, 
-  onZoomReset 
+  onZoomReset,
+  showGuides,
+  onToggleGuides,
 }: { 
   zoom: number; 
   onZoomIn: () => void; 
   onZoomOut: () => void; 
-  onZoomReset: () => void; 
+  onZoomReset: () => void;
+  showGuides: boolean;
+  onToggleGuides: () => void;
 }) {
   const t = useTranslations("editor.preview");
 
@@ -52,13 +56,22 @@ function PreviewHeader({
             <ZoomInIcon className="size-4" />
           </Button>
         </div>
+        <Button
+          size="icon-sm"
+          variant={showGuides ? "secondary" : "ghost"}
+          onClick={onToggleGuides}
+          aria-label={t("showGuides")}
+          title={t("showGuides")}
+        >
+          <RulerIcon className="size-4" />
+        </Button>
         <DownloadButton variant="outline" size="sm" />
       </div>
     </div>
   );
 }
 
-function PreviewContent({ zoom }: { zoom: number }) {
+function PreviewContent({ zoom, showGuides }: { zoom: number; showGuides: boolean }) {
   const resume = useResumeStore((state) => state.resume);
   const activeSectionId = useResumeStore((state) => state.activeSectionId);
 
@@ -71,7 +84,7 @@ function PreviewContent({ zoom }: { zoom: number }) {
           transition: 'transform 0.15s ease',
         }}
       >
-        <ResumePreview resume={resume} activeSectionId={activeSectionId} />
+        <ResumePreview resume={resume} activeSectionId={activeSectionId} showGuides={showGuides} />
       </div>
     </div>
   );
@@ -79,10 +92,12 @@ function PreviewContent({ zoom }: { zoom: number }) {
 
 export function PreviewPanel() {
   const [zoom, setZoom] = useState(1);
+  const [showGuides, setShowGuides] = useState(false);
   
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.1, 2));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.1, 0.5));
   const handleZoomReset = () => setZoom(1);
+  const handleToggleGuides = () => setShowGuides(prev => !prev);
 
   return (
     <div className="flex h-full flex-col bg-muted/50">
@@ -91,8 +106,10 @@ export function PreviewPanel() {
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
         onZoomReset={handleZoomReset}
+        showGuides={showGuides}
+        onToggleGuides={handleToggleGuides}
       />
-      <PreviewContent zoom={zoom} />
+      <PreviewContent zoom={zoom} showGuides={showGuides} />
     </div>
   );
 }
