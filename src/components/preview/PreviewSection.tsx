@@ -8,6 +8,7 @@ interface PreviewSectionProps {
   section: Section;
   config: TemplateConfig;
   isDimmed?: boolean;
+  isFirstOnPage?: boolean;
 }
 
 function renderSectionTitle(type: string, title: string, config: TemplateConfig) {
@@ -101,7 +102,7 @@ function renderSectionTitle(type: string, title: string, config: TemplateConfig)
   }
 }
 
-export function PreviewSection({ section, config, isDimmed }: PreviewSectionProps) {
+export function PreviewSection({ section, config, isDimmed, isFirstOnPage }: PreviewSectionProps) {
   if (!section.visible) return null;
 
   const { layout, columns = 1, items } = section.content;
@@ -140,7 +141,7 @@ export function PreviewSection({ section, config, isDimmed }: PreviewSectionProp
       transition: "opacity 0.2s ease",
       pageBreakInside: sects.allowPageBreak ? "auto" : "avoid",
     }}>
-      <div style={{ marginTop: config.sectionTitles.spaceAbove }}>
+      <div style={{ marginTop: isFirstOnPage ? 0 : config.sectionTitles.spaceAbove }}>
         {renderSectionTitle(config.sectionTitles.type, section.title, config)}
       </div>
 
