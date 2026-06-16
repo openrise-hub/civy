@@ -106,11 +106,11 @@ export function PreviewSection({ section, config, isDimmed, isFirstOnPage }: Pre
   if (!section.visible) return null;
 
   const { layout, columns = 1, items } = section.content;
-  const { sections: sects } = config;
+  const { sections: sects, entries } = config;
 
   const spacing = layout === "grid" || layout === "inline"
     ? sects.spaceBetweenTextBasedEntries
-    : sects.spaceBetweenRegularEntries;
+    : entries.spaceBetweenColumns;
 
   const getContentStyle = (): React.CSSProperties => {
     if (layout === "grid") {
