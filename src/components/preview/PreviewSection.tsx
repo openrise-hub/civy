@@ -11,6 +11,15 @@ function toCssFontSize(value: string): string {
   return value;
 }
 
+function cssToPreviewPx(value: string): number {
+  const num = parseFloat(value);
+  if (value.endsWith("cm")) return num * 28.35;
+  if (value.endsWith("in")) return num * 72;
+  if (value.endsWith("mm")) return num * 2.835;
+  if (value.endsWith("pt")) return num;
+  return num;
+}
+
 interface PreviewSectionProps {
   section: Section;
   config: TemplateConfig;
@@ -143,7 +152,7 @@ export function PreviewSection({ section, config, isDimmed, isFirstOnPage }: Pre
 
   return (
     <section style={{
-      paddingBottom: parseFloat(config.sectionTitles.spaceAbove) * 37.8 + 4,
+      paddingBottom: cssToPreviewPx(config.sectionTitles.spaceAbove) + 4,
       opacity: isDimmed ? 0.35 : 1,
       transition: "opacity 0.2s ease",
       pageBreakInside: sects.allowPageBreak ? "auto" : "avoid",
