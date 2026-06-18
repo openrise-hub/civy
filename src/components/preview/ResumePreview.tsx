@@ -47,6 +47,15 @@ function cssToPreviewPx(value: string): number {
   return num;
 }
 
+function toCssFontSize(value: string): string {
+  const num = parseFloat(value);
+  if (value.endsWith("pt")) return `${num}px`;
+  if (value.endsWith("em")) return value;
+  return value;
+}
+
+export { cssToPreviewPx };
+
 export function ResumePreview({ resume, activeSectionId, showGuides = false }: ResumePreviewProps) {
   const config = useMemo(
     () => getTemplateConfig(resume),
@@ -179,7 +188,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
     backgroundColor: "#ffffff",
     boxShadow: "0 2px 12px rgba(0, 0, 0, 0.1)",
     fontFamily: typography.fontFamily.body,
-    fontSize: typography.fontSize.body,
+    fontSize: toCssFontSize(typography.fontSize.body),
     lineHeight: parseLineSpacing(typography.lineSpacing),
     color: colors.body,
     boxSizing: "border-box" as const,
@@ -198,7 +207,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
           pointerEvents: "none",
           width: `${contentWidth}px`,
           fontFamily: typography.fontFamily.body,
-          fontSize: typography.fontSize.body,
+          fontSize: toCssFontSize(typography.fontSize.body),
           lineHeight: parseLineSpacing(typography.lineSpacing),
           color: colors.body,
           textAlign,
@@ -208,7 +217,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
           <div
             data-top-note
             style={{
-              fontSize: typography.fontSize.connections,
+              fontSize: toCssFontSize(typography.fontSize.connections),
               color: colors.topNote,
               marginBottom: 12,
               fontFamily: typography.fontFamily.connections,
@@ -230,7 +239,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
             data-footer
             style={{
               textAlign: "center",
-              fontSize: typography.fontSize.connections,
+              fontSize: toCssFontSize(typography.fontSize.connections),
               color: colors.footer,
               fontFamily: typography.fontFamily.connections,
               marginTop: 24,
@@ -278,7 +287,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
             {pageIdx === 0 && showTopNote && (
               <div
                 style={{
-                  fontSize: typography.fontSize.connections,
+                  fontSize: toCssFontSize(typography.fontSize.connections),
                   color: colors.topNote,
                   marginBottom: 12,
                   fontFamily: typography.fontFamily.connections,
@@ -308,7 +317,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
               <div
                 style={{
                   textAlign: "center",
-                  fontSize: typography.fontSize.connections,
+                  fontSize: toCssFontSize(typography.fontSize.connections),
                   color: colors.footer,
                   fontFamily: typography.fontFamily.connections,
                   marginTop: 24,

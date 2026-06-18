@@ -4,6 +4,13 @@ import { PersonalInfo } from "@/types/resume";
 import type { TemplateConfig } from "@/types/template";
 import { PreviewItem } from "./PreviewItem";
 
+function toCssFontSize(value: string): string {
+  const num = parseFloat(value);
+  if (value.endsWith("pt")) return `${num}px`;
+  if (value.endsWith("em")) return value;
+  return value;
+}
+
 interface PreviewHeaderProps {
   personal: PersonalInfo;
   config: TemplateConfig;
@@ -23,7 +30,7 @@ export function PreviewHeader({ personal, config }: PreviewHeaderProps) {
       marginBottom: header.spaceBelowConnections,
     }}>
       <h1 style={{
-        fontSize: typography.fontSize.name,
+        fontSize: toCssFontSize(typography.fontSize.name),
         fontWeight: typography.bold.name ? 700 : 400,
         fontFamily: typography.fontFamily.name,
         margin: `0 0 ${header.spaceBelowName} 0`,
@@ -36,7 +43,7 @@ export function PreviewHeader({ personal, config }: PreviewHeaderProps) {
 
       {personal.jobTitle && (
         <p style={{
-          fontSize: typography.fontSize.headline,
+          fontSize: toCssFontSize(typography.fontSize.headline),
           fontWeight: typography.bold.headline ? 700 : 400,
           fontFamily: typography.fontFamily.headline,
           margin: `0 0 ${header.spaceBelowHeadline} 0`,
@@ -53,7 +60,7 @@ export function PreviewHeader({ personal, config }: PreviewHeaderProps) {
           flexWrap: "wrap",
           justifyContent: header.alignment === "center" ? "center" : "flex-start",
           gap: `${header.connections.spaceBetweenConnections}`,
-          fontSize: typography.fontSize.connections,
+          fontSize: toCssFontSize(typography.fontSize.connections),
           fontFamily: typography.fontFamily.connections,
           color: colors.connections,
         }}>

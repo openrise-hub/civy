@@ -4,6 +4,13 @@ import { Section } from "@/types/resume";
 import type { TemplateConfig } from "@/types/template";
 import { PreviewItem } from "./PreviewItem";
 
+function toCssFontSize(value: string): string {
+  const num = parseFloat(value);
+  if (value.endsWith("pt")) return `${num}px`;
+  if (value.endsWith("em")) return value;
+  return value;
+}
+
 interface PreviewSectionProps {
   section: Section;
   config: TemplateConfig;
@@ -14,7 +21,7 @@ interface PreviewSectionProps {
 function renderSectionTitle(type: string, title: string, config: TemplateConfig) {
   const { colors, typography, sectionTitles: st } = config;
   const baseTitleStyle: React.CSSProperties = {
-    fontSize: typography.fontSize.sectionTitles,
+    fontSize: toCssFontSize(typography.fontSize.sectionTitles),
     fontWeight: typography.bold.sectionTitles ? 600 : 400,
     fontFamily: typography.fontFamily.sectionTitles,
     textTransform: "uppercase",

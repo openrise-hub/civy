@@ -19,6 +19,13 @@ function parseLineSpacing(val: string): string {
   return val;
 }
 
+function toCssFontSize(value: string): string {
+  const num = parseFloat(value);
+  if (value.endsWith("pt")) return `${num}px`;
+  if (value.endsWith("em")) return value;
+  return value;
+}
+
 interface PreviewItemProps {
   item: Item;
   config: TemplateConfig;
@@ -30,7 +37,7 @@ function DescriptionPreview({ text, config }: { text: string; config: TemplateCo
   const baseStyle: React.CSSProperties = {
     color: colors.body,
     margin: 0,
-    fontSize: typography.fontSize.body,
+    fontSize: toCssFontSize(typography.fontSize.body),
     lineHeight: parseLineSpacing(typography.lineSpacing),
   };
   const lines = text.split("\n");
@@ -222,7 +229,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
       return (
         <h3 style={{
           color: colors.name,
-          fontSize: typography.fontSize.entryHeading,
+          fontSize: toCssFontSize(typography.fontSize.entryHeading),
           fontWeight: typography.bold.entryHeading ? 600 : 400,
           margin: 0,
           fontFamily: typography.fontFamily.name,
@@ -235,7 +242,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
       return (
         <h4 style={{
           color: colors.headline,
-          fontSize: typography.fontSize.headline,
+          fontSize: toCssFontSize(typography.fontSize.headline),
           fontWeight: typography.bold.headline ? 600 : 400,
           margin: 0,
           fontFamily: typography.fontFamily.headline,
@@ -251,7 +258,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
       return (
         <span style={{
           color: colors.connections,
-          fontSize: typography.fontSize.connections,
+          fontSize: toCssFontSize(typography.fontSize.connections),
           fontFamily: typography.fontFamily.connections,
         }}>
           {showIcons ? "\uD83D\uDCCD" : ""}{item.value}
@@ -262,7 +269,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
       return (
         <span style={{
           color: colors.connections,
-          fontSize: typography.fontSize.connections,
+          fontSize: toCssFontSize(typography.fontSize.connections),
           fontFamily: typography.fontFamily.connections,
         }}>
           {showIcons ? "\uD83D\uDCF1" : ""}{item.value}
@@ -273,7 +280,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
       return (
         <span style={{
           color: colors.connections,
-          fontSize: typography.fontSize.connections,
+          fontSize: toCssFontSize(typography.fontSize.connections),
           fontFamily: typography.fontFamily.connections,
         }}>
           {showIcons ? "\uD83D\uDCE7" : ""}{item.value}
@@ -299,7 +306,7 @@ function DateRangePreview({
     <span style={{
       fontStyle: "italic",
       color: config.colors.connections,
-      fontSize: config.typography.fontSize.connections,
+      fontSize: toCssFontSize(config.typography.fontSize.connections),
     }}>
       {formatted}
     </span>
@@ -382,7 +389,7 @@ function RatingPreview({ item, config }: { item: RatingItem; config: TemplateCon
       display: "flex",
       alignItems: "center",
       gap: "8px",
-      fontSize: config.typography.fontSize.body,
+      fontSize: toCssFontSize(config.typography.fontSize.body),
       color: config.colors.body,
     }}>
       <span style={{ flexShrink: 0, minWidth: "80px" }}>{label}</span>
