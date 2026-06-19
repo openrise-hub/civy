@@ -77,14 +77,16 @@ function PreviewContent({ zoom, showGuides }: { zoom: number; showGuides: boolea
 
   return (
     <div className="flex-1 overflow-auto bg-muted/50">
-      <div
-        style={{
-          transform: `scale(${zoom})`,
-          transformOrigin: 'top center',
-          transition: 'transform 0.15s ease',
-        }}
-      >
-        <ResumePreview resume={resume} activeSectionId={activeSectionId} showGuides={showGuides} />
+      <div style={{ display: "flex", justifyContent: "center", minWidth: "fit-content" }}>
+        <div
+          style={{
+            transform: `scale(${zoom})`,
+            transformOrigin: 'top center',
+            transition: 'transform 0.15s ease',
+          }}
+        >
+          <ResumePreview resume={resume} activeSectionId={activeSectionId} showGuides={showGuides} />
+        </div>
       </div>
     </div>
   );
