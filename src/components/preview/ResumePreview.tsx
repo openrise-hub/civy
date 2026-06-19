@@ -77,10 +77,14 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
   const today = new Date().toLocaleDateString();
   const name = resume.personal.fullName;
   const topNoteText = replacePlaceholders(tmpl.topNote, { NAME: name, CURRENT_DATE: today });
-  const footerText = replacePlaceholders(
-    tmpl.footer,
-    { NAME: name, PAGE_NUMBER: "1", TOTAL_PAGES: "1", CURRENT_DATE: today }
-  );
+
+  const makeFooterText = (page: number, total: number) =>
+    replacePlaceholders(tmpl.footer, {
+      NAME: name,
+      PAGE_NUMBER: String(page),
+      TOTAL_PAGES: String(total),
+      CURRENT_DATE: today,
+    });
 
   const visibleSections = useMemo(
     () => resume.sections.filter((s) => s.visible !== false),
@@ -109,10 +113,8 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
     const heights = Array.from(sectionEls).map((el) => el.offsetHeight);
     const headerEl = container.querySelector<HTMLElement>("[data-header]");
     const topNoteEl = container.querySelector<HTMLElement>("[data-top-note]");
-    const footerEl = container.querySelector<HTMLElement>("[data-footer]");
     const headerHeight =
       (headerEl?.offsetHeight || 0) + (topNoteEl?.offsetHeight || 0);
-    const footerHeight = footerEl?.offsetHeight || 0;
 
     const newPages: Section[][] = [[]];
     let currentHeight = headerHeight;
@@ -120,10 +122,6 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
     for (let i = 0; i < visibleSections.length; i++) {
       const sectionHeight = heights[i] || 0;
       const pageIdx = newPages.length - 1;
-      const isLastSection = i === visibleSections.length - 1;
-      const availHeight =
-        contentHeight -
-        (isLastSection && showFooter ? footerHeight + 24 : 0);
 
       if (sectionHeight > contentHeight) {
         if (newPages[pageIdx].length > 0) {
@@ -131,7 +129,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
         } else {
           newPages[pageIdx].push(visibleSections[i]);
         }
-        if (!isLastSection) {
+        if (i < visibleSections.length - 1) {
           newPages.push([]);
           currentHeight = 0;
         }
@@ -140,7 +138,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
 
       if (
         newPages[pageIdx].length > 0 &&
-        currentHeight + sectionHeight > availHeight
+        currentHeight + sectionHeight > contentHeight
       ) {
         newPages.push([visibleSections[i]]);
         currentHeight = sectionHeight;
@@ -162,7 +160,7 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
       }
       return finalDist;
     });
-  }, [visibleSections, config, pageDims, page, showFooter, contentHeight]);
+  }, [visibleSections, config, pageDims, page, contentHeight]);
 
   const tallSectionIds = useMemo(() => {
     if (!measureRef.current) return new Set<string>();
@@ -242,10 +240,9 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
               fontSize: toCssFontSize(typography.fontSize.connections),
               color: colors.footer,
               fontFamily: typography.fontFamily.connections,
-              marginTop: 24,
             }}
           >
-            {footerText}
+            {makeFooterText(1, 1)}
           </div>
         )}
       </div>
@@ -313,17 +310,20 @@ export function ResumePreview({ resume, activeSectionId, showGuides = false }: R
               />
             ))}
 
-            {showFooter && pageIdx === pageDistribution.length - 1 && (
+            {showFooter && (
               <div
                 style={{
+                  position: "absolute",
+                  bottom: `${bottomMarginPx}px`,
+                  left: `${leftMarginPx}px`,
+                  right: `${rightMarginPx}px`,
                   textAlign: "center",
                   fontSize: toCssFontSize(typography.fontSize.connections),
                   color: colors.footer,
                   fontFamily: typography.fontFamily.connections,
-                  marginTop: 24,
                 }}
               >
-                {footerText}
+                {makeFooterText(pageIdx + 1, pageDistribution.length)}
               </div>
             )}
           </div>
