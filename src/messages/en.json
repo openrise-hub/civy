@@ -204,7 +204,8 @@
     "welcome": "Welcome to Civy!",
     "welcomeDescription": "Set up your first resume with our guided onboarding or start from scratch.",
     "getStarted": "Guided Setup",
-    "startBlank": "Start from Scratch"
+    "startBlank": "Start from Scratch",
+    "guidedSetup": "Guided Setup"
   },
   "share": {
     "title": "Share",
@@ -343,6 +344,8 @@
     "industryHint": "We'll suggest the best template based on your industry.",
     "summary": "Professional Summary",
     "summaryPlaceholder": "Write a brief summary of your experience and career goals...",
+    "loading": "Loading...",
+    "noResults": "No results found",
     "skip": "Skip \u2192 Dashboard",
     "submit": "Create My Resume"
   },

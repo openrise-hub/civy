@@ -204,7 +204,8 @@
     "welcome": "¡Bienvenido a Civy!",
     "welcomeDescription": "Configura tu primer currículum con nuestra guía o empieza desde cero.",
     "getStarted": "Configuración Guiada",
-    "startBlank": "Empezar desde Cero"
+    "startBlank": "Empezar desde Cero",
+    "guidedSetup": "Configuración Guiada"
   },
   "share": {
     "title": "Compartir",
@@ -344,6 +345,8 @@
     "industryHint": "Sugeriremos la mejor plantilla según tu industria.",
     "summary": "Resumen Profesional",
     "summaryPlaceholder": "Escribe un breve resumen de tu experiencia y objetivos profesionales...",
+    "loading": "Cargando...",
+    "noResults": "Sin resultados",
     "skip": "Saltar \u2192 Panel",
     "submit": "Crear Mi Currículum"
   },

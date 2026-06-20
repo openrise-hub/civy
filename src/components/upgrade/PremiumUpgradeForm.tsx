@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { Button } from "@/components/ui/button";
 import { toastManager } from "@/components/ui/toast";
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, CreditCardIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { changeSubscriptionTier, getPricingPlans } from "@/lib/profile/actions";
+import { getGumroadProductUrl } from "@/lib/gumroad";
+import { useUser } from "@/contexts/UserContext";
 
 export type PricingTier = "monthly" | "quarterly" | "yearly";
 
@@ -57,6 +59,18 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
 
   const isChangingPlan = isPremium && currentTier;
   const canChangePlan = isChangingPlan && selectedTier !== currentTier;
+  const { profile: userProfile } = useUser();
+  const userId = userProfile?.id;
+
+  useEffect(() => {
+    // Load Gumroad JS for overlay
+    if (!document.querySelector('script[src="https://assets.gumroad.com/js/gumroad.js"]')) {
+      const script = document.createElement("script");
+      script.src = "https://assets.gumroad.com/js/gumroad.js";
+      script.async = true;
+      document.head.appendChild(script);
+    }
+  }, []);
 
   const handleApprove = async (subscriptionId: string) => {
     setIsProcessing(true);
@@ -195,7 +209,25 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
         </Button>
       )}
 
-      {/* PayPal Button (for new subscribers) */}
+      {/* Gumroad overlay buttons (primary) */}
+      {!isChangingPlan && (
+        <div className="space-y-3">
+          <a
+            href={`${getGumroadProductUrl(selectedTier)}?${userId ? `custom_user_id=${userId}` : ""}`}
+            data-gumroad-single-product="true"
+            data-gumroad-redirect-url={`${window.location.origin}/api/gumroad/activate?user_id=${userId || ""}`}
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            <CreditCardIcon className="size-4" />
+            {t("subscribe")} ${pricing ? pricing[selectedTier] : "..."}/mo
+          </a>
+          <p className="text-center text-xs text-muted-foreground">
+            Pay with card, Apple Pay, or Google Pay
+          </p>
+        </div>
+      )}
+
+      {/* PayPal Button (fallback) */}
       {!isChangingPlan && paypalClientId && (
         <PayPalScriptProvider
           options={{
