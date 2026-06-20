@@ -343,6 +343,8 @@
     "industryHint": "We'll suggest the best template based on your industry.",
     "summary": "Professional Summary",
     "summaryPlaceholder": "Write a brief summary of your experience and career goals...",
+    "loading": "Loading...",
+    "noResults": "No results found",
     "skip": "Skip \u2192 Dashboard",
     "submit": "Create My Resume"
   },

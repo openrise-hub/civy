@@ -2,9 +2,17 @@
 
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { getAllIndustries, getTemplateList } from "@/lib/templates/registry";
+import { useEffect, useMemo, useState } from "react";
+import { getAllIndustries } from "@/lib/templates/registry";
 import { createOnboardingResume } from "./actions";
-import { useMemo } from "react";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxPopup,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxEmpty,
+} from "@/components/ui/combobox";
 
 export default function OnboardingPage() {
   const t = useTranslations("onboarding");
@@ -12,6 +20,34 @@ export default function OnboardingPage() {
   const router = useRouter();
 
   const industries = useMemo(() => getAllIndustries(), []);
+
+  const [cities, setCities] = useState<string[]>([]);
+  const [citiesLoaded, setCitiesLoaded] = useState(false);
+  const [locationValue, setLocationValue] = useState("");
+
+  const [jobTitles, setJobTitles] = useState<string[]>([]);
+  const [titlesLoaded, setTitlesLoaded] = useState(false);
+  const [jobTitleValue, setJobTitleValue] = useState("");
+
+  const [industryValue, setIndustryValue] = useState("");
+
+  useEffect(() => {
+    fetch("/data/cities.json")
+      .then((r) => r.json())
+      .then((d) => {
+        setCities(d);
+        setCitiesLoaded(true);
+      })
+      .catch(() => setCitiesLoaded(true));
+
+    fetch("/data/job-titles.json")
+      .then((r) => r.json())
+      .then((d) => {
+        setJobTitles(d);
+        setTitlesLoaded(true);
+      })
+      .catch(() => setTitlesLoaded(true));
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/50 p-4">
@@ -37,25 +73,36 @@ export default function OnboardingPage() {
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1" htmlFor="jobTitle">
+                <label className="block text-sm font-medium mb-1">
                   {t("jobTitle")}
                 </label>
-                <input
-                  id="jobTitle"
-                  name="jobTitle"
-                  placeholder={t("jobTitlePlaceholder")}
-                  className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                />
+                <Combobox value={jobTitleValue} onValueChange={(val) => setJobTitleValue(val ?? "")}>
+                  <ComboboxInput
+                    placeholder={titlesLoaded ? t("jobTitlePlaceholder") : t("loading")}
+                    className="w-full"
+                    showTrigger={false}
+                  />
+                  <ComboboxPopup className="w-[--anchor-width]">
+                    <ComboboxList>
+                      {jobTitles.map((title) => (
+                        <ComboboxItem key={title} value={title}>
+                          {title}
+                        </ComboboxItem>
+                      ))}
+                      <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                    </ComboboxList>
+                  </ComboboxPopup>
+                </Combobox>
+                <input type="hidden" name="jobTitle" value={jobTitleValue} />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1" htmlFor="email">
+                <label className="block text-sm font-medium mb-1">
                   {t("email")}
                 </label>
                 <input
-                  id="email"
                   name="email"
                   type="email"
                   placeholder="you@example.com"
@@ -63,11 +110,10 @@ export default function OnboardingPage() {
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1" htmlFor="phone">
+                <label className="block text-sm font-medium mb-1">
                   {t("phone")}
                 </label>
                 <input
-                  id="phone"
                   name="phone"
                   type="tel"
                   placeholder={t("phonePlaceholder")}
@@ -77,24 +123,35 @@ export default function OnboardingPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1" htmlFor="location">
+              <label className="block text-sm font-medium mb-1">
                 {t("location")}
               </label>
-              <input
-                id="location"
-                name="location"
-                placeholder={t("locationPlaceholder")}
-                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
+              <Combobox value={locationValue} onValueChange={(val) => setLocationValue(val ?? "")}>
+                <ComboboxInput
+                  placeholder={citiesLoaded ? t("locationPlaceholder") : t("loading")}
+                  className="w-full"
+                  showTrigger={false}
+                />
+                <ComboboxPopup className="w-[--anchor-width]">
+                  <ComboboxList className="max-h-60">
+                    {cities.map((city) => (
+                      <ComboboxItem key={city} value={city}>
+                        {city}
+                      </ComboboxItem>
+                    ))}
+                    <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                  </ComboboxList>
+                </ComboboxPopup>
+              </Combobox>
+              <input type="hidden" name="location" value={locationValue} />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1" htmlFor="linkedin">
+                <label className="block text-sm font-medium mb-1">
                   {t("linkedin")}
                 </label>
                 <input
-                  id="linkedin"
                   name="linkedin"
                   type="url"
                   placeholder="https://linkedin.com/in/..."
@@ -102,11 +159,10 @@ export default function OnboardingPage() {
                 />
               </div>
               <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1" htmlFor="website">
+                <label className="block text-sm font-medium mb-1">
                   {t("website")}
                 </label>
                 <input
-                  id="website"
                   name="website"
                   type="url"
                   placeholder="https://github.com/..."
@@ -116,31 +172,37 @@ export default function OnboardingPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1" htmlFor="industry">
+              <label className="block text-sm font-medium mb-1">
                 {t("industry")}
               </label>
-              <select
-                id="industry"
-                name="industry"
-                defaultValue=""
-                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              >
-                <option value="">{t("industryPlaceholder")}</option>
-                {industries.map((ind) => (
-                  <option key={ind} value={ind}>
-                    {tInd(ind)}
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-muted-foreground mt-1">{t("industryHint")}</p>
+              <Combobox value={industryValue} onValueChange={(val) => setIndustryValue(val ?? "")}>
+                <ComboboxInput
+                  placeholder={t("industryPlaceholder")}
+                  className="w-full"
+                  showTrigger={true}
+                />
+                <ComboboxPopup className="w-[--anchor-width]">
+                  <ComboboxList>
+                    {industries.map((ind) => (
+                      <ComboboxItem key={ind} value={ind}>
+                        {tInd(ind)}
+                      </ComboboxItem>
+                    ))}
+                    <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                  </ComboboxList>
+                </ComboboxPopup>
+              </Combobox>
+              <input type="hidden" name="industry" value={industryValue} />
+              <p className="text-xs text-muted-foreground mt-1">
+                {t("industryHint")}
+              </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1" htmlFor="summary">
+              <label className="block text-sm font-medium mb-1">
                 {t("summary")}
               </label>
               <textarea
-                id="summary"
                 name="summary"
                 rows={3}
                 placeholder={t("summaryPlaceholder")}

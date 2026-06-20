@@ -344,6 +344,8 @@
     "industryHint": "Sugeriremos la mejor plantilla según tu industria.",
     "summary": "Resumen Profesional",
     "summaryPlaceholder": "Escribe un breve resumen de tu experiencia y objetivos profesionales...",
+    "loading": "Cargando...",
+    "noResults": "Sin resultados",
     "skip": "Saltar \u2192 Panel",
     "submit": "Crear Mi Currículum"
   },
