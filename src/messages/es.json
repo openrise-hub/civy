@@ -204,7 +204,8 @@
     "welcome": "¡Bienvenido a Civy!",
     "welcomeDescription": "Configura tu primer currículum con nuestra guía o empieza desde cero.",
     "getStarted": "Configuración Guiada",
-    "startBlank": "Empezar desde Cero"
+    "startBlank": "Empezar desde Cero",
+    "guidedSetup": "Configuración Guiada"
   },
   "share": {
     "title": "Compartir",

@@ -79,6 +79,11 @@ export default async function DashboardPage({
                 {isAtLimit ? t("limitReached") : t("createNew")}
               </Button>
             </form>
+            {isPremium && (
+              <Button variant="outline" size="sm" render={<Link href="/onboarding" />}>
+                {t("guidedSetup")}
+              </Button>
+            )}
             <div className="ml-2">
               <UserNav />
             </div>
