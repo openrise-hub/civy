@@ -92,14 +92,21 @@ export default async function DashboardPage({
             <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-primary/10">
               <FileText className="size-10 text-primary/80" />
             </div>
-            <h2 className="mb-2 text-2xl font-bold tracking-tight">{t("empty")}</h2>
-            <p className="mb-8 max-w-sm text-muted-foreground">{t("emptyDescription")}</p>
-            <form action={createResume}>
-              <Button type="submit" size="lg" className="rounded-full px-8 shadow-sm">
-                <Plus className="mr-2 size-5" />
-                {t("createNew")}
-              </Button>
-            </form>
+            <h2 className="mb-2 text-2xl font-bold tracking-tight">{t("welcome")}</h2>
+            <p className="mb-8 max-w-sm text-muted-foreground">{t("welcomeDescription")}</p>
+            <div className="flex gap-3">
+              <Link href="/onboarding">
+                <Button size="lg" className="rounded-full px-8 shadow-sm">
+                  <Plus className="mr-2 size-5" />
+                  {t("getStarted")}
+                </Button>
+              </Link>
+              <form action={createResume}>
+                <Button type="submit" size="lg" variant="outline" className="rounded-full px-8">
+                  {t("startBlank")}
+                </Button>
+              </form>
+            </div>
           </div>
         ) : (
           // Client Wrapper for Search, Sort, and Grid

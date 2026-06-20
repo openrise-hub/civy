@@ -200,7 +200,11 @@
     "folderRenamed": "Folder renamed",
     "deleteFolder": "Delete Folder",
     "deleteFolderConfirm": "Are you sure you want to delete this folder? Your resumes will not be deleted, they will just be moved out of this folder.",
-    "folderDeleted": "Folder deleted"
+    "folderDeleted": "Folder deleted",
+    "welcome": "Welcome to Civy!",
+    "welcomeDescription": "Set up your first resume with our guided onboarding or start from scratch.",
+    "getStarted": "Guided Setup",
+    "startBlank": "Start from Scratch"
   },
   "share": {
     "title": "Share",
@@ -319,6 +323,28 @@
     "downloads": "Downloads",
     "noData": "No analytics data yet. Share your resume to start tracking views.",
     "untitled": "Untitled Resume"
+  },
+  "onboarding": {
+    "title": "Let's set up your resume",
+    "subtitle": "Tell us about yourself and we'll suggest the perfect template.",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Jane Doe",
+    "jobTitle": "Job Title",
+    "jobTitlePlaceholder": "e.g. Software Engineer",
+    "email": "Email",
+    "phone": "Phone",
+    "phonePlaceholder": "+1 (555) 123-4567",
+    "location": "Location",
+    "locationPlaceholder": "e.g. San Francisco, CA",
+    "linkedin": "LinkedIn URL",
+    "website": "Website / GitHub",
+    "industry": "Industry",
+    "industryPlaceholder": "Select your industry...",
+    "industryHint": "We'll suggest the best template based on your industry.",
+    "summary": "Professional Summary",
+    "summaryPlaceholder": "Write a brief summary of your experience and career goals...",
+    "skip": "Skip \u2192 Dashboard",
+    "submit": "Create My Resume"
   },
   "industries": {
     "Technology": "Technology",

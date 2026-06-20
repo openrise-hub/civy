@@ -200,7 +200,11 @@
     "folderRenamed": "Carpeta renombrada",
     "deleteFolder": "Eliminar Carpeta",
     "deleteFolderConfirm": "¿Estás seguro de que quieres eliminar esta carpeta? Tus currículums no serán eliminados, solo se moverán fuera de esta carpeta.",
-    "folderDeleted": "Carpeta eliminada"
+    "folderDeleted": "Carpeta eliminada",
+    "welcome": "¡Bienvenido a Civy!",
+    "welcomeDescription": "Configura tu primer currículum con nuestra guía o empieza desde cero.",
+    "getStarted": "Configuración Guiada",
+    "startBlank": "Empezar desde Cero"
   },
   "share": {
     "title": "Compartir",
@@ -320,6 +324,28 @@
     "downloads": "Descargas",
     "noData": "Aún no hay datos. Comparte tu currículum para empezar a rastrear vistas.",
     "untitled": "Currículum sin título"
+  },
+  "onboarding": {
+    "title": "Configuremos tu currículum",
+    "subtitle": "Cuéntanos sobre ti y te sugeriremos la plantilla perfecta.",
+    "fullName": "Nombre Completo",
+    "fullNamePlaceholder": "María García",
+    "jobTitle": "Puesto",
+    "jobTitlePlaceholder": "ej. Ingeniera de Software",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "phonePlaceholder": "+52 (55) 1234-5678",
+    "location": "Ubicación",
+    "locationPlaceholder": "ej. Ciudad de México, MX",
+    "linkedin": "URL de LinkedIn",
+    "website": "Sitio Web / GitHub",
+    "industry": "Industria",
+    "industryPlaceholder": "Selecciona tu industria...",
+    "industryHint": "Sugeriremos la mejor plantilla según tu industria.",
+    "summary": "Resumen Profesional",
+    "summaryPlaceholder": "Escribe un breve resumen de tu experiencia y objetivos profesionales...",
+    "skip": "Saltar \u2192 Panel",
+    "submit": "Crear Mi Currículum"
   },
   "industries": {
     "Technology": "Tecnología",
