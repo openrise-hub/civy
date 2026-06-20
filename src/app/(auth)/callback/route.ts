@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       }
 
       if (isSignup) {
-        target.searchParams.set("confirmed", "true");
+        return NextResponse.redirect(`${origin}/onboarding`);
       }
 
       return NextResponse.redirect(target.toString());
