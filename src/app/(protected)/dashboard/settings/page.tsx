@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, User, Shield, CreditCard, AlertTriangle, Mail, Download } from "lucide-react";
+import { LOCALES, LOCALE_LABELS, type Locale } from "@/components/LanguageToggle";
 import {
   Card,
   CardHeader,
@@ -258,30 +259,21 @@ export default function SettingsPage() {
               <Field className="space-y-3">
                 <FieldLabel>{t("language")}</FieldLabel>
                 <div className="flex flex-wrap gap-3">
-                  <Button
-                    variant={profile?.locale === "en" ? "default" : "outline"}
-                    onClick={async () => {
-                      document.cookie = `NEXT_LOCALE=en; path=/; max-age=31536000`;
-                      await import("@/lib/profile/actions").then((m) =>
-                        m.updatePreferences({ locale: "en" })
-                      );
-                      window.location.reload();
-                    }}
-                  >
-                    {t("english")} {profile?.locale === "en" && "✓"}
-                  </Button>
-                  <Button
-                    variant={profile?.locale === "es" ? "default" : "outline"}
-                    onClick={async () => {
-                      document.cookie = `NEXT_LOCALE=es; path=/; max-age=31536000`;
-                      await import("@/lib/profile/actions").then((m) =>
-                        m.updatePreferences({ locale: "es" })
-                      );
-                      window.location.reload();
-                    }}
-                  >
-                    {t("spanish")} {profile?.locale === "es" && "✓"}
-                  </Button>
+                  {LOCALES.map((locale) => (
+                    <Button
+                      key={locale}
+                      variant={profile?.locale === locale ? "default" : "outline"}
+                      onClick={async () => {
+                        document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000`;
+                        await import("@/lib/profile/actions").then((m) =>
+                          m.updatePreferences({ locale })
+                        );
+                        window.location.reload();
+                      }}
+                    >
+                      {LOCALE_LABELS[locale]} {profile?.locale === locale && "✓"}
+                    </Button>
+                  ))}
                 </div>
               </Field>
 

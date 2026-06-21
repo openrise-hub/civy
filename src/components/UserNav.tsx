@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { LogOut, Settings, LayoutDashboard } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { getGravatarUrl } from "@/lib/gravatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +26,7 @@ export function UserNav() {
     <DropdownMenu>
       <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer hover:opacity-80 transition-opacity">
         <Avatar className="size-9 border bg-muted/50">
+          <AvatarImage src={getGravatarUrl(email)} alt={name} />
           <AvatarFallback className="bg-transparent">{initials}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
