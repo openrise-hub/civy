@@ -12,6 +12,7 @@
     "unknown": "غير معروف",
     "previous": "السابق",
     "next": "التالي",
+    "andMore": "And more!",
     "movedToFolder": "نُقل إلى المجلد",
     "errorDuplicating": "خطأ في نسخ السير الذاتية",
     "errorDeleting": "خطأ في حذف السير الذاتية",
@@ -224,7 +225,22 @@
     "welcomeDescription": "قم بإعداد سيرتك الذاتية الأولى من خلال دليل الإعداد أو ابدأ من الصفر.",
     "getStarted": "الإعداد الموجه",
     "startBlank": "البدء من الصفر",
-    "guidedSetup": "الإعداد الموجه"
+    "guidedSetup": "الإعداد الموجه",
+    "tipTitle": "Tip of the day",
+    "templateOfTheWeek": "Template of the week",
+    "tryTemplate": "Try this template",
+    "tips": [
+      "Use action verbs like \"led\", \"developed\", or \"implemented\" instead of passive language.",
+      "Keep your resume to 1-2 pages. Recruiters spend about 6 seconds scanning.",
+      "Quantify achievements with numbers: \"Increased sales by 30%\" is stronger than \"Increased sales\".",
+      "Tailor your resume to each job by matching keywords from the job description.",
+      "Place your most relevant achievements at the top of each section.",
+      "Use a clean, professional layout. Avoid fonts or graphics that distract from content.",
+      "Proofread twice. A single typo can cost you an interview.",
+      "Include a professional summary at the top highlighting your key qualifications.",
+      "List skills relevant to the position, not every tool you have ever used.",
+      "Save your resume as a PDF to preserve formatting across devices."
+    ]
   },
   "share": {
     "title": "مشاركة",
@@ -274,6 +290,7 @@
     "tryAgain": "يرجى المحاولة مرة أخرى.",
     "contactSupport": "يرجى المحاولة مرة أخرى أو الاتصال بالدعم.",
     "welcomeToPro": "مرحباً بك في Pro!",
+    "from": "From",
     "subscriptionActive": "اشتراكك نشط الآن."
   },
   "versionHistory": {

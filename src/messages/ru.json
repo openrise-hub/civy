@@ -12,6 +12,7 @@
     "unknown": "Неизвестно",
     "previous": "Назад",
     "next": "Вперёд",
+    "andMore": "And more!",
     "movedToFolder": "Перемещено в папку",
     "errorDuplicating": "Ошибка дублирования резюме",
     "errorDeleting": "Ошибка удаления резюме",
@@ -224,7 +225,22 @@
     "welcomeDescription": "Настройте своё первое резюме с помощью нашего руководства или начните с нуля.",
     "getStarted": "Настроить с помощью гида",
     "startBlank": "Начать с нуля",
-    "guidedSetup": "Настроить с помощью гида"
+    "guidedSetup": "Настроить с помощью гида",
+    "tipTitle": "Tip of the day",
+    "templateOfTheWeek": "Template of the week",
+    "tryTemplate": "Try this template",
+    "tips": [
+      "Use action verbs like \"led\", \"developed\", or \"implemented\" instead of passive language.",
+      "Keep your resume to 1-2 pages. Recruiters spend about 6 seconds scanning.",
+      "Quantify achievements with numbers: \"Increased sales by 30%\" is stronger than \"Increased sales\".",
+      "Tailor your resume to each job by matching keywords from the job description.",
+      "Place your most relevant achievements at the top of each section.",
+      "Use a clean, professional layout. Avoid fonts or graphics that distract from content.",
+      "Proofread twice. A single typo can cost you an interview.",
+      "Include a professional summary at the top highlighting your key qualifications.",
+      "List skills relevant to the position, not every tool you have ever used.",
+      "Save your resume as a PDF to preserve formatting across devices."
+    ]
   },
   "share": {
     "title": "Поделиться",
@@ -274,6 +290,7 @@
     "tryAgain": "Пожалуйста, попробуйте снова.",
     "contactSupport": "Попробуйте снова или обратитесь в поддержку.",
     "welcomeToPro": "Добро пожаловать в Pro!",
+    "from": "From",
     "subscriptionActive": "Ваша подписка активна."
   },
   "versionHistory": {

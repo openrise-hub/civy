@@ -521,10 +521,10 @@ export default function Home() {
               <div className="space-y-4 flex-1">
                 <p className="text-xs uppercase tracking-wider font-bold text-white/40 mb-4 border-b border-white/10 pb-2">Features</p>
                 {[
-                  '{t("pricingFreeFeature1")}',
-                  '{t("pricingFreeFeature2")}',
-                  '{t("pricingFreeFeature3")}',
-                  "English & Spanish Support"
+                  t("pricingFreeFeature1"),
+                  t("pricingFreeFeature2"),
+                  t("pricingFreeFeature3"),
+                  t("pricingFreeFeature4")
                 ].map((feature, idx) => (
                   <div key={idx} className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-white/40" />
@@ -556,12 +556,12 @@ export default function Home() {
               <div className="space-y-4 flex-1">
                 <p className="text-xs uppercase tracking-wider font-bold text-[#E3FFCC]/60 mb-4 border-b border-white/10 pb-2">Premium Features</p>
                 {[
-                  '{t("pricingProFeature1")}',
-                  '{t("pricingProFeature2")}',
-                  '{t("pricingProFeature3")}',
-                  '{t("pricingProFeature4")}',
-                  '{t("pricingProFeature5")}',
-                  '{t("pricingProFeature6")}'
+                  t("pricingProFeature1"),
+                  t("pricingProFeature2"),
+                  t("pricingProFeature3"),
+                  t("pricingProFeature4"),
+                  t("pricingProFeature5"),
+                  t("pricingProFeature6")
                 ].map((feature, idx) => (
                   <div key={idx} className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-[#E3FFCC]" />

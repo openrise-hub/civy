@@ -12,6 +12,7 @@
     "unknown": "Inconnu",
     "previous": "Précédent",
     "next": "Suivant",
+    "andMore": "And more!",
     "movedToFolder": "Déplacé vers le dossier",
     "errorDuplicating": "Erreur lors de la duplication des CV",
     "errorDeleting": "Erreur lors de la suppression des CV",
@@ -224,7 +225,22 @@
     "welcomeDescription": "Configurez votre premier CV avec notre guide ou commencez à partir de zéro.",
     "getStarted": "Configuration guidée",
     "startBlank": "Commencer de zéro",
-    "guidedSetup": "Configuration guidée"
+    "guidedSetup": "Configuration guidée",
+    "tipTitle": "Tip of the day",
+    "templateOfTheWeek": "Template of the week",
+    "tryTemplate": "Try this template",
+    "tips": [
+      "Use action verbs like \"led\", \"developed\", or \"implemented\" instead of passive language.",
+      "Keep your resume to 1-2 pages. Recruiters spend about 6 seconds scanning.",
+      "Quantify achievements with numbers: \"Increased sales by 30%\" is stronger than \"Increased sales\".",
+      "Tailor your resume to each job by matching keywords from the job description.",
+      "Place your most relevant achievements at the top of each section.",
+      "Use a clean, professional layout. Avoid fonts or graphics that distract from content.",
+      "Proofread twice. A single typo can cost you an interview.",
+      "Include a professional summary at the top highlighting your key qualifications.",
+      "List skills relevant to the position, not every tool you have ever used.",
+      "Save your resume as a PDF to preserve formatting across devices."
+    ]
   },
   "share": {
     "title": "Partager",
@@ -274,6 +290,7 @@
     "tryAgain": "Veuillez réessayer.",
     "contactSupport": "Veuillez réessayer ou contacter le support.",
     "welcomeToPro": "Bienvenue chez Pro !",
+    "from": "From",
     "subscriptionActive": "Votre abonnement est maintenant actif."
   },
   "versionHistory": {
