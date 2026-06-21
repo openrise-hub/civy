@@ -12,6 +12,7 @@
     "unknown": "غير معروف",
     "previous": "السابق",
     "next": "التالي",
+    "andMore": "And more!",
     "movedToFolder": "نُقل إلى المجلد",
     "errorDuplicating": "خطأ في نسخ السير الذاتية",
     "errorDeleting": "خطأ في حذف السير الذاتية",
@@ -274,6 +275,7 @@
     "tryAgain": "يرجى المحاولة مرة أخرى.",
     "contactSupport": "يرجى المحاولة مرة أخرى أو الاتصال بالدعم.",
     "welcomeToPro": "مرحباً بك في Pro!",
+    "from": "From",
     "subscriptionActive": "اشتراكك نشط الآن."
   },
   "versionHistory": {

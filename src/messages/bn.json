@@ -12,6 +12,7 @@
     "unknown": "অজানা",
     "previous": "পূর্ববর্তী",
     "next": "পরবর্তী",
+    "andMore": "And more!",
     "movedToFolder": "ফোল্ডারে সরানো হয়েছে",
     "errorDuplicating": "জীবনবৃত্তান্ত ডুপ্লিকেট করতে ত্রুটি",
     "errorDeleting": "জীবনবৃত্তান্ত মুছতে ত্রুটি",
@@ -274,6 +275,7 @@
     "tryAgain": "অনুগ্রহ করে আবার চেষ্টা করুন।",
     "contactSupport": "আবার চেষ্টা করুন বা সহায়তার সাথে যোগাযোগ করুন।",
     "welcomeToPro": "Pro-তে স্বাগতম!",
+    "from": "From",
     "subscriptionActive": "আপনার সাবস্ক্রিপশন এখন সক্রিয়।"
   },
   "versionHistory": {

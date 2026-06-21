@@ -12,6 +12,7 @@
     "unknown": "Desconhecido",
     "previous": "Anterior",
     "next": "Próximo",
+    "andMore": "And more!",
     "movedToFolder": "Movido para a pasta",
     "errorDuplicating": "Erro ao duplicar currículos",
     "errorDeleting": "Erro ao excluir currículos",
@@ -274,6 +275,7 @@
     "tryAgain": "Tente novamente.",
     "contactSupport": "Tente novamente ou contate o suporte.",
     "welcomeToPro": "Bem-vindo ao Pro!",
+    "from": "From",
     "subscriptionActive": "Sua assinatura está ativa."
   },
   "versionHistory": {

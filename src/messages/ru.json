@@ -12,6 +12,7 @@
     "unknown": "Неизвестно",
     "previous": "Назад",
     "next": "Вперёд",
+    "andMore": "And more!",
     "movedToFolder": "Перемещено в папку",
     "errorDuplicating": "Ошибка дублирования резюме",
     "errorDeleting": "Ошибка удаления резюме",
@@ -274,6 +275,7 @@
     "tryAgain": "Пожалуйста, попробуйте снова.",
     "contactSupport": "Попробуйте снова или обратитесь в поддержку.",
     "welcomeToPro": "Добро пожаловать в Pro!",
+    "from": "From",
     "subscriptionActive": "Ваша подписка активна."
   },
   "versionHistory": {

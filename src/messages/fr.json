@@ -12,6 +12,7 @@
     "unknown": "Inconnu",
     "previous": "Précédent",
     "next": "Suivant",
+    "andMore": "And more!",
     "movedToFolder": "Déplacé vers le dossier",
     "errorDuplicating": "Erreur lors de la duplication des CV",
     "errorDeleting": "Erreur lors de la suppression des CV",
@@ -274,6 +275,7 @@
     "tryAgain": "Veuillez réessayer.",
     "contactSupport": "Veuillez réessayer ou contacter le support.",
     "welcomeToPro": "Bienvenue chez Pro !",
+    "from": "From",
     "subscriptionActive": "Votre abonnement est maintenant actif."
   },
   "versionHistory": {

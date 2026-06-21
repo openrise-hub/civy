@@ -13,6 +13,7 @@
     "previous": "Anterior",
     "next": "Siguiente",
     "movedToFolder": "Movido a la carpeta",
+    "andMore": "¡Y más!",
     "errorDuplicating": "Error al duplicar currículums",
     "errorDeleting": "Error al eliminar currículums",
     "justNow": "justo ahora",
@@ -374,7 +375,8 @@
     "tryAgain": "Por favor, inténtalo de nuevo.",
     "contactSupport": "Inténtalo de nuevo o contacta a soporte.",
     "welcomeToPro": "¡Bienvenido a Pro!",
-    "subscriptionActive": "Tu suscripción ya está activa."
+    "subscriptionActive": "Tu suscripción ya está activa.",
+    "from": "Desde"
   },
   "versionHistory": {
     "title": "Historial de versiones",

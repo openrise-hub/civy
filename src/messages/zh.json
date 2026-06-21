@@ -12,6 +12,7 @@
     "unknown": "未知",
     "previous": "上一页",
     "next": "下一页",
+    "andMore": "And more!",
     "movedToFolder": "已移至文件夹",
     "errorDuplicating": "复制简历时出错",
     "errorDeleting": "删除简历时出错",
@@ -274,6 +275,7 @@
     "tryAgain": "请重试。",
     "contactSupport": "请重试或联系支持。",
     "welcomeToPro": "欢迎使用 Pro！",
+    "from": "From",
     "subscriptionActive": "您的订阅现已激活。"
   },
   "versionHistory": {

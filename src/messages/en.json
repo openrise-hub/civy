@@ -13,6 +13,7 @@
     "previous": "Previous",
     "next": "Next",
     "movedToFolder": "Moved to folder",
+    "andMore": "And more!",
     "errorDuplicating": "Error duplicating resumes",
     "errorDeleting": "Error deleting resumes",
     "justNow": "just now",
@@ -374,7 +375,8 @@
     "tryAgain": "Please try again.",
     "contactSupport": "Please try again or contact support.",
     "welcomeToPro": "Welcome to Pro!",
-    "subscriptionActive": "Your subscription is now active."
+    "subscriptionActive": "Your subscription is now active.",
+    "from": "From"
   },
   "versionHistory": {
     "title": "Version History",

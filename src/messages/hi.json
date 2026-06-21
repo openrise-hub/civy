@@ -12,6 +12,7 @@
     "unknown": "अज्ञात",
     "previous": "पिछला",
     "next": "अगला",
+    "andMore": "And more!",
     "movedToFolder": "फ़ोल्डर में ले जाया गया",
     "errorDuplicating": "रिज़्यूमे डुप्लिकेट करने में त्रुटि",
     "errorDeleting": "रिज़्यूमे हटाने में त्रुटि",
@@ -274,6 +275,7 @@
     "tryAgain": "कृपया पुनः प्रयास करें।",
     "contactSupport": "कृपया पुनः प्रयास करें या सहायता से संपर्क करें।",
     "welcomeToPro": "Pro में आपका स्वागत है!",
+    "from": "From",
     "subscriptionActive": "आपकी सदस्यता अब सक्रिय है।"
   },
   "versionHistory": {
