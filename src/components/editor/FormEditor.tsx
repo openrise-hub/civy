@@ -93,7 +93,7 @@ export function FormEditor({ resumeId, initialIsPublic, initialSlug }: FormEdito
                 setTitleValue(resume.title);
                 setIsEditingTitle(true);
               }}
-              className="flex items-center gap-2 text-lg font-semibold hover:text-muted-foreground transition-colors group min-w-0"
+              className="flex items-center gap-2 text-lg font-semibold hover:text-muted-foreground transition-colors group min-w-0 flex-1"
             >
               <span className="truncate">{resume.title || "Untitled Resume"}</span>
               <PencilIcon className="size-3 opacity-0 group-hover:opacity-50 transition-opacity" />
