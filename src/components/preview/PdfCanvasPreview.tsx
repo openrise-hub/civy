@@ -288,11 +288,7 @@ export function PdfCanvasPreview({
                 if (!ctx) return;
                 el.width = page.width;
                 el.height = page.height;
-                // Only draw if not already drawn (React may reuse canvas)
-                if (el.dataset.drawn !== "true") {
-                  ctx.drawImage(page.imageData, 0, 0);
-                  el.dataset.drawn = "true";
-                }
+                ctx.drawImage(page.imageData, 0, 0);
               }}
               style={{
                 boxShadow: "0 2px 12px rgba(0, 0, 0, 0.15)",
