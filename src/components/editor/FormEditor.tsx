@@ -73,7 +73,7 @@ export function FormEditor({ resumeId, initialIsPublic, initialSlug }: FormEdito
   return (
     <div className="flex h-full flex-col bg-muted/30">
       <div className="flex items-center justify-between border-b bg-background px-3 py-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           <Button size="icon" variant="ghost" render={<Link href="/dashboard" />}>
             <ArrowLeftIcon className="size-4" />
           </Button>
@@ -84,6 +84,7 @@ export function FormEditor({ resumeId, initialIsPublic, initialSlug }: FormEdito
               onChange={(e) => setTitleValue(e.target.value)}
               onBlur={handleTitleSave}
               onKeyDown={handleTitleKeyDown}
+              maxLength={100}
               className="h-8 text-lg font-semibold w-48"
             />
           ) : (
@@ -92,9 +93,9 @@ export function FormEditor({ resumeId, initialIsPublic, initialSlug }: FormEdito
                 setTitleValue(resume.title);
                 setIsEditingTitle(true);
               }}
-              className="flex items-center gap-2 text-lg font-semibold hover:text-muted-foreground transition-colors group"
+              className="flex items-center gap-2 text-lg font-semibold hover:text-muted-foreground transition-colors group min-w-0"
             >
-              <span>{resume.title || "Untitled Resume"}</span>
+              <span className="truncate">{resume.title || "Untitled Resume"}</span>
               <PencilIcon className="size-3 opacity-0 group-hover:opacity-50 transition-opacity" />
             </button>
           )}

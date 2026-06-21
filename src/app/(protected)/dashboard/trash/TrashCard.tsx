@@ -74,7 +74,7 @@ export function TrashCard({ resume }: TrashCardProps) {
   return (
     <Card className="opacity-75 transition-opacity hover:opacity-100">
       <CardHeader>
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3 min-w-0">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
             <FileText className="size-5" />
           </div>
