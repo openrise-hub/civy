@@ -9,16 +9,14 @@ import { useMemo } from "react";
 
 export function TemplateOfTheWeek() {
   const t = useTranslations("dashboard");
-  const currentTemplate = useResumeStore((s) => s.resume.metadata.template);
   const setTemplate = useResumeStore((s) => s.setTemplate);
 
   const template = useMemo(() => {
     const entries = Object.entries(templateRegistry);
-    const filtered = entries.filter(([key]) => key !== currentTemplate);
-    if (filtered.length === 0) return null;
-    const idx = new Date().getDate() % filtered.length;
-    return { key: filtered[idx][0], entry: filtered[idx][1] };
-  }, [currentTemplate]);
+    if (entries.length === 0) return null;
+    const idx = new Date().getDate() % entries.length;
+    return { key: entries[idx][0], entry: entries[idx][1] };
+  }, []);
 
   if (!template) return null;
   const { colors, typography, sectionTitles } = template.entry.config;
