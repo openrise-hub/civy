@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { DownloadButton } from "@/components/editor/DownloadButton";
 import { ResumePreview } from "@/components/preview/ResumePreview";
-import { ZoomInIcon, ZoomOutIcon, RulerIcon } from "lucide-react";
+import { ZoomInIcon, ZoomOutIcon, RulerIcon, SearchCheckIcon, Loader2Icon } from "lucide-react";
 import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 function PreviewHeader({ 
   zoom, 
@@ -15,6 +16,8 @@ function PreviewHeader({
   onZoomReset,
   showGuides,
   onToggleGuides,
+  analyzing,
+  onATSCheck,
 }: { 
   zoom: number; 
   onZoomIn: () => void; 
@@ -22,6 +25,8 @@ function PreviewHeader({
   onZoomReset: () => void;
   showGuides: boolean;
   onToggleGuides: () => void;
+  analyzing: boolean;
+  onATSCheck: () => void;
 }) {
   const t = useTranslations("editor.preview");
 
@@ -66,6 +71,16 @@ function PreviewHeader({
           <RulerIcon className="size-4" />
         </Button>
         <DownloadButton variant="outline" size="sm" />
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          onClick={onATSCheck}
+          disabled={analyzing}
+          aria-label="ATS Check"
+          title="ATS Check"
+        >
+          {analyzing ? <Loader2Icon className="size-4 animate-spin" /> : <SearchCheckIcon className="size-4" />}
+        </Button>
       </div>
     </div>
   );
@@ -95,11 +110,43 @@ function PreviewContent({ zoom, showGuides }: { zoom: number; showGuides: boolea
 export function PreviewPanel() {
   const [zoom, setZoom] = useState(1);
   const [showGuides, setShowGuides] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [atsResult, setAtsResult] = useState<{ score: number; issues: string[]; suggestions: string[] } | null>(null);
+  const [atsOpen, setAtsOpen] = useState(false);
+  const resume = useResumeStore((state) => state.resume);
   
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.1, 2));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.1, 0.5));
   const handleZoomReset = () => setZoom(1);
   const handleToggleGuides = () => setShowGuides(prev => !prev);
+
+  const handleATSCheck = async () => {
+    setAnalyzing(true);
+    try {
+      const parts: string[] = [resume.personal.fullName, resume.personal.jobTitle || ""].filter(Boolean);
+      for (const section of resume.sections) {
+        if (section.visible === false) continue;
+        const items = section.content.items
+          .filter((i) => i.visible !== false && i.type !== "separator")
+          .map((i) => ("value" in i ? (typeof i.value === "string" ? i.value : JSON.stringify(i.value)) : ""))
+          .filter(Boolean);
+        if (items.length > 0) {
+          parts.push(`\n${section.title.toUpperCase()}\n${items.join("\n")}`);
+        }
+      }
+      const res = await fetch("/api/ai/ats-analysis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText: parts.join("\n") }),
+      });
+      const data = await res.json();
+      setAtsResult(data);
+      setAtsOpen(true);
+    } catch {
+    } finally {
+      setAnalyzing(false);
+    }
+  };
 
   return (
     <div className="flex h-full flex-col bg-muted/50">
@@ -110,8 +157,48 @@ export function PreviewPanel() {
         onZoomReset={handleZoomReset}
         showGuides={showGuides}
         onToggleGuides={handleToggleGuides}
+        analyzing={analyzing}
+        onATSCheck={handleATSCheck}
       />
       <PreviewContent zoom={zoom} showGuides={showGuides} />
+
+      <Dialog open={atsOpen} onOpenChange={setAtsOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>ATS Analysis</DialogTitle>
+          </DialogHeader>
+          {atsResult && (
+            <div className="space-y-4 text-sm">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">Score:</span>
+                <span className={atsResult.score >= 70 ? "text-green-600" : "text-amber-600"}>
+                  {atsResult.score}/100
+                </span>
+              </div>
+              {atsResult.issues.length > 0 && (
+                <div>
+                  <p className="font-semibold mb-1">Issues</p>
+                  <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
+                    {atsResult.issues.map((issue, i) => (
+                      <li key={i}>{issue}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {atsResult.suggestions.length > 0 && (
+                <div>
+                  <p className="font-semibold mb-1">Suggestions</p>
+                  <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
+                    {atsResult.suggestions.map((sug, i) => (
+                      <li key={i}>{sug}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

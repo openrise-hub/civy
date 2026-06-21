@@ -21,7 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverTrigger, PopoverPopup } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon, XIcon } from "lucide-react";
+import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon, XIcon, WandIcon, Loader2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -128,13 +128,19 @@ function StringItemEditor({ item, onUpdate, onRemove, onDuplicate, onToggleVisib
     )}>
       <div className="flex-1 space-y-1">
         {isDescription ? (
-          <Textarea
-            value={item.value}
-            onChange={(e) => onUpdate({ value: e.target.value })}
-            placeholder="Write your content here.&#10;&#10;- Start a line with a dash for bullet points&#10;1. Start with a number for ordered lists&#10;[Click here](https://example.com) to add a link&#10;&#10;Leave a blank line between paragraphs."
-            maxLength={maxChars}
-            className="resize-y min-h-[120px] font-mono text-sm"
-          />
+          <div>
+            <Textarea
+              value={item.value}
+              onChange={(e) => onUpdate({ value: e.target.value })}
+              placeholder="Write your content here.&#10;&#10;- Start a line with a dash for bullet points&#10;1. Start with a number for ordered lists&#10;[Click here](https://example.com) to add a link&#10;&#10;Leave a blank line between paragraphs."
+              maxLength={maxChars}
+              className="resize-y min-h-[120px] font-mono text-sm"
+            />
+            <ImproveTextButton
+              text={item.value}
+              onImproved={(newText) => onUpdate({ value: newText })}
+            />
+          </div>
         ) : (
           <Input
             value={item.value}
@@ -849,5 +855,38 @@ export function SectionEditor({ section }: SectionEditorProps) {
       
       <AddItemToolbar onAdd={handleAddItem} disabled={!canAdd} />
     </div>
+  );
+}
+
+function ImproveTextButton({ text, onImproved }: { text: string; onImproved: (t: string) => void }) {
+  const [improving, setImproving] = useState(false);
+
+  const handleImprove = async () => {
+    if (!text.trim()) return;
+    setImproving(true);
+    try {
+      const res = await fetch("/api/ai/improve-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      const data = await res.json();
+      if (data.text) onImproved(data.text);
+    } catch {
+    } finally {
+      setImproving(false);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleImprove}
+      disabled={improving || !text.trim()}
+      className="mt-1 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+    >
+      {improving ? <Loader2Icon className="size-3 animate-spin" /> : <WandIcon className="size-3" />}
+      Improve
+    </button>
   );
 }
