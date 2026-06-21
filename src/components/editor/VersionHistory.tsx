@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { History, RotateCcw, CrownIcon, X } from "lucide-react";
 import {
@@ -102,6 +103,11 @@ export function VersionHistory({ resumeId, trigger }: VersionHistoryProps) {
               <p className="text-xs text-muted-foreground">
                 {t("proOnlyDescription")}
               </p>
+              <Link href="/upgrade">
+                <Button size="sm" className="mt-2">
+                  I want to be a Pro!
+                </Button>
+              </Link>
             </div>
           ) : loading ? (
             <div className="py-8 text-center text-sm text-muted-foreground">
