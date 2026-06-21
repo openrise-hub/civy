@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { Manrope } from 'next/font/google';
 import { 
@@ -25,6 +26,7 @@ import {
 const manrope = Manrope({ subsets: ['latin'] });
 
 export default function Home() {
+  const t = useTranslations("landing");
   const [isYearly, setIsYearly] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -94,7 +96,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm mb-8">
             <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-            <span className="text-sm font-semibold">Join 10,000+ job seekers globally</span>
+            <span className="text-sm font-semibold">{t("heroBadge")}</span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-extrabold text-[#142F32] tracking-tight mb-6 leading-tight">
@@ -103,16 +105,16 @@ export default function Home() {
           </h1>
           
           <p className="text-lg md:text-xl text-[#777C90] max-w-2xl mx-auto mb-10 leading-relaxed">
-            The modern, multilingual resume builder designed to help you land your dream job. Real-time preview, expert templates, and seamless PDF export.
+            {t("heroSubtitle")}
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
             <Link href="/dashboard" className="w-full sm:w-auto px-8 py-4 bg-[#142F32] text-white rounded-full font-bold hover:bg-[#1a3d42] transition-all transform hover:-translate-y-1 shadow-lg flex items-center justify-center gap-2 group">
-              Get Started for Free
+              {t("heroCta")}
               <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </Link>
             <a href="#how-it-works" className="w-full sm:w-auto px-8 py-4 bg-white text-[#142F32] border-2 border-gray-200 rounded-full font-bold hover:border-[#142F32] transition-all flex items-center justify-center gap-2">
-              View Templates
+              {t("heroViewTemplates")}
             </a>
           </div>
 
@@ -128,7 +130,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="h-4 w-24 bg-gray-200 rounded"></div>
                 <div className="h-10 w-full bg-white border border-gray-200 rounded-lg flex items-center px-4">
-                  <span className="text-sm text-gray-800 font-medium typing-animation border-r-2 border-[#142F32] pr-1">Senior Product Designer</span>
+                  <span className="text-sm text-gray-800 font-medium typing-animation border-r-2 border-[#142F32] pr-1">{t("heroTypingTitle")}</span>
                 </div>
                 <div className="h-4 w-32 bg-gray-200 rounded mt-4"></div>
                 <div className="h-24 w-full bg-white border border-gray-200 rounded-lg p-4">
@@ -145,7 +147,7 @@ export default function Home() {
               <div className="w-full h-full bg-white/5 rounded-xl border border-white/10 p-6 flex flex-col gap-4">
                 <div>
                   <h3 className="text-2xl font-bold text-white mb-1">Alex Morgan</h3>
-                  <p className="text-[#E3FFCC] font-medium text-sm">Senior Product Designer</p>
+                  <p className="text-[#E3FFCC] font-medium text-sm">{t("heroTypingTitle")}</p>
                 </div>
                 <div className="h-px w-full bg-white/20 my-2"></div>
                 <div className="space-y-3">
@@ -174,7 +176,7 @@ export default function Home() {
             </div>
             <div>
               <h4 className="text-2xl font-extrabold text-[#142F32]">10,000+</h4>
-              <p className="text-sm font-medium text-[#777C90]">Resumes Created</p>
+              <p className="text-sm font-medium text-[#777C90]">{t("statsResumes")}</p>
             </div>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-start gap-4">
@@ -182,8 +184,8 @@ export default function Home() {
               <Globe size={24} />
             </div>
             <div>
-              <h4 className="text-2xl font-extrabold text-[#142F32]">2+ Languages</h4>
-              <p className="text-sm font-medium text-[#777C90]">English & Spanish Native</p>
+              <h4 className="text-2xl font-extrabold text-[#142F32]">2+ {t("statsLanguages")}</h4>
+              <p className="text-sm font-medium text-[#777C90]">{t("statsLanguagesDesc")} Native</p>
             </div>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-start gap-4">
@@ -191,8 +193,8 @@ export default function Home() {
               <ShieldCheck size={24} />
             </div>
             <div>
-              <h4 className="text-2xl font-extrabold text-[#142F32]">ATS-Friendly</h4>
-              <p className="text-sm font-medium text-[#777C90]">Optimized Exports</p>
+              <h4 className="text-2xl font-extrabold text-[#142F32]">{t("statsAts")}</h4>
+              <p className="text-sm font-medium text-[#777C90]">{t("statsAtsDesc")}</p>
             </div>
           </div>
         </div>
@@ -201,9 +203,9 @@ export default function Home() {
       {/* Features Section */}
       <section id="features" className="bg-[#142F32] pt-32 pb-24 px-6">
         <div className="max-w-6xl mx-auto text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">Why Civy?</h2>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">{t("featuresTitle")}</h2>
           <p className="text-lg text-white/70 max-w-2xl mx-auto">
-            Everything you need to craft a standout resume. Simplify your job hunt with our efficient, quality-focused tools.
+            {t("featuresSubtitle")}
           </p>
         </div>
 
@@ -214,7 +216,7 @@ export default function Home() {
               <Play className="w-8 h-8 text-[#E3FFCC]" />
               <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Real-Time Preview</h3>
+            <h3 className="text-xl font-bold text-white mb-3">{t("featurePreviewTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
               No more &quot;Download to See.&quot; Changes reflect instantly in a pixel-perfect PDF preview as you type.
             </p>
@@ -226,9 +228,9 @@ export default function Home() {
               <LayoutTemplate className="w-8 h-8 text-[#E3FFCC]" />
               <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Block-Based Editing</h3>
+            <h3 className="text-xl font-bold text-white mb-3">{t("featureBlocksTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
-              Use intuitive drag-and-drop blocks to build your story. Experience, Education, Skills, and Custom sections - reorder them in seconds.
+              {t("featureBlocksDesc")}
             </p>
           </div>
 
@@ -238,9 +240,9 @@ export default function Home() {
               <Globe className="w-8 h-8 text-[#E3FFCC]" />
               <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Go Global</h3>
+            <h3 className="text-xl font-bold text-white mb-3">{t("featureLanguagesTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
-              Switch between English and Spanish with one click. Civy handles the structural translations seamlessly.
+              {t("featureLanguagesDesc")}
             </p>
           </div>
 
@@ -250,9 +252,9 @@ export default function Home() {
               <LinkIcon className="w-8 h-8 text-[#E3FFCC]" />
               <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Shareable Links</h3>
+            <h3 className="text-xl font-bold text-white mb-3">{t("featureShareTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
-              Generate a public link to your resume in one click. Share it with recruiters or on LinkedIn with a professional web view.
+              {t("featureShareDesc")}
             </p>
           </div>
 
@@ -267,7 +269,7 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-bold text-white mb-3">Version History</h3>
             <p className="text-white/60 text-sm leading-relaxed">
-              Never lose a great bullet point again. Browse past edits and restore any version with a single click.
+              {t("featureHistoryDesc")}
             </p>
           </div>
 
@@ -277,9 +279,9 @@ export default function Home() {
               <Trash2 className="w-8 h-8 text-[#E3FFCC]" />
               <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Smart Trash & Recovery</h3>
+            <h3 className="text-xl font-bold text-white mb-3">{t("featureTrashTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
-              Accidentally deleted a resume? No problem. Use the 3-day recovery window to bring it back effortlessly.
+              {t("featureTrashDesc")}
             </p>
           </div>
         </div>
@@ -290,10 +292,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16">
           <div className="flex-1">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E3FFCC]/30 text-[#142F32] text-sm font-bold mb-6">
-              <Zap size={16} /> Fast & Easy
+              <Zap size={16} /> {t("howTitle")}
             </div>
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#142F32] mb-6 leading-tight">
-              From Blank Page to Interview Ready
+              {t("howHeading")}
             </h2>
             <p className="text-[#777C90] text-lg mb-10">
               We&apos;ve streamlined the entire process. Forget formatting headaches and focus on showcasing your true potential.
@@ -306,8 +308,8 @@ export default function Home() {
               >
                 <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg transition-colors ${activeStep === 1 ? 'bg-[#142F32] text-white' : 'bg-gray-200 text-gray-500'}`}>1</div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#142F32] mb-2">Pick a Style</h3>
-                  <p className="text-[#777C90]">Choose from our selection of minimal or bold templates. Optimized to beat the ATS.</p>
+                  <h3 className="text-xl font-bold text-[#142F32] mb-2">{t("howStep1Title")}</h3>
+                  <p className="text-[#777C90]">{t("howStep1Desc")}</p>
                 </div>
               </div>
               <div 
@@ -316,8 +318,8 @@ export default function Home() {
               >
                 <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg transition-colors ${activeStep === 2 ? 'bg-[#142F32] text-white' : 'bg-gray-200 text-gray-500'}`}>2</div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#142F32] mb-2">Fill the Blocks</h3>
-                  <p className="text-[#777C90]">Add your details using our structured forms. Reorder sections with simple drag-and-drop mechanics.</p>
+                  <h3 className="text-xl font-bold text-[#142F32] mb-2">{t("howStep2Title")}</h3>
+                  <p className="text-[#777C90]">{t("howStep2Desc")}</p>
                 </div>
               </div>
               <div 
@@ -326,8 +328,8 @@ export default function Home() {
               >
                 <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg transition-colors ${activeStep === 3 ? 'bg-[#E3FFCC] text-[#142F32]' : 'bg-gray-200 text-gray-500'}`}>3</div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#142F32] mb-2">Download & Apply</h3>
-                  <p className="text-[#777C90]">Export a high-resolution PDF or share your unique web link, and start your next chapter.</p>
+                  <h3 className="text-xl font-bold text-[#142F32] mb-2">{t("howStep3Title")}</h3>
+                  <p className="text-[#777C90]">{t("howStep3Desc")}</p>
                 </div>
               </div>
             </div>
@@ -406,7 +408,7 @@ export default function Home() {
                            </div>
                         </div>
                         <div className="absolute inset-0 bg-[#282930]/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <span className="bg-white text-[#142F32] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-2 group-hover:translate-y-0 transition-all">Select</span>
+                            <span className="bg-white text-[#142F32] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-2 group-hover:translate-y-0 transition-all">{t("howDemoSelect")}</span>
                         </div>
                       </div>
                     </div>
@@ -417,20 +419,20 @@ export default function Home() {
                     <div className="h-full flex flex-col gap-3 animate-in fade-in slide-in-from-right-4 duration-500">
                       <div className="flex gap-3">
                         <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg p-3">
-                          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">First Name</div>
+                          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t("howDemoFirstName")}</div>
                           <div className="w-3/4 h-3 bg-gray-300 rounded"></div>
                         </div>
                         <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg p-3">
-                          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Last Name</div>
+                          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t("howDemoLastName")}</div>
                           <div className="w-1/2 h-3 bg-gray-300 rounded"></div>
                         </div>
                       </div>
                       <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Job Title</div>
+                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t("howDemoJobTitle")}</div>
                         <div className="w-1/3 h-3 bg-gray-300 rounded"></div>
                       </div>
                       <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 flex-1">
-                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Professional Summary</div>
+                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">{t("howDemoSummary")}</div>
                         <div className="space-y-2">
                           <div className="w-full h-2 bg-gray-200 rounded"></div>
                           <div className="w-full h-2 bg-gray-200 rounded"></div>
@@ -446,16 +448,16 @@ export default function Home() {
                       <div className="w-20 h-20 bg-[#E3FFCC] rounded-full flex items-center justify-center text-[#142F32] mb-6 shadow-sm border border-[#c5f0a4]">
                         <CheckCircle2 size={40} className="animate-bounce" />
                       </div>
-                      <h3 className="text-2xl font-bold text-[#142F32] mb-2">Resume Ready!</h3>
+                      <h3 className="text-2xl font-bold text-[#142F32] mb-2">{t("howDemoReady")}</h3>
                       <p className="text-gray-500 text-sm max-w-[250px] mx-auto mb-6">
-                        Your professional resume has been successfully generated.
+                        {t("howDemoReadyDesc")}
                       </p>
                       <div className="flex gap-3">
                         <div className="px-4 py-2 bg-gray-100 text-[#142F32] text-sm font-bold rounded-lg border border-gray-200 flex items-center gap-2 cursor-pointer hover:bg-gray-200 transition-colors">
-                          <LinkIcon size={16} /> Copy Link
+                          <LinkIcon size={16} /> {t("howDemoCopyLink")}
                         </div>
                         <Link href="/dashboard" className="px-4 py-2 bg-[#142F32] text-white text-sm font-bold rounded-lg flex items-center gap-2 cursor-pointer hover:bg-[#1a3d42] transition-colors">
-                          Download PDF
+                          {t("howDemoDownload")}
                         </Link>
                       </div>
                     </div>
@@ -479,9 +481,9 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-1/2 h-full bg-[#142F32]/20 transform skew-x-12 translate-x-32"></div>
         <div className="max-w-5xl mx-auto relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6">Tailored Plans for Your Career</h2>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6">{t("pricingTitle")}</h2>
             <p className="text-[#777C90] text-lg max-w-xl mx-auto mb-10">
-              Flexible pricing whether you are casually browsing or actively hunting.
+              {t("pricingSubtitle")}
             </p>
 
             {/* Toggle */}
@@ -490,13 +492,13 @@ export default function Home() {
                 className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors ${!isYearly ? 'bg-[#142F32] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
                 onClick={() => setIsYearly(false)}
               >
-                Monthly
+                {t("pricingMonthly")}
               </button>
               <button 
                 className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors flex items-center gap-2 ${isYearly ? 'bg-[#142F32] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
                 onClick={() => setIsYearly(true)}
               >
-                Yearly <span className="bg-[#E3FFCC] text-[#142F32] text-[10px] px-2 py-0.5 rounded-full ml-1">Save 35%</span>
+                {t("pricingYearly")} <span className="bg-[#E3FFCC] text-[#142F32] text-[10px] px-2 py-0.5 rounded-full ml-1">{t("pricingSave")}</span>
               </button>
             </div>
           </div>
@@ -504,25 +506,25 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
             {/* Free Tier */}
             <div className="bg-white/5 border border-white/10 rounded-[32px] p-10 flex flex-col h-full shadow-lg">
-              <h3 className="text-2xl font-bold text-white mb-2">Starter</h3>
-              <p className="text-white/50 text-sm mb-6 h-10">The basic features you need to get your foot in the door.</p>
+              <h3 className="text-2xl font-bold text-white mb-2">{t("pricingFreeTitle")}</h3>
+              <p className="text-white/50 text-sm mb-6 h-10">{t("pricingFreeDesc")}</p>
               
               <div className="mb-8">
                 <span className="text-5xl font-extrabold text-white">$0</span>
-                <span className="text-white/50">/forever</span>
+                <span className="text-white/50">{t("pricingFreeForever")}</span>
               </div>
               
               <Link href="/dashboard" className="w-full py-4 flex justify-center rounded-xl border-2 border-white/20 text-white font-bold hover:bg-white/10 transition-colors mb-10">
-                Get Started
+                {t("pricingFreeCta")}
               </Link>
               
               <div className="space-y-4 flex-1">
                 <p className="text-xs uppercase tracking-wider font-bold text-white/40 mb-4 border-b border-white/10 pb-2">Features</p>
                 {[
-                  '1 Active Resume',
-                  'Basic Templates',
-                  'Standard PDF Export',
-                  'English & Spanish Support'
+                  '{t("pricingFreeFeature1")}',
+                  '{t("pricingFreeFeature2")}',
+                  '{t("pricingFreeFeature3")}',
+                  "English & Spanish Support"
                 ].map((feature, idx) => (
                   <div key={idx} className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-white/40" />
@@ -535,10 +537,10 @@ export default function Home() {
             {/* Pro Tier */}
             <div className="bg-[#142F32] border border-[#E3FFCC]/30 rounded-[32px] p-10 flex flex-col relative h-full shadow-2xl">
               <div className="absolute top-0 right-10 transform -translate-y-1/2 bg-yellow-500 text-[#142F32] text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full flex items-center gap-1 shadow-md">
-                <Sparkles size={14} /> Most Popular
+                <Sparkles size={14} /> {t("pricingProBadge")}
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Enterprise / Pro</h3>
-              <p className="text-white/70 text-sm mb-6 h-10">Full access to all premium features and analytics to stand out.</p>
+              <h3 className="text-2xl font-bold text-white mb-2">{t("pricingProTitle")}</h3>
+              <p className="text-white/70 text-sm mb-6 h-10">{t("pricingProDesc")}</p>
               
               <div className="mb-8 flex items-baseline gap-2">
                 <span className="text-5xl font-extrabold text-[#E3FFCC]">
@@ -548,18 +550,18 @@ export default function Home() {
               </div>
               
               <Link href="/dashboard" className="w-full flex justify-center py-4 rounded-xl bg-[#E3FFCC] text-[#142F32] font-bold hover:bg-[#c5f0a4] transition-colors mb-10 shadow-lg">
-                Upgrade to Pro
+                {t("pricingProCta")}
               </Link>
               
               <div className="space-y-4 flex-1">
                 <p className="text-xs uppercase tracking-wider font-bold text-[#E3FFCC]/60 mb-4 border-b border-white/10 pb-2">Premium Features</p>
                 {[
-                  'Unlimited Resumes',
-                  'All Premium Templates',
-                  'Resume Version History',
-                  'Personal Analytics (views/downloads)',
-                  'Priority Support',
-                  'Early access to new features'
+                  '{t("pricingProFeature1")}',
+                  '{t("pricingProFeature2")}',
+                  '{t("pricingProFeature3")}',
+                  '{t("pricingProFeature4")}',
+                  '{t("pricingProFeature5")}',
+                  '{t("pricingProFeature6")}'
                 ].map((feature, idx) => (
                   <div key={idx} className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-[#E3FFCC]" />
@@ -576,14 +578,14 @@ export default function Home() {
       <section id="faq" className="py-24 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold text-[#142F32] mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-4xl font-extrabold text-[#142F32] mb-4">{t("faqTitle")}</h2>
             <p className="text-[#777C90] text-lg">Got questions? We&apos;ve got answers.</p>
           </div>
 
           <div className="space-y-6">
             <div className="bg-[#F8F9FA] rounded-2xl p-6 border border-gray-100 hover:border-gray-200 transition-colors">
               <h3 className="text-xl font-bold text-[#142F32] mb-2 flex items-center justify-between">
-                Is Civy really free?
+                {t("faqFreeQ")}
               </h3>
               <p className="text-[#777C90] leading-relaxed">
                 Yes, you can create and download one professional resume for free, forever. You&apos;ll have access to our basic templates and standard PDF exports.
@@ -592,7 +594,7 @@ export default function Home() {
 
             <div className="bg-[#F8F9FA] rounded-2xl p-6 border border-gray-100 hover:border-gray-200 transition-colors">
               <h3 className="text-xl font-bold text-[#142F32] mb-2 flex items-center justify-between">
-                Are the resumes ATS-friendly?
+                {t("faqAtsQ")}
               </h3>
               <p className="text-[#777C90] leading-relaxed">
                 Absolutely. Our templates are tested against major Applicant Tracking Systems to ensure your data is parsed correctly. Clean underlying code means your text gets read accurately.
@@ -601,7 +603,7 @@ export default function Home() {
 
             <div className="bg-[#F8F9FA] rounded-2xl p-6 border border-gray-100 hover:border-gray-200 transition-colors">
               <h3 className="text-xl font-bold text-[#142F32] mb-2 flex items-center justify-between">
-                Can I cancel my Pro subscription?
+                {t("faqCancelQ")}
               </h3>
               <p className="text-[#777C90] leading-relaxed">
                 Yes, you can manage and cancel your subscription anytime through your account settings. If you cancel, you will retain Pro features until the end of your billing cycle.
@@ -616,12 +618,12 @@ export default function Home() {
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#142F32] via-[#E3FFCC] to-[#142F32]"></div>
         
         <div className="max-w-4xl mx-auto text-center mb-20 flex flex-col items-center">
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Ready to land that interview?</h2>
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-6">{t("footerCtaTitle")}</h2>
           <p className="text-white/60 text-lg mb-10 max-w-2xl mx-auto">
-            Join thousands of professionals who have leveled up their career with Civy.
+            {t("footerCtaDesc")}
           </p>
           <Link href="/dashboard" className="px-10 py-5 bg-[#E3FFCC] flex justify-center text-[#142F32] rounded-full font-extrabold text-lg hover:bg-[#c5f0a4] transition-colors shadow-lg max-w-max mx-auto">
-            Create Your Resume Now
+            {t("footerCtaButton")}
           </Link>
         </div>
 
@@ -634,16 +636,16 @@ export default function Home() {
               <span className="text-xl font-bold tracking-tight text-white">Civy</span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-6">
-              Our solution makes resume creation faster and seamless. Contact us for more information.
+              {t("footerContactDesc")}
             </p>
             <div className="text-white/80 text-sm font-medium">
-              hello@civy.live
+              {t("footerContactEmail")}
             </div>
           </div>
 
           <div className="flex gap-16 flex-wrap">
             <div>
-              <h4 className="text-white font-bold mb-6">Product</h4>
+              <h4 className="text-white font-bold mb-6">{t("footerProduct")}</h4>
               <ul className="space-y-4 text-sm text-white/50">
                 <li><a href="#" className="hover:text-white transition-colors">Templates</a></li>
                 <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
@@ -651,7 +653,7 @@ export default function Home() {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-6">Company</h4>
+              <h4 className="text-white font-bold mb-6">{t("footerCompany")}</h4>
               <ul className="space-y-4 text-sm text-white/50">
                 <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Customers</a></li>
@@ -659,17 +661,17 @@ export default function Home() {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-6">Legal</h4>
+              <h4 className="text-white font-bold mb-6">{t("footerLegal")}</h4>
               <ul className="space-y-4 text-sm text-white/50">
-                <li><a href="#" className="hover:text-white transition-colors">Terms & Conditions</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footerTerms")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footerPrivacy")}</a></li>
               </ul>
             </div>
           </div>
         </div>
         
         <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-white/5 text-center md:text-left text-xs text-white/30 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p>© 2026 Civy. All rights reserved.</p>
+          <p>© 2026 Civy. {t("footerCopyright")}</p>
           <div className="flex gap-4">
              {/* Social Links */}
              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer transition-colors" aria-label="LinkedIn">

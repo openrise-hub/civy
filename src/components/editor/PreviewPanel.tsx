@@ -47,7 +47,7 @@ function PreviewHeader({
           <button 
             onClick={onZoomReset}
             className="text-[10px] font-medium w-12 hover:text-primary transition-colors text-center"
-            title="Reset Zoom"
+            title={t("resetZoom")}
           >
            {Math.round(zoom * 100)}%
           </button>
@@ -76,8 +76,8 @@ function PreviewHeader({
           variant="ghost"
           onClick={onATSCheck}
           disabled={analyzing}
-          aria-label="ATS Check"
-          title="ATS Check"
+          aria-label={t("atsCheck")}
+          title={t("atsCheck")}
         >
           {analyzing ? <Loader2Icon className="size-4 animate-spin" /> : <SearchCheckIcon className="size-4" />}
         </Button>
@@ -114,6 +114,7 @@ export function PreviewPanel() {
   const [atsResult, setAtsResult] = useState<{ score: number; issues: string[]; suggestions: string[] } | null>(null);
   const [atsOpen, setAtsOpen] = useState(false);
   const resume = useResumeStore((state) => state.resume);
+  const t = useTranslations("editor.preview");
   
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.1, 2));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.1, 0.5));
@@ -165,19 +166,19 @@ export function PreviewPanel() {
       <Dialog open={atsOpen} onOpenChange={setAtsOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>ATS Analysis</DialogTitle>
+            <DialogTitle>{t("atsAnalysis")}</DialogTitle>
           </DialogHeader>
           {atsResult && (
             <div className="space-y-4 text-sm">
               <div className="flex items-center gap-2">
-                <span className="font-semibold">Score:</span>
+                <span className="font-semibold">{t("atsScore")}:</span>
                 <span className={atsResult.score >= 70 ? "text-green-600" : "text-amber-600"}>
                   {atsResult.score}/100
                 </span>
               </div>
               {atsResult.issues.length > 0 && (
                 <div>
-                  <p className="font-semibold mb-1">Issues</p>
+                  <p className="font-semibold mb-1">{t("atsIssues")}</p>
                   <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
                     {atsResult.issues.map((issue, i) => (
                       <li key={i}>{issue}</li>
@@ -187,7 +188,7 @@ export function PreviewPanel() {
               )}
               {atsResult.suggestions.length > 0 && (
                 <div>
-                  <p className="font-semibold mb-1">Suggestions</p>
+                  <p className="font-semibold mb-1">{t("atsSuggestions")}</p>
                   <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
                     {atsResult.suggestions.map((sug, i) => (
                       <li key={i}>{sug}</li>

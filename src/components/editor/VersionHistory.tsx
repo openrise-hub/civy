@@ -105,7 +105,7 @@ export function VersionHistory({ resumeId, trigger }: VersionHistoryProps) {
               </p>
               <Link href="/upgrade">
                 <Button size="sm" className="mt-2">
-                  I want to be a Pro!
+                  {t("proCta")}
                 </Button>
               </Link>
             </div>
