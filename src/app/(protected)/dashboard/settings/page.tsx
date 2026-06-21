@@ -268,7 +268,7 @@ export default function SettingsPage() {
                       window.location.reload();
                     }}
                   >
-                    {t("english")} {profile?.locale === "en" && "✓"}
+                    English {profile?.locale === "en" && "✓"}
                   </Button>
                   <Button
                     variant={profile?.locale === "es" ? "default" : "outline"}
@@ -280,7 +280,91 @@ export default function SettingsPage() {
                       window.location.reload();
                     }}
                   >
-                    {t("spanish")} {profile?.locale === "es" && "✓"}
+                    Español {profile?.locale === "es" && "✓"}
+                  </Button>
+                  <Button
+                    variant={profile?.locale === "fr" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_LOCALE=fr; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ locale: "fr" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    Français {profile?.locale === "fr" && "✓"}
+                  </Button>
+                  <Button
+                    variant={profile?.locale === "pt" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_LOCALE=pt; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ locale: "pt" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    Português {profile?.locale === "pt" && "✓"}
+                  </Button>
+                  <Button
+                    variant={profile?.locale === "ru" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_LOCALE=ru; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ locale: "ru" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    Русский {profile?.locale === "ru" && "✓"}
+                  </Button>
+                  <Button
+                    variant={profile?.locale === "zh" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_LOCALE=zh; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ locale: "zh" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    中文 {profile?.locale === "zh" && "✓"}
+                  </Button>
+                  <Button
+                    variant={profile?.locale === "hi" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_LOCALE=hi; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ locale: "hi" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    हिन्दी {profile?.locale === "hi" && "✓"}
+                  </Button>
+                  <Button
+                    variant={profile?.locale === "ar" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_LOCALE=ar; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ locale: "ar" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    العربية {profile?.locale === "ar" && "✓"}
+                  </Button>
+                  <Button
+                    variant={profile?.locale === "bn" ? "default" : "outline"}
+                    onClick={async () => {
+                      document.cookie = `NEXT_LOCALE=bn; path=/; max-age=31536000`;
+                      await import("@/lib/profile/actions").then((m) =>
+                        m.updatePreferences({ locale: "bn" })
+                      );
+                      window.location.reload();
+                    }}
+                  >
+                    বাংলা {profile?.locale === "bn" && "✓"}
                   </Button>
                 </div>
               </Field>
