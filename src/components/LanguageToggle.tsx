@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useUser } from "@/contexts/UserContext";
 import { Languages } from "lucide-react";
 import {
@@ -15,20 +14,19 @@ const LOCALES = ["en", "es", "fr", "pt", "ru", "zh", "hi", "ar", "bn"] as const;
 type Locale = (typeof LOCALES)[number];
 
 const LOCALE_LABELS: Record<Locale, string> = {
-  en: "english",
-  es: "spanish",
-  fr: "french",
-  pt: "portuguese",
-  ru: "russian",
-  zh: "chinese",
-  hi: "hindi",
-  ar: "arabic",
-  bn: "bengali",
+  en: "English",
+  es: "Español",
+  fr: "Français",
+  pt: "Português",
+  ru: "Русский",
+  zh: "中文",
+  hi: "हिन्दी",
+  ar: "العربية",
+  bn: "বাংলা",
 };
 
 export function LanguageToggle() {
   const { profile } = useUser();
-  const t = useTranslations("settings");
   
   const handleLanguageChange = async (locale: Locale) => {
     document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000`;
@@ -46,7 +44,7 @@ export function LanguageToggle() {
       <DropdownMenuContent align="end" sideOffset={8}>
         {LOCALES.map((locale) => (
           <DropdownMenuItem key={locale} onClick={() => handleLanguageChange(locale)}>
-            {t(LOCALE_LABELS[locale])} {profile?.locale === locale && "✓"}
+            {LOCALE_LABELS[locale]} {profile?.locale === locale && "✓"}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
