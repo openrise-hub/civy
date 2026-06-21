@@ -129,7 +129,7 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
             </div>
             <Button size="sm" variant="outline" onClick={handleDownload}>
               <DownloadIcon className="size-4" />
-              Download PDF
+              {tResume("downloadPdf")}
             </Button>
           </div>
         </div>
@@ -153,7 +153,7 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
 
       <footer className="border-t bg-background py-4 text-center">
         <p className="text-sm text-muted-foreground">
-          Built with{" "}
+          {tResume("builtWith")}{" "}
           <Link href="/" className="text-primary hover:underline font-medium">
             Civy
           </Link>
