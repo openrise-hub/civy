@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ export function FormEditor({ resumeId, initialIsPublic, initialSlug }: FormEdito
   const { resume, addSection } = useResumeStore();
   const updateTitle = useResumeStore((state) => state.setResume);
   const { saveNow } = useSave();
+  const router = useRouter();
   const isMobile = useIsMobile();
   
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -74,7 +76,10 @@ export function FormEditor({ resumeId, initialIsPublic, initialSlug }: FormEdito
     <div className="flex h-full flex-col bg-muted/30">
       <div className="grid grid-cols-[1fr_auto] items-center border-b bg-background px-3 py-2 gap-2">
         <div className="flex items-center gap-2 min-w-0">
-          <Button size="icon" variant="ghost" render={<Link href="/dashboard" />}>
+          <Button size="icon" variant="ghost" onClick={async () => {
+            await saveNow();
+            router.push("/dashboard");
+          }}>
             <ArrowLeftIcon className="size-4" />
           </Button>
           {isEditingTitle ? (
