@@ -2,7 +2,7 @@ import { getRequestConfig } from "next-intl/server";
 import { getProfile } from "@/lib/profile/actions";
 import { cookies } from "next/headers";
 
-const SUPPORTED_LOCALES = ["en", "es"];
+const SUPPORTED_LOCALES = ["en", "es", "fr", "pt", "ru", "zh", "hi", "ar", "bn"];
 
 export default getRequestConfig(async () => {
   // Try to get locale from authenticated user profile

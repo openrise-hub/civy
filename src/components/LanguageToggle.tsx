@@ -11,11 +11,26 @@ import {
 } from "@/components/ui/menu";
 import { Button } from "@/components/ui/button";
 
+const LOCALES = ["en", "es", "fr", "pt", "ru", "zh", "hi", "ar", "bn"] as const;
+type Locale = (typeof LOCALES)[number];
+
+const LOCALE_LABELS: Record<Locale, string> = {
+  en: "english",
+  es: "spanish",
+  fr: "french",
+  pt: "portuguese",
+  ru: "russian",
+  zh: "chinese",
+  hi: "hindi",
+  ar: "arabic",
+  bn: "bengali",
+};
+
 export function LanguageToggle() {
   const { profile } = useUser();
   const t = useTranslations("settings");
   
-  const handleLanguageChange = async (locale: "en" | "es") => {
+  const handleLanguageChange = async (locale: Locale) => {
     document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000`;
     await import("@/lib/profile/actions").then((m) =>
       m.updatePreferences({ locale })
@@ -29,12 +44,11 @@ export function LanguageToggle() {
         <Languages className="size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={8}>
-        <DropdownMenuItem onClick={() => handleLanguageChange("en")}>
-          {t("english")} {profile?.locale === "en" && "✓"}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleLanguageChange("es")}>
-          {t("spanish")} {profile?.locale === "es" && "✓"}
-        </DropdownMenuItem>
+        {LOCALES.map((locale) => (
+          <DropdownMenuItem key={locale} onClick={() => handleLanguageChange(locale)}>
+            {t(LOCALE_LABELS[locale])} {profile?.locale === locale && "✓"}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
