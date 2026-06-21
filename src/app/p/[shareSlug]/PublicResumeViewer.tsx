@@ -103,7 +103,11 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
       <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="font-semibold truncate">{resume.title}</span>
+            <span className="font-semibold truncate">
+              {resumeData.personal.fullName
+                ? `${resumeData.personal.fullName}${resumeData.personal.jobTitle ? ` - ${resumeData.personal.jobTitle}` : ""}`
+                : resume.title}
+            </span>
             {viewCount !== undefined && viewCount > 0 && (
               <span className="flex items-center gap-1 text-xs text-muted-foreground">
                 <EyeIcon className="size-3" />
