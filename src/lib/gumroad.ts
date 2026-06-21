@@ -6,6 +6,14 @@ function getAccessToken(): string {
   return token;
 }
 
+function getStoreId(): string | null {
+  return process.env.NEXT_PUBLIC_GUMROAD_STORE_ID || null;
+}
+
+export function isGumroadConfigured(): boolean {
+  return !!process.env.NEXT_PUBLIC_GUMROAD_STORE_ID && !!process.env.GUMROAD_ACCESS_TOKEN;
+}
+
 export type GumroadProduct = "monthly" | "quarterly" | "yearly";
 
 const PRODUCT_PERMALINKS: Record<GumroadProduct, string> = {
@@ -14,8 +22,10 @@ const PRODUCT_PERMALINKS: Record<GumroadProduct, string> = {
   yearly: "civy-pro-yearly",
 };
 
-export function getGumroadProductUrl(tier: GumroadProduct): string {
-  return `https://civycv.gumroad.com/l/${PRODUCT_PERMALINKS[tier]}`;
+export function getGumroadProductUrl(tier: GumroadProduct): string | null {
+  const storeId = getStoreId();
+  if (!storeId) return null;
+  return `https://${storeId}.gumroad.com/l/${PRODUCT_PERMALINKS[tier]}`;
 }
 
 export function getProductPermalink(tier: GumroadProduct): string {

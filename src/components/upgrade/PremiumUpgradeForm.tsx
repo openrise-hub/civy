@@ -8,7 +8,7 @@ import { toastManager } from "@/components/ui/toast";
 import { CheckIcon, CreditCardIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { changeSubscriptionTier, getPricingPlans } from "@/lib/profile/actions";
-import { getGumroadProductUrl } from "@/lib/gumroad";
+import { getGumroadProductUrl, isGumroadConfigured } from "@/lib/gumroad";
 import { useUser } from "@/contexts/UserContext";
 
 export type PricingTier = "monthly" | "quarterly" | "yearly";
@@ -210,22 +210,26 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
       )}
 
       {/* Gumroad overlay buttons (primary) */}
-      {!isChangingPlan && (
-        <div className="space-y-3">
-          <a
-            href={`${getGumroadProductUrl(selectedTier)}?${userId ? `custom_user_id=${userId}` : ""}`}
-            data-gumroad-single-product="true"
-            data-gumroad-redirect-url={`${window.location.origin}/api/gumroad/activate?user_id=${userId || ""}`}
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            <CreditCardIcon className="size-4" />
-            {t("subscribe")} ${pricing ? pricing[selectedTier] : "..."}/mo
-          </a>
-          <p className="text-center text-xs text-muted-foreground">
-            Pay with card, Apple Pay, or Google Pay
-          </p>
-        </div>
-      )}
+      {!isChangingPlan && isGumroadConfigured() && (() => {
+        const productUrl = getGumroadProductUrl(selectedTier);
+        if (!productUrl) return null;
+        return (
+          <div className="space-y-3">
+            <a
+              href={`${productUrl}?${userId ? `custom_user_id=${userId}` : ""}`}
+              data-gumroad-single-product="true"
+              data-gumroad-redirect-url={`${window.location.origin}/api/gumroad/activate?user_id=${userId || ""}`}
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              <CreditCardIcon className="size-4" />
+              {t("subscribe")} ${pricing ? pricing[selectedTier] : "..."}/mo
+            </a>
+            <p className="text-center text-xs text-muted-foreground">
+              Pay with card, Apple Pay, or Google Pay
+            </p>
+          </div>
+        );
+      })()}
 
       {/* PayPal Button (fallback) */}
       {!isChangingPlan && paypalClientId && (
