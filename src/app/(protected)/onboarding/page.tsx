@@ -24,12 +24,35 @@ export default function OnboardingPage() {
   const [cities, setCities] = useState<string[]>([]);
   const [citiesLoaded, setCitiesLoaded] = useState(false);
   const [locationValue, setLocationValue] = useState("");
+  const [locationSearch, setLocationSearch] = useState("");
 
   const [jobTitles, setJobTitles] = useState<string[]>([]);
   const [titlesLoaded, setTitlesLoaded] = useState(false);
   const [jobTitleValue, setJobTitleValue] = useState("");
+  const [jobTitleSearch, setJobTitleSearch] = useState("");
 
   const [industryValue, setIndustryValue] = useState("");
+  const [industrySearch, setIndustrySearch] = useState("");
+
+  const filteredJobTitles = useMemo(() => {
+    if (!jobTitleSearch) return jobTitles.slice(0, 200);
+    const q = jobTitleSearch.toLowerCase();
+    return jobTitles.filter((t) => t.toLowerCase().includes(q)).slice(0, 200);
+  }, [jobTitleSearch, jobTitles]);
+
+  const filteredCities = useMemo(() => {
+    if (locationSearch.length < 2) return [];
+    const q = locationSearch.toLowerCase();
+    return cities.filter((c) => c.toLowerCase().includes(q)).slice(0, 200);
+  }, [locationSearch, cities]);
+
+  const filteredIndustries = useMemo(() => {
+    if (!industrySearch) return industries;
+    const q = industrySearch.toLowerCase();
+    return industries.filter(
+      (ind) => tInd(ind).toLowerCase().includes(q) || ind.toLowerCase().includes(q)
+    );
+  }, [industrySearch, industries, tInd]);
 
   useEffect(() => {
     fetch("/data/cities.json")
@@ -76,7 +99,12 @@ export default function OnboardingPage() {
                 <label className="block text-sm font-medium mb-1">
                   {t("jobTitle")}
                 </label>
-                <Combobox value={jobTitleValue} onValueChange={(val) => setJobTitleValue(val ?? "")}>
+                <Combobox
+                  value={jobTitleValue}
+                  onValueChange={(val) => setJobTitleValue(val ?? "")}
+                  inputValue={jobTitleSearch}
+                  onInputValueChange={setJobTitleSearch}
+                >
                   <ComboboxInput
                     placeholder={titlesLoaded ? t("jobTitlePlaceholder") : t("loading")}
                     className="w-full"
@@ -84,7 +112,7 @@ export default function OnboardingPage() {
                   />
                   <ComboboxPopup className="w-[--anchor-width]">
                     <ComboboxList>
-                      {jobTitles.map((title) => (
+                      {filteredJobTitles.map((title) => (
                         <ComboboxItem key={title} value={title}>
                           {title}
                         </ComboboxItem>
@@ -126,7 +154,12 @@ export default function OnboardingPage() {
               <label className="block text-sm font-medium mb-1">
                 {t("location")}
               </label>
-              <Combobox value={locationValue} onValueChange={(val) => setLocationValue(val ?? "")}>
+              <Combobox
+                value={locationValue}
+                onValueChange={(val) => setLocationValue(val ?? "")}
+                inputValue={locationSearch}
+                onInputValueChange={setLocationSearch}
+              >
                 <ComboboxInput
                   placeholder={citiesLoaded ? t("locationPlaceholder") : t("loading")}
                   className="w-full"
@@ -134,7 +167,7 @@ export default function OnboardingPage() {
                 />
                 <ComboboxPopup className="w-[--anchor-width]">
                   <ComboboxList className="max-h-60">
-                    {cities.map((city) => (
+                    {filteredCities.map((city) => (
                       <ComboboxItem key={city} value={city}>
                         {city}
                       </ComboboxItem>
@@ -175,7 +208,12 @@ export default function OnboardingPage() {
               <label className="block text-sm font-medium mb-1">
                 {t("industry")}
               </label>
-              <Combobox value={industryValue} onValueChange={(val) => setIndustryValue(val ?? "")}>
+              <Combobox
+                value={industryValue}
+                onValueChange={(val) => setIndustryValue(val ?? "")}
+                inputValue={industrySearch}
+                onInputValueChange={setIndustrySearch}
+              >
                 <ComboboxInput
                   placeholder={t("industryPlaceholder")}
                   className="w-full"
@@ -183,7 +221,7 @@ export default function OnboardingPage() {
                 />
                 <ComboboxPopup className="w-[--anchor-width]">
                   <ComboboxList>
-                    {industries.map((ind) => (
+                    {filteredIndustries.map((ind) => (
                       <ComboboxItem key={ind} value={ind}>
                         {tInd(ind)}
                       </ComboboxItem>
