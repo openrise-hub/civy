@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { getProfile } from "@/lib/profile/actions";
 import { cookies } from "next/headers";
 import { AriaLiveRegion } from "@/components/AriaLiveRegion";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -77,6 +78,7 @@ export default async function RootLayout({
             </ToastProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
