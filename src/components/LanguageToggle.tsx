@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const LOCALES = ["en", "es", "fr", "pt", "ru", "zh", "hi", "ar", "bn"] as const;
-type Locale = (typeof LOCALES)[number];
+export type Locale = (typeof LOCALES)[number];
 
 const LOCALE_LABELS: Record<Locale, string> = {
   en: "English",
@@ -24,6 +24,8 @@ const LOCALE_LABELS: Record<Locale, string> = {
   ar: "العربية",
   bn: "বাংলা",
 };
+
+export { LOCALES, LOCALE_LABELS };
 
 export function LanguageToggle() {
   const { profile } = useUser();
