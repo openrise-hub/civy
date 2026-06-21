@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { saveResume } from "@/lib/resumes/actions";
@@ -17,6 +17,18 @@ export function useAutoSave(resumeId: string) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastSavedRef = useRef<string>("");
   const isSavingRef = useRef(false);
+  const [saveVersion, setSaveVersion] = useState(0);
+
+  const currentSerialized = useMemo(() => JSON.stringify({
+    title: resume.title,
+    data: {
+      metadata: resume.metadata,
+      personal: resume.personal,
+      sections: resume.sections,
+    },
+  }), [resume]);
+
+  const isDirty = useMemo(() => currentSerialized !== lastSavedRef.current, [currentSerialized, saveVersion]);
 
   const save = useCallback(async (showToast = true) => {
     if (isSavingRef.current) return;
@@ -64,6 +76,7 @@ export function useAutoSave(resumeId: string) {
         }
       } else {
         lastSavedRef.current = serialized;
+        setSaveVersion(v => v + 1);
         announce(t("autosaved"));
         if (showToast) {
           toastManager.add({
@@ -138,6 +151,7 @@ export function useAutoSave(resumeId: string) {
         });
       } else {
         lastSavedRef.current = serialized;
+        setSaveVersion(v => v + 1);
         announce(t("saved"));
         toastManager.add({
           type: "success",
@@ -202,5 +216,5 @@ export function useAutoSave(resumeId: string) {
     };
   }, [save]);
 
-  return { saveNow };
+  return { saveNow, isDirty };
 }

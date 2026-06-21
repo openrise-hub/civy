@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,15 @@ import type { Resume } from "@/types/resume";
 import { RESUME_LIMITS } from "@/constants/limits";
 import { createJohnDoeResume } from "@/lib/sample-data";
 import { useUser } from "@/contexts/UserContext";
+import { useSave } from "@/contexts/SaveContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogPanel,
+} from "@/components/ui/dialog";
 import { VersionHistory } from "@/components/editor/VersionHistory";
 import { ResumeSettingsDialog } from "@/components/editor/ResumeSettingsDialog";
 import { TemplatePicker } from "@/components/editor/TemplatePicker";
@@ -51,6 +61,8 @@ export function EditorSidebar() {
   const atSectionLimit = sectionCount >= RESUME_LIMITS.MAX_SECTIONS;
   const { user } = useUser();
   const setResume = useResumeStore((state) => state.setResume);
+  const { saveNow, isDirty } = useSave();
+  const [navTarget, setNavTarget] = useState<string | null>(null);
   const resume = useResumeStore((state) => state.resume);
 
   const handleAutoPopulate = () => {
@@ -117,7 +129,13 @@ export function EditorSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip={isCollapsed ? "Dashboard" : undefined}
-                render={<Link href="/dashboard" />}
+                onClick={() => {
+                  if (isDirty) {
+                    setNavTarget("/dashboard");
+                  } else {
+                    window.location.href = "/dashboard";
+                  }
+                }}
               >
                 <HomeIcon className="size-4" />
                 <span>Dashboard</span>
@@ -227,6 +245,37 @@ export function EditorSidebar() {
 
         </SidebarFooter>
       </Sidebar>
+
+      <Dialog open={navTarget !== null} onOpenChange={(open) => { if (!open) setNavTarget(null); }}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Unsaved changes</DialogTitle>
+            <DialogDescription>
+              You have unsaved changes. What would you like to do?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogPanel className="flex gap-2 justify-end">
+            <Button variant="ghost" onClick={() => { setNavTarget(null); }}>
+              Cancel
+            </Button>
+            <Button variant="outline" onClick={() => {
+              const target = navTarget;
+              setNavTarget(null);
+              window.location.href = target || "/dashboard";
+            }}>
+              Discard
+            </Button>
+            <Button onClick={async () => {
+              await saveNow();
+              const target = navTarget;
+              setNavTarget(null);
+              window.location.href = target || "/dashboard";
+            }}>
+              Save & leave
+            </Button>
+          </DialogPanel>
+        </DialogContent>
+      </Dialog>
     </TooltipProvider>
   );
 }

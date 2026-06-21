@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toastManager } from "@/components/ui/toast";
 import { useUser } from "@/contexts/UserContext";
+import { useSave } from "@/contexts/SaveContext";
 import {
   getResumeHistory,
   restoreVersion,
@@ -45,6 +46,7 @@ type VersionHistoryProps = {
 export function VersionHistory({ resumeId, trigger }: VersionHistoryProps) {
   const t = useTranslations("versionHistory");
   const { isPremium } = useUser();
+  const { saveNow } = useSave();
   const router = useRouter();
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
   const [loading, setLoading] = useState(false);
@@ -103,11 +105,12 @@ export function VersionHistory({ resumeId, trigger }: VersionHistoryProps) {
               <p className="text-xs text-muted-foreground">
                 {t("proOnlyDescription")}
               </p>
-              <Link href="/upgrade">
-                <Button size="sm" className="mt-2">
+              <Button size="sm" className="mt-2" onClick={async () => {
+                  await saveNow();
+                  router.push("/upgrade");
+                }}>
                   {t("proCta")}
                 </Button>
-              </Link>
             </div>
           ) : loading ? (
             <div className="py-8 text-center text-sm text-muted-foreground">

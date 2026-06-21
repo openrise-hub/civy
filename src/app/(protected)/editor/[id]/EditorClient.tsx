@@ -121,11 +121,11 @@ export function EditorClient({ resumeId, initialData }: EditorClientProps) {
   }, [initialData, setResume]);
 
   // Enable auto-save and get manual save function
-  const { saveNow } = useAutoSave(resumeId);
+  const { saveNow, isDirty } = useAutoSave(resumeId);
   const isMobile = useIsMobile();
 
   return (
-    <SaveProvider saveNow={saveNow}>
+    <SaveProvider saveNow={saveNow} isDirty={isDirty}>
       <SidebarProvider>
         <div className="flex h-dvh w-full overflow-hidden">
           <EditorSidebar />

@@ -8,9 +8,11 @@ import type { Item, ItemType } from "@/types/resume";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PhoneIcon, MailIcon, MapPinIcon, LinkIcon, TrashIcon } from "lucide-react";
+import { PhoneIcon, MailIcon, MapPinIcon, LinkIcon, TrashIcon, ChevronUpIcon, ChevronDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const CONTACT_TYPES: { type: ItemType; label: string; icon: React.ReactNode }[] = [
   { type: "phone", label: "Phone", icon: <PhoneIcon className="size-3.5" /> },
@@ -20,6 +22,7 @@ const CONTACT_TYPES: { type: ItemType; label: string; icon: React.ReactNode }[] 
 ];
 
 export function PersonalInfoForm() {
+  const [collapsed, setCollapsed] = useState(true);
   const t = useTranslations("editor");
   const personal = useResumeStore((state) => state.resume.personal);
   const updatePersonal = useResumeStore((state) => state.updatePersonal);
@@ -70,8 +73,14 @@ export function PersonalInfoForm() {
   return (
     <Card>
       <CardHeader className="p-3 pb-0">
-        <CardTitle className="text-sm font-semibold">Personal Information</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm font-semibold">Personal Information</CardTitle>
+          <Button variant="ghost" size="icon-sm" onClick={() => setCollapsed(!collapsed)}>
+            {collapsed ? <ChevronDownIcon className="size-4" /> : <ChevronUpIcon className="size-4" />}
+          </Button>
+        </div>
       </CardHeader>
+      {!collapsed && (
       <CardContent className="space-y-3 p-3 pt-2">
         <div className="space-y-1.5">
           <Label htmlFor="fullName" className="text-xs text-muted-foreground">Full Name</Label>
@@ -168,6 +177,7 @@ export function PersonalInfoForm() {
           </div>
         )}
       </CardContent>
+      )}
     </Card>
   );
 }
