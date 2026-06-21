@@ -123,12 +123,10 @@ export default async function DashboardPage({
             </aside>
             <div>
               <ResumeDashboardClient resumes={resumes} viewCounts={viewCounts} folders={folders} />
+              {isAtLimit && !isPremium && <UpgradePrompt />}
             </div>
           </div>
         )}
-
-        {/* Upgrade Prompt */}
-        {isAtLimit && !isPremium && <UpgradePrompt />}
       </div>
     </div>
   );
