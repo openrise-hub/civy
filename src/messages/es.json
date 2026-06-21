@@ -325,7 +325,22 @@
     "welcomeDescription": "Configura tu primer currículum con nuestra guía o empieza desde cero.",
     "getStarted": "Configuración Guiada",
     "startBlank": "Empezar desde Cero",
-    "guidedSetup": "Configuración Guiada"
+    "guidedSetup": "Configuración Guiada",
+    "tipTitle": "Consejo del día",
+    "templateOfTheWeek": "Plantilla de la semana",
+    "tryTemplate": "Probar esta plantilla",
+    "tips": [
+      "Usa verbos de acción como \"lideré\", \"desarrollé\" o \"implementé\" en lugar de lenguaje pasivo.",
+      "Mantén tu currículum en 1-2 páginas. Los reclutadores pasan unos 6 segundos escaneando.",
+      "Cuantifica logros con números: \"Aumenté las ventas en un 30%\" es más fuerte que \"Aumenté las ventas\".",
+      "Adapta tu currículum a cada empleo usando palabras clave de la descripción del puesto.",
+      "Coloca tus logros más relevantes al principio de cada sección.",
+      "Usa un diseño limpio y profesional. Evita fuentes o gráficos que distraigan.",
+      "Revisa dos veces. Un solo error tipográfico puede costarte una entrevista.",
+      "Incluye un resumen profesional al inicio destacando tus cualificaciones clave.",
+      "Enumera habilidades relevantes para el puesto, no todas las herramientas que has usado.",
+      "Guarda tu currículum como PDF para preservar el formato en todos los dispositivos."
+    ]
   },
   "share": {
     "title": "Compartir",

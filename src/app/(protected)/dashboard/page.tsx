@@ -14,6 +14,8 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { ResumeDashboardClient } from "./ResumeDashboardClient";
 import { getFolders } from "@/lib/folders/actions";
 import { EmailConfirmedBanner } from "./EmailConfirmedBanner";
+import { TipCard } from "@/components/dashboard/TipCard";
+import { TemplateOfTheWeek } from "@/components/dashboard/TemplateOfTheWeek";
 
 export default async function DashboardPage({
   searchParams,
@@ -114,8 +116,18 @@ export default async function DashboardPage({
             </div>
           </div>
         ) : (
-          // Client Wrapper for Search, Sort, and Grid
-          <ResumeDashboardClient resumes={resumes} viewCounts={viewCounts} folders={folders} />
+          <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6 lg:gap-8">
+            <aside className="hidden lg:flex flex-col gap-6">
+              <TipCard />
+              <TemplateOfTheWeek />
+            </aside>
+            <div>
+              <ResumeDashboardClient resumes={resumes} viewCounts={viewCounts} folders={folders} />
+              <div className="mt-6 lg:hidden">
+                <TipCard />
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Upgrade Prompt */}
