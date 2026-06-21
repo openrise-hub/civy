@@ -44,7 +44,7 @@ export default async function DashboardPage({
 
   return (
     <div className="min-h-dvh bg-background">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-full px-4 py-8 sm:px-6 lg:px-8">
         {confirmed && <EmailConfirmedBanner />}
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
@@ -123,9 +123,6 @@ export default async function DashboardPage({
             </aside>
             <div>
               <ResumeDashboardClient resumes={resumes} viewCounts={viewCounts} folders={folders} />
-              <div className="mt-6 lg:hidden">
-                <TipCard />
-              </div>
             </div>
           </div>
         )}
