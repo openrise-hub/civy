@@ -231,7 +231,7 @@ export function ResumeDashboardClient({
             <span className="text-sm font-medium text-muted-foreground shrink-0">
               {t("sortBy")}
             </span>
-            <Select value={sortBy} onValueChange={(val: SortOption | null) => val && setSortBy(val)}>
+            <Select value={sortBy} onValueChange={(val: SortOption | null) => val && setSortBy(val)} modal={false}>
               <SelectTrigger className="w-full sm:w-48">
                 <SelectValue>{sortOptionsMap[sortBy]}</SelectValue>
               </SelectTrigger>

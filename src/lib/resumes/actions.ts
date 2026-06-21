@@ -113,6 +113,61 @@ export async function createResume(): Promise<void> {
   redirect(`/editor/${data.id}`);
 }
 
+export async function tryTemplate(formData: FormData) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const template = (formData.get("template") as string) || "modern";
+  const profile = await getProfile();
+  const isPremium = profile?.is_premium ?? false;
+
+  if (isPremium || profile === null) {
+    const { data, error } = await supabase
+      .from("resumes")
+      .insert({
+        user_id: user.id,
+        title: "My First Resume",
+        data: { ...defaultResumeData, metadata: { ...defaultResumeData.metadata, template } },
+      })
+      .select("id")
+      .single();
+
+    if (error) throw new Error(error.message);
+    trackEvent("create", data.id).catch(() => {});
+    redirect(`/editor/${data.id}`);
+  }
+
+  const { data: existing } = await supabase
+    .from("resumes")
+    .select("id, data")
+    .eq("user_id", user.id)
+    .is("deleted_at", null)
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (existing) {
+    const currentData = existing.data as Record<string, unknown>;
+    const updatedData = {
+      ...currentData,
+      metadata: { ...(currentData.metadata as Record<string, unknown> || {}), template },
+    };
+    await supabase
+      .from("resumes")
+      .update({ data: updatedData })
+      .eq("id", existing.id)
+      .eq("user_id", user.id);
+    redirect(`/editor/${existing.id}`);
+  }
+}
+
 export async function deleteResume(id: string): Promise<{ error?: string }> {
   // Use the user client ONLY to verify authentication
   const supabase = await createClient();

@@ -1,15 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useResumeStore } from "@/stores/useResumeStore";
 import { templateRegistry } from "@/lib/templates/registry";
 import { Button } from "@/components/ui/button";
 import { LayoutTemplateIcon } from "lucide-react";
 import { useMemo } from "react";
+import { tryTemplate } from "@/lib/resumes/actions";
 
 export function TemplateOfTheWeek() {
   const t = useTranslations("dashboard");
-  const setTemplate = useResumeStore((s) => s.setTemplate);
 
   const template = useMemo(() => {
     const entries = Object.entries(templateRegistry);
@@ -84,15 +83,13 @@ export function TemplateOfTheWeek() {
           </div>
         </div>
       </div>
-      <Button
-        size="sm"
-        variant="outline"
-        className="w-full"
-        onClick={() => setTemplate(template.key)}
-      >
-        <LayoutTemplateIcon className="size-3 mr-1" />
-        {t("tryTemplate")}
-      </Button>
+      <form action={tryTemplate}>
+        <input type="hidden" name="template" value={template.key} />
+        <Button type="submit" size="sm" variant="outline" className="w-full">
+          <LayoutTemplateIcon className="size-3 mr-1" />
+          {t("tryTemplate")}
+        </Button>
+      </form>
     </div>
   );
 }
