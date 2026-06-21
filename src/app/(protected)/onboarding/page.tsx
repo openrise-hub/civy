@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getAllIndustries } from "@/lib/templates/registry";
 import { createOnboardingResume } from "./actions";
 import {
@@ -13,6 +13,7 @@ import {
   ComboboxList,
   ComboboxEmpty,
 } from "@/components/ui/combobox";
+import { FileEditIcon, Loader2Icon } from "lucide-react";
 
 export default function OnboardingPage() {
   const t = useTranslations("onboarding");
@@ -33,6 +34,8 @@ export default function OnboardingPage() {
 
   const [industryValue, setIndustryValue] = useState("");
   const [industrySearch, setIndustrySearch] = useState("");
+  const [generatingSummary, setGeneratingSummary] = useState(false);
+  const summaryRef = useRef<HTMLTextAreaElement>(null);
 
   const filteredJobTitles = useMemo(() => {
     if (!jobTitleSearch) return jobTitles.slice(0, 200);
@@ -71,6 +74,25 @@ export default function OnboardingPage() {
       })
       .catch(() => setTitlesLoaded(true));
   }, []);
+
+  const handleGenerateSummary = async () => {
+    if (!industryValue && !jobTitleValue) return;
+    setGeneratingSummary(true);
+    try {
+      const res = await fetch("/api/ai/generate-summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobTitle: jobTitleValue, industry: industryValue }),
+      });
+      const data = await res.json();
+      if (data.summary && summaryRef.current) {
+        summaryRef.current.value = data.summary;
+      }
+    } catch {
+    } finally {
+      setGeneratingSummary(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/50 p-4">
@@ -237,10 +259,26 @@ export default function OnboardingPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("summary")}
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-sm font-medium">
+                  {t("summary")}
+                </label>
+                <button
+                  type="button"
+                  onClick={handleGenerateSummary}
+                  disabled={generatingSummary}
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                >
+                  {generatingSummary ? (
+                    <Loader2Icon className="size-3 animate-spin" />
+                  ) : (
+                    <FileEditIcon className="size-3" />
+                  )}
+                  Generate
+                </button>
+              </div>
               <textarea
+                ref={summaryRef}
                 name="summary"
                 rows={3}
                 placeholder={t("summaryPlaceholder")}
