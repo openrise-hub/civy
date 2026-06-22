@@ -40,7 +40,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-full bg-[#142F32] flex items-center justify-center">
               <div className="w-3 h-3 rounded-full bg-[#E3FFCC]" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[#142F32]">Civy</span>
+            <img src="/logo-text.svg" alt="Civy" className="h-8 w-auto" />
           </div>
           
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-[#777C90]">
@@ -633,7 +633,7 @@ export default function Home() {
               <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
                 <div className="w-3 h-3 rounded-full bg-[#E3FFCC]" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white">Civy</span>
+              <img src="/logo-text-w.svg" alt="Civy" className="h-8 w-auto" />
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-6">
               {t("footerContactDesc")}
