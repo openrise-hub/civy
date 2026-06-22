@@ -23,6 +23,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Civy - Resume Builder",
   description: "Build your professional resume with ease",
+  icons: {
+    icon: [
+      { url: "/logo.svg", type: "image/svg+xml" },
+      { url: "/logo-32.ico", sizes: "32x32" },
+    ],
+    apple: "/logo-64.ico",
+  },
 };
 
 export default async function RootLayout({
