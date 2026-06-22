@@ -16,7 +16,6 @@ import {
   Star,
   Menu,
   X,
-  Sparkles,
   Zap,
   ShieldCheck,
   LayoutGrid,
@@ -27,7 +26,7 @@ const manrope = Manrope({ subsets: ['latin'] });
 
 export default function Home() {
   const t = useTranslations("landing");
-  const [isYearly, setIsYearly] = useState(false);
+  const [billing, setBilling] = useState<"monthly" | "quarterly" | "yearly">("monthly");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
 
@@ -130,7 +129,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="h-4 w-24 bg-gray-200 rounded"></div>
                 <div className="h-10 w-full bg-white border border-gray-200 rounded-lg flex items-center px-4">
-                  <span className="text-sm text-gray-800 font-medium typing-animation border-r-2 border-[#142F32] pr-1">{t("heroTypingTitle")}</span>
+                  <span className="text-sm text-gray-800 font-medium typing-animation border-r-2 border-[#142F32]">{t("heroTypingTitle")}</span>
                 </div>
                 <div className="h-4 w-32 bg-gray-200 rounded mt-4"></div>
                 <div className="h-24 w-full bg-white border border-gray-200 rounded-lg p-4">
@@ -407,8 +406,8 @@ export default function Home() {
                                </div>
                            </div>
                         </div>
-                        <div className="absolute inset-0 bg-[#282930]/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <span className="bg-white text-[#142F32] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-2 group-hover:translate-y-0 transition-all">{t("howDemoSelect")}</span>
+                        <div className="absolute inset-0 bg-[#282930]/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer" onClick={() => setActiveStep(2)}>
+                             <span className="bg-white text-[#142F32] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-2 group-hover:translate-y-0 transition-all">{t("howDemoSelect")}</span>
                         </div>
                       </div>
                     </div>
@@ -446,7 +445,7 @@ export default function Home() {
                   {activeStep === 3 && (
                     <div className="h-full flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-right-4 duration-500">
                       <div className="w-20 h-20 bg-[#E3FFCC] rounded-full flex items-center justify-center text-[#142F32] mb-6 shadow-sm border border-[#c5f0a4]">
-                        <CheckCircle2 size={40} className="animate-bounce" />
+                        <CheckCircle2 size={40} />
                       </div>
                       <h3 className="text-2xl font-bold text-[#142F32] mb-2">{t("howDemoReady")}</h3>
                       <p className="text-gray-500 text-sm max-w-[250px] mx-auto mb-6">
@@ -489,14 +488,20 @@ export default function Home() {
             {/* Toggle */}
             <div className="inline-flex items-center bg-white/10 p-1 rounded-full border border-white/5">
               <button 
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors ${!isYearly ? 'bg-[#142F32] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
-                onClick={() => setIsYearly(false)}
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors ${billing === 'monthly' ? 'bg-[#142F32] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
+                onClick={() => setBilling('monthly')}
               >
                 {t("pricingMonthly")}
               </button>
               <button 
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors flex items-center gap-2 ${isYearly ? 'bg-[#142F32] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
-                onClick={() => setIsYearly(true)}
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors ${billing === 'quarterly' ? 'bg-[#142F32] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
+                onClick={() => setBilling('quarterly')}
+              >
+                {t("pricingQuarterly")}
+              </button>
+              <button 
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors flex items-center gap-2 ${billing === 'yearly' ? 'bg-[#142F32] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
+                onClick={() => setBilling('yearly')}
               >
                 {t("pricingYearly")} <span className="bg-[#E3FFCC] text-[#142F32] text-[10px] px-2 py-0.5 rounded-full ml-1">{t("pricingSave")}</span>
               </button>
@@ -537,16 +542,16 @@ export default function Home() {
             {/* Pro Tier */}
             <div className="bg-[#142F32] border border-[#E3FFCC]/30 rounded-[32px] p-10 flex flex-col relative h-full shadow-2xl">
               <div className="absolute top-0 right-10 transform -translate-y-1/2 bg-yellow-500 text-[#142F32] text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full flex items-center gap-1 shadow-md">
-                <Sparkles size={14} /> {t("pricingProBadge")}
+                {t("pricingProBadge")}
               </div>
               <h3 className="text-2xl font-bold text-white mb-2">{t("pricingProTitle")}</h3>
               <p className="text-white/70 text-sm mb-6 h-10">{t("pricingProDesc")}</p>
               
               <div className="mb-8 flex items-baseline gap-2">
                 <span className="text-5xl font-extrabold text-[#E3FFCC]">
-                  ${isYearly ? '29.99' : '3.99'}
+                  ${billing === 'yearly' ? '29.99' : billing === 'quarterly' ? '9.99' : '3.99'}
                 </span>
-                <span className="text-white/50">{isYearly ? '/year' : '/month'}</span>
+                <span className="text-white/50">{billing === 'yearly' ? '/year' : billing === 'quarterly' ? '/3 months' : '/month'}</span>
               </div>
               
               <Link href="/dashboard" className="w-full flex justify-center py-4 rounded-xl bg-[#E3FFCC] text-[#142F32] font-bold hover:bg-[#c5f0a4] transition-colors mb-10 shadow-lg">
@@ -597,7 +602,7 @@ export default function Home() {
                 {t("faqAtsQ")}
               </h3>
               <p className="text-[#777C90] leading-relaxed">
-                Absolutely. Our templates are tested against major Applicant Tracking Systems to ensure your data is parsed correctly. Clean underlying code means your text gets read accurately.
+                {t("faqAtsA")}
               </p>
             </div>
 

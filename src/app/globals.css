@@ -187,6 +187,6 @@
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
-  animation: typing 4s steps(30, end) infinite alternate, blink .75s step-end infinite;
+  animation: typing 4s steps(24, end) infinite alternate, blink .75s step-end infinite;
   max-width: 100%;
 }
