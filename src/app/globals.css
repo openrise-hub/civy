@@ -181,10 +181,14 @@
   60% { clip-path: inset(0 0 0 0); }
   to { clip-path: inset(0 100% 0 0); }
 }
-@keyframes blink {
-  50% { opacity: 0; }
+@keyframes blink-caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.blink-caret {
+  animation: blink-caret 1s infinite;
 }
 .typing-animation {
   white-space: nowrap;
-  animation: typing 3s steps(24, end) infinite, blink .5s step-end infinite;
+  animation: typing 3s steps(24, end) infinite;
 }

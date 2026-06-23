@@ -126,7 +126,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="h-4 w-24 bg-gray-200 rounded"></div>
                 <div className="h-10 w-full bg-white border border-gray-200 rounded-lg flex items-center px-4">
-                  <span className="typing-animation text-sm text-gray-800 font-medium">{t("heroTypingTitle")}</span><span style={{ animation: "blink .75s step-end infinite" }} className="text-[#142F32] font-light">|</span>
+                  <span className="typing-animation text-sm text-gray-800 font-medium">{t("heroTypingTitle")}<span className="blink-caret text-[#142F32] font-bold text-base">|</span></span>
                 </div>
                 <div className="h-4 w-32 bg-gray-200 rounded mt-4"></div>
                 <div className="h-24 w-full bg-white border border-gray-200 rounded-lg p-4">
