@@ -176,17 +176,13 @@
 }
 
 @keyframes typing {
-  0% { width: 0; }
-  50% { width: 100%; }
-  100% { width: 100%; }
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
 }
 @keyframes blink {
   50% { border-color: transparent; }
 }
 .typing-animation {
-  display: inline-block;
-  overflow: hidden;
   white-space: nowrap;
   animation: typing 4s steps(24, end) infinite alternate, blink .75s step-end infinite;
-  max-width: 100%;
 }
