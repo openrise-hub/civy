@@ -177,12 +177,14 @@
 
 @keyframes typing {
   from { clip-path: inset(0 100% 0 0); }
-  to { clip-path: inset(0 0 0 0); }
+  40% { clip-path: inset(0 0 0 0); }
+  60% { clip-path: inset(0 0 0 0); }
+  to { clip-path: inset(0 100% 0 0); }
 }
 @keyframes blink {
   50% { border-color: transparent; }
 }
 .typing-animation {
   white-space: nowrap;
-  animation: typing 4s steps(24, end) infinite alternate, blink .75s step-end infinite;
+  animation: typing 3s steps(24, end) infinite, blink .5s step-end infinite;
 }

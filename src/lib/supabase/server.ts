@@ -17,9 +17,7 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             );
-          } catch (err) {
-            // setAll called from Server Component — cookie setting handled by proxy middleware
-            console.error("[supabase/server] Failed to set auth cookies:", err);
+          } catch {
           }
         },
       },
