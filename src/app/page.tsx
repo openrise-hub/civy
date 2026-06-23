@@ -180,7 +180,7 @@ export default function Home() {
               <Globe size={24} />
             </div>
             <div>
-              <h4 className="text-2xl font-extrabold text-[#142F32]">2+ {t("statsLanguages")}</h4>
+              <h4 className="text-2xl font-extrabold text-[#142F32]">9+ {t("statsLanguages")}</h4>
               <p className="text-sm font-medium text-[#777C90]">{t("statsLanguagesDesc")} Native</p>
             </div>
           </div>
@@ -670,7 +670,7 @@ export default function Home() {
         </div>
         
         <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-white/5 text-center md:text-left text-xs text-white/30 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p>© 2026 Civy. {t("footerCopyright")}</p>
+          <p>{t("footerCopyright")}</p>
           <div className="flex gap-4">
              {/* Social Links */}
              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer transition-colors" aria-label="LinkedIn">

@@ -182,7 +182,7 @@
   to { clip-path: inset(0 100% 0 0); }
 }
 @keyframes blink {
-  50% { border-color: transparent; }
+  50% { opacity: 0; }
 }
 .typing-animation {
   white-space: nowrap;
