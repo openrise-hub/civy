@@ -36,9 +36,6 @@ export default function Home() {
       <nav className="fixed top-0 w-full z-50 bg-[#F8F9FA]/80 backdrop-blur-md border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#142F32] flex items-center justify-center">
-              <div className="w-3 h-3 rounded-full bg-[#E3FFCC]" />
-            </div>
             <img src="/logo-text.svg" alt="Civy" className="h-8 w-auto" />
           </div>
           
@@ -129,7 +126,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="h-4 w-24 bg-gray-200 rounded"></div>
                 <div className="h-10 w-full bg-white border border-gray-200 rounded-lg flex items-center px-4">
-                  <span className="text-sm text-gray-800 font-medium typing-animation border-r-2 border-[#142F32]">{t("heroTypingTitle")}</span>
+                  <span className="typing-animation text-sm text-gray-800 font-medium">{t("heroTypingTitle")}</span><span style={{ animation: "blink .75s step-end infinite" }} className="text-[#142F32] font-light">|</span>
                 </div>
                 <div className="h-4 w-32 bg-gray-200 rounded mt-4"></div>
                 <div className="h-24 w-full bg-white border border-gray-200 rounded-lg p-4">
@@ -635,9 +632,6 @@ export default function Home() {
         <div className="max-w-7xl mx-auto border-t border-white/10 pt-12 flex flex-col md:flex-row justify-between items-start gap-12">
           <div className="max-w-sm">
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                <div className="w-3 h-3 rounded-full bg-[#E3FFCC]" />
-              </div>
               <img src="/logo-text-w.svg" alt="Civy" className="h-8 w-auto" />
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-6">
