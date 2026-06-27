@@ -96,7 +96,7 @@ export default function Home() {
           </div>
           
           <h1 className="text-5xl md:text-7xl font-extrabold text-[var(--landing-brand)] tracking-tight mb-6 leading-tight">
-            {t("heroTitle")} <br className="hidden md:block" /> <span className="italic underline decoration-2 decoration-[var(--landing-accent)]">{t("heroTitleBreak")}</span>
+            {t("heroTitle")}<br className="hidden md:block" />{t("heroTitleLine2")}<span className="text-[var(--landing-accent)] italic">{t("heroTitleBreak")}</span>
           </h1>
           
           <p className="text-lg md:text-xl text-[var(--landing-muted)] max-w-2xl mx-auto mb-10 leading-relaxed">
