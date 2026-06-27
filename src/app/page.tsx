@@ -143,7 +143,7 @@ export default function Home() {
               <div className="w-full h-full bg-white/5 rounded-xl border border-white/10 p-6 flex flex-col gap-4">
                 <div>
                   <h3 className="text-2xl font-bold text-white mb-1">Alex Morgan</h3>
-                  <p className="typing-animation text-[var(--landing-accent)] font-medium text-sm">{t("heroTypingTitle")}</p>
+                  <p className="typing-animation text-[var(--landing-accent)] font-medium text-sm" style={{ animationDelay: "10ms" }}>{t("heroTypingTitle")}</p>
                 </div>
                 <div className="h-px w-full bg-white/20 my-2"></div>
                 <div className="space-y-3">
