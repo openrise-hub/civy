@@ -31,32 +31,32 @@ export default function Home() {
   const [activeStep, setActiveStep] = useState(1);
 
   return (
-    <div className={`min-h-screen bg-[#F8F9FA] text-[#282930] selection:bg-[#E3FFCC] selection:text-[#142F32] ${manrope.className}`}>
+    <div className={`min-h-screen bg-[var(--landing-bg)] text-[var(--landing-text)] selection:bg-[var(--landing-accent)] selection:text-[var(--landing-brand)] ${manrope.className}`}>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-[#F8F9FA]/80 backdrop-blur-md border-b border-gray-200/50">
+      <nav className="fixed top-0 w-full z-50 bg-[var(--landing-bg)]/80 backdrop-blur-md border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src="/logo-text.svg" alt="Civy" className="h-8 w-auto" />
           </div>
           
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-[#777C90]">
-            <a href="#features" className="hover:text-[#142F32] transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-[#142F32] transition-colors">How it Works</a>
-            <a href="#pricing" className="hover:text-[#142F32] transition-colors">Pricing</a>
-            <a href="#faq" className="hover:text-[#142F32] transition-colors">FAQ</a>
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-[var(--landing-muted)]">
+            <a href="#features" className="hover:text-[var(--landing-brand)] transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-[var(--landing-brand)] transition-colors">How it Works</a>
+            <a href="#pricing" className="hover:text-[var(--landing-brand)] transition-colors">Pricing</a>
+            <a href="#faq" className="hover:text-[var(--landing-brand)] transition-colors">FAQ</a>
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/dashboard" className="text-sm font-semibold text-[#142F32] hover:text-[#777C90] transition-colors">
+            <Link href="/dashboard" className="text-sm font-semibold text-[var(--landing-brand)] hover:text-[var(--landing-muted)] transition-colors">
               Log in
             </Link>
-            <Link href="/login?tab=signup&next=/dashboard" className="bg-[#142F32] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#1a3d42] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center">
+            <Link href="/login?tab=signup&next=/dashboard" className="bg-[var(--landing-brand)] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[var(--landing-brand-hover)] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center">
               Sign Up
             </Link>
           </div>
 
           <button 
-            className="md:hidden p-2 text-[#142F32]"
+            className="md:hidden p-2 text-[var(--landing-brand)]"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -73,10 +73,10 @@ export default function Home() {
             <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)}>Pricing</a>
             <a href="#faq" onClick={() => setIsMobileMenuOpen(false)}>FAQ</a>
             <div className="h-px w-full bg-gray-100 my-4" />
-            <Link href="/dashboard" className="w-full text-center py-3 rounded-xl border-2 border-[#142F32] text-[#142F32] font-bold block whitespace-nowrap">
+            <Link href="/dashboard" className="w-full text-center py-3 rounded-xl border-2 border-[var(--landing-brand)] text-[var(--landing-brand)] font-bold block whitespace-nowrap">
               Log in
             </Link>
-            <Link href="/login?tab=signup&next=/dashboard" className="w-full text-center py-3 rounded-xl bg-[#142F32] text-white font-bold block whitespace-nowrap">
+            <Link href="/login?tab=signup&next=/dashboard" className="w-full text-center py-3 rounded-xl bg-[var(--landing-brand)] text-white font-bold block whitespace-nowrap">
               Sign Up
             </Link>
           </div>
@@ -86,7 +86,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="pt-40 pb-20 px-6 relative overflow-hidden">
         {/* Decorative Elements */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-[#E3FFCC]/20 rounded-full"></div>
+        <div className="absolute top-20 left-10 w-64 h-64 bg-[var(--landing-accent)]/20 rounded-full"></div>
         <div className="absolute top-40 right-10 w-64 h-64 bg-yellow-200/20 rounded-full"></div>
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
@@ -95,21 +95,20 @@ export default function Home() {
             <span className="text-sm font-semibold">{t("heroBadge")}</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-extrabold text-[#142F32] tracking-tight mb-6 leading-tight">
-            Build a Professional <br className="hidden md:block" />
-            Resume in Minutes.
+          <h1 className="text-5xl md:text-7xl font-extrabold text-[var(--landing-brand)] tracking-tight mb-6 leading-tight">
+            {t("heroTitle")} <br className="hidden md:block" /> <span className="italic underline decoration-2 decoration-[var(--landing-accent)]">{t("heroTitleBreak")}</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-[#777C90] max-w-2xl mx-auto mb-10 leading-relaxed">
+          <p className="text-lg md:text-xl text-[var(--landing-muted)] max-w-2xl mx-auto mb-10 leading-relaxed">
             {t("heroSubtitle")}
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
-            <Link href="/dashboard" className="w-full sm:w-auto px-8 py-4 bg-[#142F32] text-white rounded-full font-bold hover:bg-[#1a3d42] transition-all transform hover:-translate-y-1 shadow-lg flex items-center justify-center gap-2 group">
+            <Link href="/dashboard" className="w-full sm:w-auto px-8 py-4 bg-[var(--landing-brand)] text-white rounded-full font-bold hover:bg-[var(--landing-brand-hover)] transition-all transform hover:-translate-y-1 shadow-lg flex items-center justify-center gap-2 group">
               {t("heroCta")}
               <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </Link>
-            <a href="#how-it-works" className="w-full sm:w-auto px-8 py-4 bg-white text-[#142F32] border-2 border-gray-200 rounded-full font-bold hover:border-[#142F32] transition-all flex items-center justify-center gap-2">
+            <a href="#how-it-works" className="w-full sm:w-auto px-8 py-4 bg-white text-[var(--landing-brand)] border-2 border-gray-200 rounded-full font-bold hover:border-[var(--landing-brand)] transition-all flex items-center justify-center gap-2">
               {t("heroViewTemplates")}
             </a>
           </div>
@@ -126,7 +125,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="h-4 w-24 bg-gray-200 rounded"></div>
                 <div className="h-10 w-full bg-white border border-gray-200 rounded-lg flex items-center px-4">
-                  <span className="typing-animation text-sm text-gray-800 font-medium">{t("heroTypingTitle")}<span className="blink-caret text-[#142F32] font-bold text-base">|</span></span>
+                  <span className="typing-animation text-sm text-gray-800 font-medium">{t("heroTypingTitle")}<span className="blink-caret text-[var(--landing-brand)] font-bold text-base">|</span></span>
                 </div>
                 <div className="h-4 w-32 bg-gray-200 rounded mt-4"></div>
                 <div className="h-24 w-full bg-white border border-gray-200 rounded-lg p-4">
@@ -138,12 +137,12 @@ export default function Home() {
             </div>
 
             {/* Live Preview */}
-            <div className="flex-1 bg-[#142F32] rounded-2xl p-6 text-white relative overflow-hidden shadow-inner">
-              <div className="absolute top-4 right-4 bg-[#E3FFCC] text-[#142F32] text-xs font-bold px-2 py-1 rounded-md">Live Preview</div>
+            <div className="flex-1 bg-[var(--landing-brand)] rounded-2xl p-6 text-white relative overflow-hidden shadow-inner">
+              <div className="absolute top-4 right-4 bg-[var(--landing-accent)] text-[var(--landing-brand)] text-xs font-bold px-2 py-1 rounded-md">Live Preview</div>
               <div className="w-full h-full bg-white/5 rounded-xl border border-white/10 p-6 flex flex-col gap-4">
                 <div>
                   <h3 className="text-2xl font-bold text-white mb-1">Alex Morgan</h3>
-                  <p className="text-[#E3FFCC] font-medium text-sm">{t("heroTypingTitle")}</p>
+                  <p className="text-[var(--landing-accent)] font-medium text-sm">{t("heroTypingTitle")}</p>
                 </div>
                 <div className="h-px w-full bg-white/20 my-2"></div>
                 <div className="space-y-3">
@@ -167,21 +166,20 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-6 relative z-20 -mb-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#E3FFCC] flex items-center justify-center text-[#142F32]">
+            <div className="w-12 h-12 rounded-xl bg-[var(--landing-accent)] flex items-center justify-center text-[var(--landing-brand)]">
               <LayoutGrid size={24} />
             </div>
             <div>
-              <h4 className="text-2xl font-extrabold text-[#142F32]">10,000+</h4>
-              <p className="text-sm font-medium text-[#777C90]">{t("statsResumes")}</p>
+              <h4 className="text-2xl font-extrabold text-[var(--landing-brand)]">{t("statsResumes")}</h4>
             </div>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#142F32] flex items-center justify-center text-white">
+            <div className="w-12 h-12 rounded-xl bg-[var(--landing-brand)] flex items-center justify-center text-white">
               <Globe size={24} />
             </div>
             <div>
-              <h4 className="text-2xl font-extrabold text-[#142F32]">9+ {t("statsLanguages")}</h4>
-              <p className="text-sm font-medium text-[#777C90]">{t("statsLanguagesDesc")} Native</p>
+              <h4 className="text-2xl font-extrabold text-[var(--landing-brand)]">9+ {t("statsLanguages")}</h4>
+              <p className="text-sm font-medium text-[var(--landing-muted)]">{t("statsLanguagesDesc")}</p>
             </div>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-start gap-4">
@@ -189,15 +187,15 @@ export default function Home() {
               <ShieldCheck size={24} />
             </div>
             <div>
-              <h4 className="text-2xl font-extrabold text-[#142F32]">{t("statsAts")}</h4>
-              <p className="text-sm font-medium text-[#777C90]">{t("statsAtsDesc")}</p>
+              <h4 className="text-2xl font-extrabold text-[var(--landing-brand)]">{t("statsAts")}</h4>
+              <p className="text-sm font-medium text-[var(--landing-muted)]">{t("statsAtsDesc")}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Features Section */}
-      <section id="features" className="bg-[#142F32] pt-32 pb-24 px-6">
+      <section id="features" className="bg-[var(--landing-brand)] pt-32 pb-24 px-6">
         <div className="max-w-6xl mx-auto text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">{t("featuresTitle")}</h2>
           <p className="text-lg text-white/70 max-w-2xl mx-auto">
@@ -209,8 +207,8 @@ export default function Home() {
           {/* Feature Card 1 */}
           <div className="bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-colors group cursor-pointer">
             <div className="flex justify-between items-start mb-6">
-              <Play className="w-8 h-8 text-[#E3FFCC]" />
-              <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
+              <Play className="w-8 h-8 text-[var(--landing-accent)]" />
+              <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[var(--landing-accent)] transition-colors" />
             </div>
             <h3 className="text-xl font-bold text-white mb-3">{t("featurePreviewTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
@@ -221,8 +219,8 @@ export default function Home() {
           {/* Feature Card 2 */}
           <div className="bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-colors group cursor-pointer">
             <div className="flex justify-between items-start mb-6">
-              <LayoutTemplate className="w-8 h-8 text-[#E3FFCC]" />
-              <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
+              <LayoutTemplate className="w-8 h-8 text-[var(--landing-accent)]" />
+              <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[var(--landing-accent)] transition-colors" />
             </div>
             <h3 className="text-xl font-bold text-white mb-3">{t("featureBlocksTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
@@ -233,8 +231,8 @@ export default function Home() {
           {/* Feature Card 3 */}
           <div className="bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-colors group cursor-pointer">
             <div className="flex justify-between items-start mb-6">
-              <Globe className="w-8 h-8 text-[#E3FFCC]" />
-              <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
+              <Globe className="w-8 h-8 text-[var(--landing-accent)]" />
+              <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[var(--landing-accent)] transition-colors" />
             </div>
             <h3 className="text-xl font-bold text-white mb-3">{t("featureLanguagesTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
@@ -245,8 +243,8 @@ export default function Home() {
           {/* Feature Card 4 */}
           <div className="bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-colors group cursor-pointer">
             <div className="flex justify-between items-start mb-6">
-              <LinkIcon className="w-8 h-8 text-[#E3FFCC]" />
-              <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
+              <LinkIcon className="w-8 h-8 text-[var(--landing-accent)]" />
+              <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[var(--landing-accent)] transition-colors" />
             </div>
             <h3 className="text-xl font-bold text-white mb-3">{t("featureShareTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
@@ -260,7 +258,7 @@ export default function Home() {
               <History className="w-8 h-8 text-yellow-500" />
               <div className="flex items-center gap-2">
                 <span className="text-[10px] uppercase font-bold text-yellow-500 tracking-wider bg-yellow-500/10 px-2 py-1 rounded">Pro</span>
-                <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
+                <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[var(--landing-accent)] transition-colors" />
               </div>
             </div>
             <h3 className="text-xl font-bold text-white mb-3">Version History</h3>
@@ -272,8 +270,8 @@ export default function Home() {
           {/* Feature Card 6 */}
           <div className="bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-colors group cursor-pointer">
             <div className="flex justify-between items-start mb-6">
-              <Trash2 className="w-8 h-8 text-[#E3FFCC]" />
-              <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#E3FFCC] transition-colors" />
+              <Trash2 className="w-8 h-8 text-[var(--landing-accent)]" />
+              <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[var(--landing-accent)] transition-colors" />
             </div>
             <h3 className="text-xl font-bold text-white mb-3">{t("featureTrashTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
@@ -287,13 +285,13 @@ export default function Home() {
       <section id="how-it-works" className="py-24 px-6 bg-white">
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16">
           <div className="flex-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E3FFCC]/30 text-[#142F32] text-sm font-bold mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--landing-accent)]/30 text-[var(--landing-brand)] text-sm font-bold mb-6">
               <Zap size={16} /> {t("howTitle")}
             </div>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#142F32] mb-6 leading-tight">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[var(--landing-brand)] mb-6 leading-tight">
               {t("howHeading")}
             </h2>
-            <p className="text-[#777C90] text-lg mb-10">
+            <p className="text-[var(--landing-muted)] text-lg mb-10">
               We&apos;ve streamlined the entire process. Forget formatting headaches and focus on showcasing your true potential.
             </p>
 
@@ -302,40 +300,40 @@ export default function Home() {
                 className={`flex gap-4 cursor-pointer transition-opacity duration-300 ${activeStep === 1 ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
                 onClick={() => setActiveStep(1)}
               >
-                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg transition-colors ${activeStep === 1 ? 'bg-[#142F32] text-white' : 'bg-gray-200 text-gray-500'}`}>1</div>
+                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg transition-colors ${activeStep === 1 ? 'bg-[var(--landing-brand)] text-white' : 'bg-gray-200 text-gray-500'}`}>1</div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#142F32] mb-2">{t("howStep1Title")}</h3>
-                  <p className="text-[#777C90]">{t("howStep1Desc")}</p>
+                  <h3 className="text-xl font-bold text-[var(--landing-brand)] mb-2">{t("howStep1Title")}</h3>
+                  <p className="text-[var(--landing-muted)]">{t("howStep1Desc")}</p>
                 </div>
               </div>
               <div 
                 className={`flex gap-4 cursor-pointer transition-opacity duration-300 ${activeStep === 2 ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
                 onClick={() => setActiveStep(2)}
               >
-                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg transition-colors ${activeStep === 2 ? 'bg-[#142F32] text-white' : 'bg-gray-200 text-gray-500'}`}>2</div>
+                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg transition-colors ${activeStep === 2 ? 'bg-[var(--landing-brand)] text-white' : 'bg-gray-200 text-gray-500'}`}>2</div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#142F32] mb-2">{t("howStep2Title")}</h3>
-                  <p className="text-[#777C90]">{t("howStep2Desc")}</p>
+                  <h3 className="text-xl font-bold text-[var(--landing-brand)] mb-2">{t("howStep2Title")}</h3>
+                  <p className="text-[var(--landing-muted)]">{t("howStep2Desc")}</p>
                 </div>
               </div>
               <div 
                 className={`flex gap-4 cursor-pointer transition-opacity duration-300 ${activeStep === 3 ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
                 onClick={() => setActiveStep(3)}
               >
-                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg transition-colors ${activeStep === 3 ? 'bg-[#E3FFCC] text-[#142F32]' : 'bg-gray-200 text-gray-500'}`}>3</div>
+                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg transition-colors ${activeStep === 3 ? 'bg-[var(--landing-accent)] text-[var(--landing-brand)]' : 'bg-gray-200 text-gray-500'}`}>3</div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#142F32] mb-2">{t("howStep3Title")}</h3>
-                  <p className="text-[#777C90]">{t("howStep3Desc")}</p>
+                  <h3 className="text-xl font-bold text-[var(--landing-brand)] mb-2">{t("howStep3Title")}</h3>
+                  <p className="text-[var(--landing-muted)]">{t("howStep3Desc")}</p>
                 </div>
               </div>
             </div>
           </div>
           
-          <div className="flex-1 w-full bg-[#F8F9FA] rounded-[40px] p-8 border border-gray-100 shadow-2xl relative">
-             <div className="absolute inset-0 bg-gradient-to-tr from-[#E3FFCC]/20 to-transparent rounded-[40px]"></div>
+          <div className="flex-1 w-full bg-[var(--landing-bg)] rounded-[40px] p-8 border border-gray-100 shadow-2xl relative">
+             <div className="absolute inset-0 bg-gradient-to-tr from-[var(--landing-accent)]/20 to-transparent rounded-[40px]"></div>
              <div className="relative z-10 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 h-[420px] flex flex-col">
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                  <div className="font-bold text-[#142F32]">
+                  <div className="font-bold text-[var(--landing-brand)]">
                     {activeStep === 1 && "Template Selection"}
                     {activeStep === 2 && "Fill the Blocks"}
                     {activeStep === 3 && "Ready to Export"}
@@ -348,38 +346,38 @@ export default function Home() {
                   {activeStep === 1 && (
                     <div className="grid grid-cols-2 gap-4 h-full animate-in fade-in slide-in-from-right-4 duration-500">
                       {/* Template 1: Minimal */}
-                      <div className="bg-white border-2 border-[#142F32] rounded-xl h-52 p-4 relative cursor-pointer shadow-md group overflow-hidden flex flex-col">
-                        <div className="absolute top-2 right-2 bg-[#142F32] text-white rounded-full p-1 z-10">
+                      <div className="bg-white border-2 border-[var(--landing-brand)] rounded-xl h-52 p-4 relative cursor-pointer shadow-md group overflow-hidden flex flex-col">
+                        <div className="absolute top-2 right-2 bg-[var(--landing-brand)] text-white rounded-full p-1 z-10">
                           <CheckCircle2 size={14} />
                         </div>
                         {/* Header */}
                         <div className="flex items-center gap-3 mb-4">
                            <div className="w-10 h-10 rounded-full bg-gray-100 flex-shrink-0 shadow-sm"></div>
                            <div>
-                               <div className="w-16 h-2 bg-[#142F32] rounded mb-1.5"></div>
-                               <div className="w-10 h-1.5 bg-[#777C90] rounded"></div>
+                               <div className="w-16 h-2 bg-[var(--landing-brand)] rounded mb-1.5"></div>
+                               <div className="w-10 h-1.5 bg-[var(--landing-muted)] rounded"></div>
                            </div>
                         </div>
                         {/* Body */}
                         <div className="space-y-4 flex-1">
                             <div>
-                               <div className="w-12 h-1.5 bg-[#142F32]/50 rounded mb-2"></div>
+                               <div className="w-12 h-1.5 bg-[var(--landing-brand)]/50 rounded mb-2"></div>
                                <div className="w-full h-1 bg-gray-100 rounded mb-1.5"></div>
                                <div className="w-5/6 h-1 bg-gray-100 rounded"></div>
                             </div>
                             <div>
-                               <div className="w-12 h-1.5 bg-[#142F32]/50 rounded mb-2"></div>
+                               <div className="w-12 h-1.5 bg-[var(--landing-brand)]/50 rounded mb-2"></div>
                                <div className="w-full h-1 bg-gray-100 rounded mb-1.5"></div>
                                <div className="w-4/5 h-1 bg-gray-100 rounded"></div>
                             </div>
                         </div>
-                        <div className="absolute inset-0 bg-[#142F32]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="absolute inset-0 bg-[var(--landing-brand)]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       </div>
 
                       {/* Template 2: Modern Accent */}
                       <div className="bg-white border border-gray-200 rounded-xl h-52 relative cursor-pointer shadow-sm hover:shadow-md transition-shadow group overflow-hidden flex flex-col">
                         {/* Header */}
-                        <div className="bg-[#142F32] p-4 h-14 flex items-end shadow-sm">
+                        <div className="bg-[var(--landing-brand)] p-4 h-14 flex items-end shadow-sm">
                             <div className="w-16 h-2 bg-white rounded mb-1"></div>
                         </div>
                         {/* Content */}
@@ -391,20 +389,20 @@ export default function Home() {
                            </div>
                            <div className="w-2/3 space-y-3">
                                <div>
-                                   <div className="w-12 h-1 bg-[#777C90] rounded mb-1.5"></div>
+                                   <div className="w-12 h-1 bg-[var(--landing-muted)] rounded mb-1.5"></div>
                                    <div className="w-full h-1 bg-gray-100 rounded mb-1.5"></div>
                                    <div className="w-5/6 h-1 bg-gray-100 rounded mb-1.5"></div>
                                    <div className="w-full h-1 bg-gray-100 rounded"></div>
                                </div>
                                <div>
-                                   <div className="w-12 h-1 bg-[#777C90] rounded mb-1.5"></div>
+                                   <div className="w-12 h-1 bg-[var(--landing-muted)] rounded mb-1.5"></div>
                                    <div className="w-full h-1 bg-gray-100 rounded mb-1.5"></div>
                                    <div className="w-full h-1 bg-gray-100 rounded"></div>
                                </div>
                            </div>
                         </div>
-                        <div className="absolute inset-0 bg-[#282930]/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer" onClick={() => setActiveStep(2)}>
-                             <span className="bg-white text-[#142F32] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-2 group-hover:translate-y-0 transition-all">{t("howDemoSelect")}</span>
+                        <div className="absolute inset-0 bg-[var(--landing-text)]/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                             <span className="bg-white text-[var(--landing-brand)] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-2 group-hover:translate-y-0 transition-all">{t("howDemoSelect")}</span>
                         </div>
                       </div>
                     </div>
@@ -441,18 +439,18 @@ export default function Home() {
                   {/* Step 3 Content */}
                   {activeStep === 3 && (
                     <div className="h-full flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-right-4 duration-500">
-                      <div className="w-20 h-20 bg-[#E3FFCC] rounded-full flex items-center justify-center text-[#142F32] mb-6 shadow-sm border border-[#c5f0a4]">
+                      <div className="w-20 h-20 bg-[var(--landing-accent)] rounded-full flex items-center justify-center text-[var(--landing-brand)] mb-6 shadow-sm border border-[#c5f0a4]">
                         <CheckCircle2 size={40} />
                       </div>
-                      <h3 className="text-2xl font-bold text-[#142F32] mb-2">{t("howDemoReady")}</h3>
+                      <h3 className="text-2xl font-bold text-[var(--landing-brand)] mb-2">{t("howDemoReady")}</h3>
                       <p className="text-gray-500 text-sm max-w-[250px] mx-auto mb-6">
                         {t("howDemoReadyDesc")}
                       </p>
                       <div className="flex gap-3">
-                        <div className="px-4 py-2 bg-gray-100 text-[#142F32] text-sm font-bold rounded-lg border border-gray-200 flex items-center gap-2 cursor-pointer hover:bg-gray-200 transition-colors">
+                        <div className="px-4 py-2 bg-gray-100 text-[var(--landing-brand)] text-sm font-bold rounded-lg border border-gray-200 flex items-center gap-2 cursor-pointer hover:bg-gray-200 transition-colors">
                           <LinkIcon size={16} /> {t("howDemoCopyLink")}
                         </div>
-                        <Link href="/dashboard" className="px-4 py-2 bg-[#142F32] text-white text-sm font-bold rounded-lg flex items-center gap-2 cursor-pointer hover:bg-[#1a3d42] transition-colors">
+                        <Link href="/dashboard" className="px-4 py-2 bg-[var(--landing-brand)] text-white text-sm font-bold rounded-lg flex items-center gap-2 cursor-pointer hover:bg-[var(--landing-brand-hover)] transition-colors">
                           {t("howDemoDownload")}
                         </Link>
                       </div>
@@ -462,7 +460,7 @@ export default function Home() {
 
                 <button 
                   onClick={() => setActiveStep(prev => prev === 3 ? 1 : prev + 1)}
-                  className="w-full mt-6 py-3 bg-[#142F32] text-white font-bold rounded-xl flex justify-center items-center gap-2 shadow-md hover:shadow-lg transition-all"
+                  className="w-full mt-6 py-3 bg-[var(--landing-brand)] text-white font-bold rounded-xl flex justify-center items-center gap-2 shadow-md hover:shadow-lg transition-all"
                 >
                   {activeStep === 3 ? "Start Over" : "Continue"} 
                   {activeStep !== 3 && <ArrowUpRight size={18} />}
@@ -473,34 +471,34 @@ export default function Home() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="bg-[#282930] py-24 px-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-[#142F32]/20 transform skew-x-12 translate-x-32"></div>
+      <section id="pricing" className="bg-[var(--landing-text)] py-24 px-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-[var(--landing-brand)]/20 transform skew-x-12 translate-x-32"></div>
         <div className="max-w-5xl mx-auto relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6">{t("pricingTitle")}</h2>
-            <p className="text-[#777C90] text-lg max-w-xl mx-auto mb-10">
+            <p className="text-[var(--landing-muted)] text-lg max-w-xl mx-auto mb-10">
               {t("pricingSubtitle")}
             </p>
 
             {/* Toggle */}
             <div className="inline-flex items-center bg-white/10 p-1 rounded-full border border-white/5">
               <button 
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors ${billing === 'monthly' ? 'bg-[#142F32] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors ${billing === 'monthly' ? 'bg-[var(--landing-brand)] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
                 onClick={() => setBilling('monthly')}
               >
                 {t("pricingMonthly")}
               </button>
               <button 
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors ${billing === 'quarterly' ? 'bg-[#142F32] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors ${billing === 'quarterly' ? 'bg-[var(--landing-brand)] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
                 onClick={() => setBilling('quarterly')}
               >
                 {t("pricingQuarterly")}
               </button>
               <button 
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors flex items-center gap-2 ${billing === 'yearly' ? 'bg-[#142F32] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-colors flex items-center gap-2 ${billing === 'yearly' ? 'bg-[var(--landing-brand)] text-white shadow-md' : 'text-white/60 hover:text-white'}`}
                 onClick={() => setBilling('yearly')}
               >
-                {t("pricingYearly")} <span className="bg-[#E3FFCC] text-[#142F32] text-[10px] px-2 py-0.5 rounded-full ml-1">{t("pricingSave")}</span>
+                {t("pricingYearly")} <span className="bg-[var(--landing-accent)] text-[var(--landing-brand)] text-[10px] px-2 py-0.5 rounded-full ml-1">{t("pricingSave")}</span>
               </button>
             </div>
           </div>
@@ -537,26 +535,26 @@ export default function Home() {
             </div>
 
             {/* Pro Tier */}
-            <div className="bg-[#142F32] border border-[#E3FFCC]/30 rounded-[32px] p-10 flex flex-col relative h-full shadow-2xl">
-              <div className="absolute top-0 right-10 transform -translate-y-1/2 bg-yellow-500 text-[#142F32] text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full flex items-center gap-1 shadow-md">
+            <div className="bg-[var(--landing-brand)] border border-[var(--landing-accent)]/30 rounded-[32px] p-10 flex flex-col relative h-full shadow-2xl">
+              <div className="absolute top-0 right-10 transform -translate-y-1/2 bg-yellow-500 text-[var(--landing-brand)] text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full flex items-center gap-1 shadow-md">
                 {t("pricingProBadge")}
               </div>
               <h3 className="text-2xl font-bold text-white mb-2">{t("pricingProTitle")}</h3>
               <p className="text-white/70 text-sm mb-6 h-10">{t("pricingProDesc")}</p>
               
               <div className="mb-8 flex items-baseline gap-2">
-                <span className="text-5xl font-extrabold text-[#E3FFCC]">
+                <span className="text-5xl font-extrabold text-[var(--landing-accent)]">
                   ${billing === 'yearly' ? '29.99' : billing === 'quarterly' ? '9.99' : '3.99'}
                 </span>
                 <span className="text-white/50">{billing === 'yearly' ? '/year' : billing === 'quarterly' ? '/3 months' : '/month'}</span>
               </div>
               
-              <Link href="/dashboard" className="w-full flex justify-center py-4 rounded-xl bg-[#E3FFCC] text-[#142F32] font-bold hover:bg-[#c5f0a4] transition-colors mb-10 shadow-lg">
+              <Link href="/dashboard" className="w-full flex justify-center py-4 rounded-xl bg-[var(--landing-accent)] text-[var(--landing-brand)] font-bold hover:bg-[#c5f0a4] transition-colors mb-10 shadow-lg">
                 {t("pricingProCta")}
               </Link>
               
               <div className="space-y-4 flex-1">
-                <p className="text-xs uppercase tracking-wider font-bold text-[#E3FFCC]/60 mb-4 border-b border-white/10 pb-2">Premium Features</p>
+                <p className="text-xs uppercase tracking-wider font-bold text-[var(--landing-accent)]/60 mb-4 border-b border-white/10 pb-2">Premium Features</p>
                 {[
                   t("pricingProFeature1"),
                   t("pricingProFeature2"),
@@ -566,7 +564,7 @@ export default function Home() {
                   t("pricingProFeature6")
                 ].map((feature, idx) => (
                   <div key={idx} className="flex items-center gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-[#E3FFCC]" />
+                    <CheckCircle2 className="w-5 h-5 text-[var(--landing-accent)]" />
                     <span className="text-white text-sm font-medium">{feature}</span>
                   </div>
                 ))}
@@ -580,34 +578,34 @@ export default function Home() {
       <section id="faq" className="py-24 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold text-[#142F32] mb-4">{t("faqTitle")}</h2>
-            <p className="text-[#777C90] text-lg">Got questions? We&apos;ve got answers.</p>
+            <h2 className="text-4xl font-extrabold text-[var(--landing-brand)] mb-4">{t("faqTitle")}</h2>
+            <p className="text-[var(--landing-muted)] text-lg">Got questions? We&apos;ve got answers.</p>
           </div>
 
           <div className="space-y-6">
-            <div className="bg-[#F8F9FA] rounded-2xl p-6 border border-gray-100 hover:border-gray-200 transition-colors">
-              <h3 className="text-xl font-bold text-[#142F32] mb-2 flex items-center justify-between">
+            <div className="bg-[var(--landing-bg)] rounded-2xl p-6 border border-gray-100 hover:border-gray-200 transition-colors">
+              <h3 className="text-xl font-bold text-[var(--landing-brand)] mb-2 flex items-center justify-between">
                 {t("faqFreeQ")}
               </h3>
-              <p className="text-[#777C90] leading-relaxed">
+              <p className="text-[var(--landing-muted)] leading-relaxed">
                 Yes, you can create and download one professional resume for free, forever. You&apos;ll have access to our basic templates and standard PDF exports.
               </p>
             </div>
 
-            <div className="bg-[#F8F9FA] rounded-2xl p-6 border border-gray-100 hover:border-gray-200 transition-colors">
-              <h3 className="text-xl font-bold text-[#142F32] mb-2 flex items-center justify-between">
+            <div className="bg-[var(--landing-bg)] rounded-2xl p-6 border border-gray-100 hover:border-gray-200 transition-colors">
+              <h3 className="text-xl font-bold text-[var(--landing-brand)] mb-2 flex items-center justify-between">
                 {t("faqAtsQ")}
               </h3>
-              <p className="text-[#777C90] leading-relaxed">
+              <p className="text-[var(--landing-muted)] leading-relaxed">
                 {t("faqAtsA")}
               </p>
             </div>
 
-            <div className="bg-[#F8F9FA] rounded-2xl p-6 border border-gray-100 hover:border-gray-200 transition-colors">
-              <h3 className="text-xl font-bold text-[#142F32] mb-2 flex items-center justify-between">
+            <div className="bg-[var(--landing-bg)] rounded-2xl p-6 border border-gray-100 hover:border-gray-200 transition-colors">
+              <h3 className="text-xl font-bold text-[var(--landing-brand)] mb-2 flex items-center justify-between">
                 {t("faqCancelQ")}
               </h3>
-              <p className="text-[#777C90] leading-relaxed">
+              <p className="text-[var(--landing-muted)] leading-relaxed">
                 Yes, you can manage and cancel your subscription anytime through your account settings. If you cancel, you will retain Pro features until the end of your billing cycle.
               </p>
             </div>
@@ -616,15 +614,15 @@ export default function Home() {
       </section>
 
       {/* Call to Action & Footer */}
-      <footer className="bg-[#0b1b1c] pt-24 pb-8 px-6 text-white relative">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#142F32] via-[#E3FFCC] to-[#142F32]"></div>
+      <footer className="bg-[var(--landing-footer)] pt-24 pb-8 px-6 text-white relative">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--landing-brand)] via-[var(--landing-accent)] to-[var(--landing-brand)]"></div>
         
         <div className="max-w-4xl mx-auto text-center mb-20 flex flex-col items-center">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6">{t("footerCtaTitle")}</h2>
           <p className="text-white/60 text-lg mb-10 max-w-2xl mx-auto">
             {t("footerCtaDesc")}
           </p>
-          <Link href="/dashboard" className="px-10 py-5 bg-[#E3FFCC] flex justify-center text-[#142F32] rounded-full font-extrabold text-lg hover:bg-[#c5f0a4] transition-colors shadow-lg max-w-max mx-auto">
+          <Link href="/dashboard" className="px-10 py-5 bg-[var(--landing-accent)] flex justify-center text-[var(--landing-brand)] rounded-full font-extrabold text-lg hover:bg-[#c5f0a4] transition-colors shadow-lg max-w-max mx-auto">
             {t("footerCtaButton")}
           </Link>
         </div>
