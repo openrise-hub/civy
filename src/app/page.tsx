@@ -29,6 +29,7 @@ export default function Home() {
   const [billing, setBilling] = useState<"monthly" | "quarterly" | "yearly">("monthly");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
+  const [selectedTemplate, setSelectedTemplate] = useState(1);
 
   return (
     <div className={`min-h-screen bg-[var(--landing-bg)] text-[var(--landing-text)] selection:bg-[var(--landing-accent)] selection:text-[var(--landing-brand)] ${manrope.className}`}>
@@ -96,7 +97,7 @@ export default function Home() {
           </div>
           
           <h1 className="text-5xl md:text-7xl font-extrabold text-[var(--landing-brand)] tracking-tight mb-6 leading-tight">
-            {t("heroTitle")}<br className="hidden md:block" />{t("heroTitleLine2")}<span className="text-[var(--landing-accent)] italic">{t("heroTitleBreak")}</span>
+            {t("heroTitle")}<br className="hidden md:block" />{t("heroTitleLine2")}<span className="text-[var(--landing-emphasis)] italic">{t("heroTitleBreak")}</span>
           </h1>
           
           <p className="text-lg md:text-xl text-[var(--landing-muted)] max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -142,7 +143,7 @@ export default function Home() {
               <div className="w-full h-full bg-white/5 rounded-xl border border-white/10 p-6 flex flex-col gap-4">
                 <div>
                   <h3 className="text-2xl font-bold text-white mb-1">Alex Morgan</h3>
-                  <p className="text-[var(--landing-accent)] font-medium text-sm">{t("heroTypingTitle")}</p>
+                  <p className="typing-animation text-[var(--landing-accent)] font-medium text-sm">{t("heroTypingTitle")}</p>
                 </div>
                 <div className="h-px w-full bg-white/20 my-2"></div>
                 <div className="space-y-3">
@@ -171,6 +172,7 @@ export default function Home() {
             </div>
             <div>
               <h4 className="text-2xl font-extrabold text-[var(--landing-brand)]">{t("statsResumes")}</h4>
+              <p className="text-sm font-medium text-[var(--landing-muted)]">{t("statsResumesDesc")}</p>
             </div>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-start gap-4">
@@ -346,10 +348,12 @@ export default function Home() {
                   {activeStep === 1 && (
                     <div className="grid grid-cols-2 gap-4 h-full animate-in fade-in slide-in-from-right-4 duration-500">
                       {/* Template 1: Minimal */}
-                      <div className="bg-white border-2 border-[var(--landing-brand)] rounded-xl h-52 p-4 relative cursor-pointer shadow-md group overflow-hidden flex flex-col">
+                      <div className={`bg-white rounded-xl h-52 p-4 relative cursor-pointer shadow-md group overflow-hidden flex flex-col ${selectedTemplate === 1 ? 'border-2 border-[var(--landing-brand)]' : 'border-2 border-gray-200'}`} onClick={() => setSelectedTemplate(1)}>
+                        {selectedTemplate === 1 && (
                         <div className="absolute top-2 right-2 bg-[var(--landing-brand)] text-white rounded-full p-1 z-10">
                           <CheckCircle2 size={14} />
                         </div>
+                        )}
                         {/* Header */}
                         <div className="flex items-center gap-3 mb-4">
                            <div className="w-10 h-10 rounded-full bg-gray-100 flex-shrink-0 shadow-sm"></div>
@@ -374,8 +378,12 @@ export default function Home() {
                         <div className="absolute inset-0 bg-[var(--landing-brand)]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       </div>
 
-                      {/* Template 2: Modern Accent */}
-                      <div className="bg-white border border-gray-200 rounded-xl h-52 relative cursor-pointer shadow-sm hover:shadow-md transition-shadow group overflow-hidden flex flex-col">
+                      <div className={`bg-white rounded-xl h-52 p-0 relative cursor-pointer shadow-sm hover:shadow-md transition-shadow group overflow-hidden flex flex-col ${selectedTemplate === 2 ? 'border-2 border-[var(--landing-brand)]' : 'border border-gray-200'}`} onClick={() => setSelectedTemplate(2)}>
+                        {selectedTemplate === 2 && (
+                        <div className="absolute top-2 right-2 bg-[var(--landing-brand)] text-white rounded-full p-1 z-10">
+                          <CheckCircle2 size={14} />
+                        </div>
+                        )}
                         {/* Header */}
                         <div className="bg-[var(--landing-brand)] p-4 h-14 flex items-end shadow-sm">
                             <div className="w-16 h-2 bg-white rounded mb-1"></div>
