@@ -307,7 +307,6 @@
     "allResumes": "All Resumes",
     "gridView": "Grid View",
     "listView": "List View",
-
     "emptyFolder": "Empty Folder",
     "emptyFolderDesc": "There are no resumes in this folder.",
     "moveToFolder": "Move to Folder",
@@ -343,7 +342,26 @@
       "Proofread twice. A single typo can cost you an interview.",
       "Include a professional summary at the top highlighting your key qualifications.",
       "List skills relevant to the position, not every tool you have ever used.",
-      "Save your resume as a PDF to preserve formatting across devices."
+      "Save your resume as a PDF to preserve formatting across devices.",
+      "Remove your full street address if you are applying for a remote job. List only your city and country.",
+      "If you are looking for an engineering job, remove your photo. Your CV should sell your skills and results, not your image.",
+      "Remove \"References available upon request.\" Recruiters already know they can ask. Use that space for a measurable achievement instead.",
+      "Remove your GPA if you have 3+ years of experience. Highlight what you have built, not your grades.",
+      "Remove hobbies. Your CV is a marketing tool, not a social profile. Every line should demonstrate a relevant skill.",
+      "List 3 to 4 measurable achievements instead of a long list of duties. Numbers make the difference.",
+      "Quantify your impact. \"Reduced support response time by 32%\" is far stronger than \"Improved support processes.\"",
+      "Group your roles by context, such as startup versus enterprise or B2C versus B2B. Build one strong version per group, then customize per role.",
+      "Domain fit matters. Target roles where your specific experience is a strong match.",
+      "Pull keywords from the job description and reflect them in your actual work, not as filler.",
+      "Use action and result language. Instead of describing what you did, describe what changed because of you.",
+      "Shift your mindset from \"how do I fit everywhere\" to \"where am I actually a strong fit.\"",
+      "Apply less, get better responses. Quality over quantity in your applications.",
+      "Lead with ownership language. \"Led a research project with 200+ participants\" is stronger than passive descriptions.",
+      "Make every line demonstrate a skill relevant to the position. If it does not sell your ability, remove it.",
+      "Recruiters care about the tools you use and the results you achieved. Not your opinions or personality.",
+      "Your CV sells your skills, not your image. Design every line around that goal.",
+      "After 3+ years of professional experience, actionable results matter more than your education details.",
+      "If your context does not fit the role, shift your target instead of forcing the application. Focus on roles where your story is strong."
     ]
   },
   "share": {
@@ -505,7 +523,7 @@
     "summaryPlaceholder": "Write a brief summary of your experience and career goals...",
     "loading": "Loading...",
     "noResults": "No results found",
-    "skip": "Skip \u2192 Dashboard",
+    "skip": "Skip → Dashboard",
     "submit": "Create My Resume"
   },
   "industries": {

@@ -307,7 +307,6 @@
     "allResumes": "Todos los Currículums",
     "gridView": "Vista de Cuadrícula",
     "listView": "Vista de Lista",
-
     "emptyFolder": "Carpeta Vacía",
     "emptyFolderDesc": "No hay currículums en esta carpeta.",
     "moveToFolder": "Mover a Carpeta",
@@ -343,7 +342,26 @@
       "Revisa dos veces. Un solo error tipográfico puede costarte una entrevista.",
       "Incluye un resumen profesional al inicio destacando tus cualificaciones clave.",
       "Enumera habilidades relevantes para el puesto, no todas las herramientas que has usado.",
-      "Guarda tu currículum como PDF para preservar el formato en todos los dispositivos."
+      "Guarda tu currículum como PDF para preservar el formato en todos los dispositivos.",
+      "Elimina tu dirección completa si aplicas para un trabajo remoto. Incluye solo tu ciudad y país.",
+      "Si buscas un trabajo en ingeniería, elimina tu foto. Tu CV debe vender tus habilidades y resultados, no tu imagen.",
+      "Elimina \"Referencias disponibles bajo petición\". Los reclutadores ya saben que pueden pedirlas. Usa ese espacio para un logro medible.",
+      "Elimina tu promedio si tienes más de 3 años de experiencia. Destaca lo que has construido, no tus calificaciones.",
+      "Elimina los pasatiempos. Tu CV es una herramienta de marketing, no un perfil social. Cada línea debe demostrar una habilidad relevante.",
+      "Enumera 3 o 4 logros medibles en lugar de una larga lista de funciones. Los números marcan la diferencia.",
+      "Cuantifica tu impacto. \"Reduje el tiempo de respuesta de soporte en un 32%\" es mucho más fuerte que \"Mejoré los procesos de soporte\".",
+      "Agrupa tus roles por contexto, como startup vs empresa o B2C vs B2B. Crea una versión sólida por grupo, luego personaliza por rol.",
+      "La adecuación al dominio importa. Apunta a roles donde tu experiencia específica sea un buen ajuste.",
+      "Extrae palabras clave de la descripción del puesto y refléjalas en tu trabajo real, no como relleno.",
+      "Usa lenguaje de acción y resultado. En lugar de describir lo que hiciste, describe lo que cambió gracias a ti.",
+      "Cambia tu mentalidad de \"¿cómo encajo en todas partes?\" a \"¿dónde encajo realmente bien?\".",
+      "Postula menos, obtén mejores respuestas. Calidad sobre cantidad en tus aplicaciones.",
+      "Usa lenguaje de propiedad. \"Lideré un proyecto de investigación con más de 200 participantes\" es más fuerte que las descripciones pasivas.",
+      "Haz que cada línea demuestre una habilidad relevante para el puesto. Si no vende tu capacidad, elimínala.",
+      "A los reclutadores les importan las herramientas que usas y los resultados que lograste. No les importan tus opiniones ni tu personalidad.",
+      "Tu CV vende tus habilidades, no tu imagen. Diseña cada línea en torno a ese objetivo.",
+      "Después de 3 años de experiencia profesional, los resultados concretos importan más que los detalles de tu formación.",
+      "Si tu contexto no encaja con el rol, cambia tu objetivo en lugar de forzar la aplicación. Enfócate en roles donde tu historia sea fuerte."
     ]
   },
   "share": {
@@ -506,7 +524,7 @@
     "summaryPlaceholder": "Escribe un breve resumen de tu experiencia y objetivos profesionales...",
     "loading": "Cargando...",
     "noResults": "Sin resultados",
-    "skip": "Saltar \u2192 Panel",
+    "skip": "Saltar → Panel",
     "submit": "Crear Mi Currículum"
   },
   "industries": {

@@ -12,7 +12,7 @@
     "unknown": "未知",
     "previous": "上一页",
     "next": "下一页",
-    "andMore": "And more!",
+    "andMore": "还有更多！",
     "movedToFolder": "已移至文件夹",
     "errorDuplicating": "复制简历时出错",
     "errorDeleting": "删除简历时出错",
@@ -226,20 +226,39 @@
     "getStarted": "引导式设置",
     "startBlank": "从空白开始",
     "guidedSetup": "引导式设置",
-    "tipTitle": "Tip of the day",
-    "templateOfTheWeek": "Template of the week",
-    "tryTemplate": "Try this template",
+    "tipTitle": "每日提示",
+    "templateOfTheWeek": "本周模板",
+    "tryTemplate": "试试这个模板",
     "tips": [
-      "Use action verbs like \"led\", \"developed\", or \"implemented\" instead of passive language.",
-      "Keep your resume to 1-2 pages. Recruiters spend about 6 seconds scanning.",
-      "Quantify achievements with numbers: \"Increased sales by 30%\" is stronger than \"Increased sales\".",
-      "Tailor your resume to each job by matching keywords from the job description.",
-      "Place your most relevant achievements at the top of each section.",
-      "Use a clean, professional layout. Avoid fonts or graphics that distract from content.",
-      "Proofread twice. A single typo can cost you an interview.",
-      "Include a professional summary at the top highlighting your key qualifications.",
-      "List skills relevant to the position, not every tool you have ever used.",
-      "Save your resume as a PDF to preserve formatting across devices."
+      "使用动作动词如「领导」、「开发」或「实施」，而非被动语言。",
+      "将简历控制在 1-2 页。招聘人员浏览每份简历的时间大约只有 6 秒。",
+      "用数字量化成就：「销售额提升 30%」比「提升了销售」更有说服力。",
+      "根据职位描述中的关键词来定制每份简历。",
+      "将最相关的成就放在每个部分的最顶部。",
+      "使用简洁专业的版式。避免分散注意力的字体或图形。",
+      "校对两遍。一个拼写错误就可能让你失去面试机会。",
+      "在顶部包含一个专业摘要，突出你的核心资历。",
+      "列出与职位相关的技能，而非你曾经用过的所有工具。",
+      "将简历保存为 PDF 格式，以确保在所有设备上的格式一致。",
+      "申请远程工作时，删除您的完整地址。只列出城市和国家。",
+      "如果您寻找工程类工作，请删除照片。您的简历应该展示技能和成果，而非形象。",
+      "删除「可提供推荐信」。招聘人员已经知道他们可以要求。用这一行放一个可量化的成就。",
+      "如果您有 3 年以上经验，删除平均成绩。突出您建造了什么，而非您的分数。",
+      "删除爱好。简历是营销工具，而非社交资料。每一行都应展示相关技能。",
+      "列出 3-4 个可量化的成就，而非长篇职责清单。数字才能说服人。",
+      "量化你的影响。「将支持响应时间缩短了 32%」比「改进了支持流程」有力得多。",
+      "按背景分组您的角色，如创业公司 vs 企业或 B2C vs B2B。为每个组创建强大版本，然后根据角色调整。",
+      "领域匹配很重要。将目标锁定在您的具体经验能强力匹配的角色上。",
+      "从职位描述中提取关键词，并将它们反映在您的实际工作中，而非作为填充。",
+      "使用行动和结果语言。与其描述您做了什么，不如描述因您而改变了什么。",
+      "将思维从「我如何适应所有地方」转变为「我在哪里真正强大」。",
+      "少投递，多回复。质量胜过数量。",
+      "使用主导性语言。「领导了一个拥有 200 多名参与者的研究项目」比被动描述更有力。",
+      "让每一行都展示与职位相关的技能。如果它不能展示您的能力，就删除它。",
+      "招聘人员关心您使用的工具和您取得的成果。他们不关心您的观点或个性。",
+      "您的简历展示您的技能，而非形象。围绕这个目标设计每一行。",
+      "在 3 年以上的专业经验之后，可行动的结果比教育背景更重要。",
+      "如果您的背景不适合该角色，请转变目标，而非强行投递。专注于您能展现强大故事的角色。"
     ]
   },
   "share": {
@@ -290,7 +309,7 @@
     "tryAgain": "请重试。",
     "contactSupport": "请重试或联系支持。",
     "welcomeToPro": "欢迎使用 Pro！",
-    "from": "From",
+    "from": "起",
     "subscriptionActive": "您的订阅现已激活。"
   },
   "versionHistory": {
@@ -530,6 +549,6 @@
     "footerTerms": "条款和条件",
     "footerPrivacy": "隐私政策",
     "footerCopyright": "2026 Civy。保留所有权利。",
-    "statsResumesDesc": "See changes as you type"
+    "statsResumesDesc": "实时查看您的更改"
   }
 }
