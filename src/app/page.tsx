@@ -143,7 +143,7 @@ export default function Home() {
               <div className="w-full h-full bg-white/5 rounded-xl border border-white/10 p-6 flex flex-col gap-4">
                 <div>
                   <h3 className="text-2xl font-bold text-white mb-1">Alex Morgan</h3>
-                  <p className="typing-animation text-[var(--landing-accent)] font-medium text-sm" style={{ animationDelay: "3ms" }}>{t("heroTypingTitle")}</p>
+                  <p className="typing-animation text-[var(--landing-accent)] font-medium text-sm">{t("heroTypingTitle")}<span className="opacity-0 font-bold text-base">|</span></p>
                 </div>
                 <div className="h-px w-full bg-white/20 my-2"></div>
                 <div className="space-y-3">
@@ -375,7 +375,11 @@ export default function Home() {
                                <div className="w-4/5 h-1 bg-gray-100 rounded"></div>
                             </div>
                         </div>
-                        <div className="absolute inset-0 bg-[var(--landing-brand)]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        {selectedTemplate !== 1 && (
+                        <div className="absolute inset-0 bg-[var(--landing-brand)]/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                             <span className="bg-white text-[var(--landing-brand)] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-2 group-hover:translate-y-0 transition-all">{t("howDemoSelect")}</span>
+                        </div>
+                        )}
                       </div>
 
                       <div className={`bg-white rounded-xl h-52 p-0 relative cursor-pointer shadow-sm hover:shadow-md transition-shadow group overflow-hidden flex flex-col ${selectedTemplate === 2 ? 'border-2 border-[var(--landing-brand)]' : 'border border-gray-200'}`} onClick={() => setSelectedTemplate(2)}>
@@ -409,9 +413,11 @@ export default function Home() {
                                </div>
                            </div>
                         </div>
+                        {selectedTemplate !== 2 && (
                         <div className="absolute inset-0 bg-[var(--landing-text)]/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
                              <span className="bg-white text-[var(--landing-brand)] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transform translate-y-2 group-hover:translate-y-0 transition-all">{t("howDemoSelect")}</span>
                         </div>
+                        )}
                       </div>
                     </div>
                   )}
