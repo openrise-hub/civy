@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { Manrope } from 'next/font/google';
+import { PRICE_MONTHLY, PRICE_QUARTERLY, PRICE_YEARLY, PRICE_LABEL_MONTHLY, PRICE_LABEL_QUARTERLY, PRICE_LABEL_YEARLY } from '@/constants/pricing';
 import { 
   ArrowUpRight, 
   CheckCircle2, 
@@ -41,18 +42,18 @@ export default function Home() {
           </div>
           
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-[var(--landing-muted)]">
-            <a href="#features" className="hover:text-[var(--landing-brand)] transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-[var(--landing-brand)] transition-colors">How it Works</a>
-            <a href="#pricing" className="hover:text-[var(--landing-brand)] transition-colors">Pricing</a>
-            <a href="#faq" className="hover:text-[var(--landing-brand)] transition-colors">FAQ</a>
+            <a href="#features" className="hover:text-[var(--landing-brand)] transition-colors">{t("navFeatures")}</a>
+            <a href="#how-it-works" className="hover:text-[var(--landing-brand)] transition-colors">{t("navHowItWorks")}</a>
+            <a href="#pricing" className="hover:text-[var(--landing-brand)] transition-colors">{t("navPricing")}</a>
+            <a href="#faq" className="hover:text-[var(--landing-brand)] transition-colors">{t("navFaq")}</a>
           </div>
 
           <div className="hidden md:flex items-center gap-4">
             <Link href="/dashboard" className="text-sm font-semibold text-[var(--landing-brand)] hover:text-[var(--landing-muted)] transition-colors">
-              Log in
+              {t("navLogIn")}
             </Link>
             <Link href="/login?tab=signup&next=/dashboard" className="bg-[var(--landing-brand)] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[var(--landing-brand-hover)] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center">
-              Sign Up
+              {t("navSignUp")}
             </Link>
           </div>
 
@@ -69,16 +70,16 @@ export default function Home() {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden">
           <div className="flex flex-col gap-6 text-lg font-medium">
-            <a href="#features" onClick={() => setIsMobileMenuOpen(false)}>Features</a>
-            <a href="#how-it-works" onClick={() => setIsMobileMenuOpen(false)}>How it Works</a>
-            <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)}>Pricing</a>
-            <a href="#faq" onClick={() => setIsMobileMenuOpen(false)}>FAQ</a>
+            <a href="#features" onClick={() => setIsMobileMenuOpen(false)}>{t("navFeatures")}</a>
+            <a href="#how-it-works" onClick={() => setIsMobileMenuOpen(false)}>{t("navHowItWorks")}</a>
+            <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)}>{t("navPricing")}</a>
+            <a href="#faq" onClick={() => setIsMobileMenuOpen(false)}>{t("navFaq")}</a>
             <div className="h-px w-full bg-gray-100 my-4" />
             <Link href="/dashboard" className="w-full text-center py-3 rounded-xl border-2 border-[var(--landing-brand)] text-[var(--landing-brand)] font-bold block whitespace-nowrap">
-              Log in
+              {t("navLogIn")}
             </Link>
             <Link href="/login?tab=signup&next=/dashboard" className="w-full text-center py-3 rounded-xl bg-[var(--landing-brand)] text-white font-bold block whitespace-nowrap">
-              Sign Up
+              {t("navSignUp")}
             </Link>
           </div>
         </div>
@@ -214,7 +215,7 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-bold text-white mb-3">{t("featurePreviewTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
-              No more &quot;Download to See.&quot; Changes reflect instantly in a pixel-perfect PDF preview as you type.
+              {t("featurePreviewDesc")}
             </p>
           </div>
 
@@ -263,7 +264,7 @@ export default function Home() {
                 <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[var(--landing-accent)] transition-colors" />
               </div>
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Version History</h3>
+            <h3 className="text-xl font-bold text-white mb-3">{t("featureHistoryTitle")}</h3>
             <p className="text-white/60 text-sm leading-relaxed">
               {t("featureHistoryDesc")}
             </p>
@@ -294,7 +295,7 @@ export default function Home() {
               {t("howHeading")}
             </h2>
             <p className="text-[var(--landing-muted)] text-lg mb-10">
-              We&apos;ve streamlined the entire process. Forget formatting headaches and focus on showcasing your true potential.
+              {t("howSubtitle")}
             </p>
 
             <div className="space-y-8">
@@ -533,7 +534,7 @@ export default function Home() {
               </Link>
               
               <div className="space-y-4 flex-1">
-                <p className="text-xs uppercase tracking-wider font-bold text-white/40 mb-4 border-b border-white/10 pb-2">Features</p>
+                <p className="text-xs uppercase tracking-wider font-bold text-white/40 mb-4 border-b border-white/10 pb-2">{t("pricingFreeFeaturesLabel")}</p>
                 {[
                   t("pricingFreeFeature1"),
                   t("pricingFreeFeature2"),
@@ -556,19 +557,19 @@ export default function Home() {
               <h3 className="text-2xl font-bold text-white mb-2">{t("pricingProTitle")}</h3>
               <p className="text-white/70 text-sm mb-6 h-10">{t("pricingProDesc")}</p>
               
-              <div className="mb-8 flex items-baseline gap-2">
-                <span className="text-5xl font-extrabold text-[var(--landing-accent)]">
-                  ${billing === 'yearly' ? '29.99' : billing === 'quarterly' ? '9.99' : '3.99'}
-                </span>
-                <span className="text-white/50">{billing === 'yearly' ? '/year' : billing === 'quarterly' ? '/3 months' : '/month'}</span>
-              </div>
+               <div className="mb-8 flex items-baseline gap-2">
+                 <span className="text-5xl font-extrabold text-[var(--landing-accent)]">
+                   ${billing === 'yearly' ? PRICE_YEARLY : billing === 'quarterly' ? PRICE_QUARTERLY : PRICE_MONTHLY}
+                 </span>
+                 <span className="text-white/50">{billing === 'yearly' ? PRICE_LABEL_YEARLY : billing === 'quarterly' ? PRICE_LABEL_QUARTERLY : PRICE_LABEL_MONTHLY}</span>
+               </div>
               
               <Link href="/dashboard" className="w-full flex justify-center py-4 rounded-xl bg-[var(--landing-accent)] text-[var(--landing-brand)] font-bold hover:bg-[#c5f0a4] transition-colors mb-10 shadow-lg">
                 {t("pricingProCta")}
               </Link>
               
               <div className="space-y-4 flex-1">
-                <p className="text-xs uppercase tracking-wider font-bold text-[var(--landing-accent)]/60 mb-4 border-b border-white/10 pb-2">Premium Features</p>
+                <p className="text-xs uppercase tracking-wider font-bold text-[var(--landing-accent)]/60 mb-4 border-b border-white/10 pb-2">{t("pricingProFeaturesLabel")}</p>
                 {[
                   t("pricingProFeature1"),
                   t("pricingProFeature2"),
@@ -593,7 +594,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-extrabold text-[var(--landing-brand)] mb-4">{t("faqTitle")}</h2>
-            <p className="text-[var(--landing-muted)] text-lg">Got questions? We&apos;ve got answers.</p>
+            <p className="text-[var(--landing-muted)] text-lg">{t("faqSubtitle")}</p>
           </div>
 
           <div className="space-y-6">
@@ -602,7 +603,7 @@ export default function Home() {
                 {t("faqFreeQ")}
               </h3>
               <p className="text-[var(--landing-muted)] leading-relaxed">
-                Yes, you can create and download one professional resume for free, forever. You&apos;ll have access to our basic templates and standard PDF exports.
+                {t("faqFreeA")}
               </p>
             </div>
 
@@ -620,7 +621,7 @@ export default function Home() {
                 {t("faqCancelQ")}
               </h3>
               <p className="text-[var(--landing-muted)] leading-relaxed">
-                Yes, you can manage and cancel your subscription anytime through your account settings. If you cancel, you will retain Pro features until the end of your billing cycle.
+                {t("faqCancelA")}
               </p>
             </div>
           </div>
@@ -658,17 +659,17 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold mb-6">{t("footerProduct")}</h4>
               <ul className="space-y-4 text-sm text-white/50">
-                <li><a href="#" className="hover:text-white transition-colors">Templates</a></li>
-                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footerTemplates")}</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">{t("footerFeatures")}</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">{t("footerPricing")}</a></li>
               </ul>
             </div>
             <div>
               <h4 className="text-white font-bold mb-6">{t("footerCompany")}</h4>
               <ul className="space-y-4 text-sm text-white/50">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Customers</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Newsroom</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footerAbout")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footerCustomers")}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t("footerNewsroom")}</a></li>
               </ul>
             </div>
             <div>
