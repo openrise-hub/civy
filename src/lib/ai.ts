@@ -44,15 +44,6 @@ export async function improveText(text: string): Promise<string | null> {
   );
 }
 
-export async function suggestSkills(jobTitle: string, industry: string): Promise<string[] | null> {
-  const raw = await callAI(
-    `List 10 relevant skills for a ${jobTitle || "professional"} in the ${industry || "general"} industry. Respond with a comma-separated list only, no numbering.`,
-    "You are a career coach. Suggest real, relevant skills."
-  );
-  if (!raw) return null;
-  return raw.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 10);
-}
-
 export async function analyzeATS(resumeText: string): Promise<{
   score: number;
   issues: string[];
@@ -79,7 +70,7 @@ function parseATSResponse(raw: string): {
 
   function extractLines(text: string): string[] {
     return text
-      .split(/\n/)
+      .split(/\r?\n/)
       .map((line) => line.replace(/^\s*(?:\d+[\.\)]\s*|[-\u2022\u2023\u2022]\s*)/, "").trim())
       .filter((line) => line.length > 5);
   }

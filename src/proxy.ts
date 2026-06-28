@@ -8,7 +8,7 @@ const publicRoutes = ["/", "/login", "/callback", "/reset-password"];
 const ignoredPrefixes = ["/_next", "/favicon.ico"];
 
 // API routes that allow public access (e.g., webhooks)
-const publicApiPrefixes = ["/api/webhooks/paypal"];
+const publicApiPrefixes = ["/api/webhooks/paypal", "/api/webhooks/gumroad"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
