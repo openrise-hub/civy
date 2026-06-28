@@ -484,7 +484,7 @@
     "pricingTitle": "Planos Adaptados à Sua Carreira",
     "pricingSubtitle": "Preços flexíveis, seja você um navegador casual ou um candidato ativo.",
     "pricingMonthly": "Mensal",
-    "pricingQuarterly": "3 Months",
+    "pricingQuarterly": "Trimestral",
     "pricingYearly": "Anual",
     "pricingSave": "Economize 35%",
     "pricingFreeTitle": "Iniciante",
@@ -499,7 +499,7 @@
     "pricingProTitle": "Enterprise / Pro",
     "pricingProDesc": "Acesso completo a todos os recursos premium.",
     "pricingProCta": "Atualizar para Pro",
-    "pricingProFeature1": "Currículos Ilimitados",
+    "pricingProFeature1": "50 Currículos Ativos",
     "pricingProFeature2": "Todos os Modelos Premium",
     "pricingProFeature3": "Histórico de Versões",
     "pricingProFeature4": "Analíticas Pessoais",
@@ -529,6 +529,7 @@
     "footerLegal": "Jurídico",
     "footerTerms": "Termos e Condições",
     "footerPrivacy": "Política de Privacidade",
-    "footerCopyright": "2026 Civy. Todos os direitos reservados."
+    "footerCopyright": "2026 Civy. Todos os direitos reservados.",
+    "statsResumesDesc": "See changes as you type"
   }
 }

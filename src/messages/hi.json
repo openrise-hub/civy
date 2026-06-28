@@ -484,7 +484,7 @@
     "pricingTitle": "आपके करियर के लिए अनुकूलित योजनाएँ",
     "pricingSubtitle": "लचीली कीमत चाहे आप casual ब्राउज़ कर रहे हों या सक्रिय रूप से खोज रहे हों।",
     "pricingMonthly": "मासिक",
-    "pricingQuarterly": "3 Months",
+    "pricingQuarterly": "त्रैमासिक",
     "pricingYearly": "वार्षिक",
     "pricingSave": "35% बचाएं",
     "pricingFreeTitle": "स्टार्टर",
@@ -499,7 +499,7 @@
     "pricingProTitle": "Enterprise / Pro",
     "pricingProDesc": "सभी प्रीमियम सुविधाओं और एनालिटिक्स तक पूर्ण पहुँच।",
     "pricingProCta": "Pro में अपग्रेड करें",
-    "pricingProFeature1": "असीमित रिज़्यूमे",
+    "pricingProFeature1": "50 सक्रिय रिज़्यूमे",
     "pricingProFeature2": "सभी प्रीमियम टेम्पलेट",
     "pricingProFeature3": "संस्करण इतिहास",
     "pricingProFeature4": "व्यक्तिगत एनालिटिक्स",
@@ -529,6 +529,7 @@
     "footerLegal": "कानूनी",
     "footerTerms": "नियम और शर्तें",
     "footerPrivacy": "गोपनीयता नीति",
-    "footerCopyright": "2026 Civy। सर्वाधिकार सुरक्षित।"
+    "footerCopyright": "2026 Civy। सर्वाधिकार सुरक्षित।",
+    "statsResumesDesc": "See changes as you type"
   }
 }

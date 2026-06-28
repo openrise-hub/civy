@@ -484,7 +484,7 @@
     "pricingTitle": "Планы для вашей карьеры",
     "pricingSubtitle": "Гибкие цены для casual-просмотра или активного поиска.",
     "pricingMonthly": "Ежемесячно",
-    "pricingQuarterly": "3 Months",
+    "pricingQuarterly": "Квартальный",
     "pricingYearly": "Ежегодно",
     "pricingSave": "Экономия 35%",
     "pricingFreeTitle": "Стартовый",
@@ -499,7 +499,7 @@
     "pricingProTitle": "Enterprise / Pro",
     "pricingProDesc": "Полный доступ ко всем премиум-функциям.",
     "pricingProCta": "Перейти на Pro",
-    "pricingProFeature1": "Неограниченное количество резюме",
+    "pricingProFeature1": "50 Активных Резюме",
     "pricingProFeature2": "Все премиум-шаблоны",
     "pricingProFeature3": "История версий",
     "pricingProFeature4": "Личная аналитика",
@@ -529,6 +529,7 @@
     "footerLegal": "Правовая информация",
     "footerTerms": "Условия и положения",
     "footerPrivacy": "Политика конфиденциальности",
-    "footerCopyright": "2026 Civy. Все права защищены."
+    "footerCopyright": "2026 Civy. Все права защищены.",
+    "statsResumesDesc": "See changes as you type"
   }
 }

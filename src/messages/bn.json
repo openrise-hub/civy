@@ -484,7 +484,7 @@
     "pricingTitle": "আপনার ক্যারিয়ারের জন্য উপযোগী প্ল্যান",
     "pricingSubtitle": "আপনি নৈমিত্তিকভাবে ব্রাউজ করছেন বা সক্রিয়ভাবে খুঁজছেন কিনা তার জন্য নমনীয় মূল্য।",
     "pricingMonthly": "মাসিক",
-    "pricingQuarterly": "3 Months",
+    "pricingQuarterly": "ত্রৈমাসিক",
     "pricingYearly": "বার্ষিক",
     "pricingSave": "৩৫% সঞ্চয় করুন",
     "pricingFreeTitle": "স্টার্টার",
@@ -499,7 +499,7 @@
     "pricingProTitle": "এন্টারপ্রাইজ / Pro",
     "pricingProDesc": "সমস্ত প্রিমিয়াম বৈশিষ্ট্য এবং অ্যানালিটিক্সে সম্পূর্ণ অ্যাক্সেস।",
     "pricingProCta": "Pro-তে আপগ্রেড করুন",
-    "pricingProFeature1": "সীমাহীন জীবনবৃত্তান্ত",
+    "pricingProFeature1": "৫০টি সক্রিয় জীবনবৃত্তান্ত",
     "pricingProFeature2": "সমস্ত প্রিমিয়াম টেমপ্লেট",
     "pricingProFeature3": "সংস্করণ ইতিহাস",
     "pricingProFeature4": "ব্যক্তিগত অ্যানালিটিক্স",
@@ -529,6 +529,7 @@
     "footerLegal": "আইনি",
     "footerTerms": "শর্তাবলী",
     "footerPrivacy": "গোপনীয়তা নীতি",
-    "footerCopyright": "2026 Civy। সমস্ত অধিকার সংরক্ষিত।"
+    "footerCopyright": "2026 Civy। সমস্ত অধিকার সংরক্ষিত।",
+    "statsResumesDesc": "See changes as you type"
   }
 }

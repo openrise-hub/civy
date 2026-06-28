@@ -484,7 +484,7 @@
     "pricingTitle": "Forfaits Adaptés à Votre Carrière",
     "pricingSubtitle": "Tarification flexible, que vous exploriez ou cherchiez activement.",
     "pricingMonthly": "Mensuel",
-    "pricingQuarterly": "3 Months",
+    "pricingQuarterly": "Trimestriel",
     "pricingYearly": "Annuel",
     "pricingSave": "Économisez 35%",
     "pricingFreeTitle": "Débutant",
@@ -499,7 +499,7 @@
     "pricingProTitle": "Enterprise / Pro",
     "pricingProDesc": "Accès complet à toutes les fonctionnalités premium.",
     "pricingProCta": "Passer à Pro",
-    "pricingProFeature1": "CV Illimités",
+    "pricingProFeature1": "50 CV Actifs",
     "pricingProFeature2": "Tous les Modèles Premium",
     "pricingProFeature3": "Historique des Versions",
     "pricingProFeature4": "Analytiques Personnelles",
@@ -529,6 +529,7 @@
     "footerLegal": "Juridique",
     "footerTerms": "Conditions Générales",
     "footerPrivacy": "Politique de Confidentialité",
-    "footerCopyright": "2026 Civy. Tous droits réservés."
+    "footerCopyright": "2026 Civy. Tous droits réservés.",
+    "statsResumesDesc": "See changes as you type"
   }
 }
