@@ -28,6 +28,7 @@ export async function getCustomTemplates(): Promise<CustomTemplate[]> {
   const { data, error } = await supabase
     .from("custom_templates")
     .select("*")
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -60,7 +61,8 @@ export async function saveCustomTemplate(
 
   const { count, error: countError } = await supabase
     .from("custom_templates")
-    .select("*", { count: "exact", head: true });
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id);
 
   if (countError) {
     console.error("Error checking limits:", countError);
@@ -109,7 +111,8 @@ export async function deleteCustomTemplate(id: string): Promise<void> {
   const { error } = await supabase
     .from("custom_templates")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", user.id);
 
   if (error) {
     console.error("Error deleting custom template:", error);

@@ -3,13 +3,16 @@
 import { getUser } from "@/lib/auth/actions";
 import { createClient } from "@/lib/supabase/server";
 import { getTemplateList } from "@/lib/templates/registry";
+import { getProfile } from "@/lib/profile/actions";
+import { RESUME_LIMITS, FREE_TEMPLATES } from "@/constants/limits";
 import { redirect } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import type { Item } from "@/types/resume";
 
 function suggestTemplate(industry: string): string {
   const entries = getTemplateList();
-  const matching = entries.filter((e) => e.industries.includes(industry));
+  const freeOnly = entries.filter((e) => FREE_TEMPLATES.includes(e.name.toLowerCase() as never));
+  const matching = freeOnly.filter((e) => e.industries.includes(industry));
   return (matching[0]?.name ?? "modern").toLowerCase();
 }
 
@@ -35,6 +38,25 @@ export async function createOnboardingResume(formData: FormData) {
 
   if (!fullName) {
     throw new Error("Full name is required");
+  }
+
+  const supabase = await createClient();
+  const profile = await getProfile();
+  const isPremium = profile?.is_premium ?? false;
+  const maxResumes = isPremium ? RESUME_LIMITS.PRO_MAX_RESUMES : RESUME_LIMITS.FREE_MAX_RESUMES;
+
+  const { count, error: countError } = await supabase
+    .from("resumes")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .is("deleted_at", null);
+
+  if (countError) {
+    throw new Error("Failed to check resume limits");
+  }
+
+  if (count !== null && count >= maxResumes) {
+    throw new Error(isPremium ? "LIMIT_PRO" : "LIMIT_FREE");
   }
 
   const suggestedTemplate = suggestTemplate(industry);
@@ -86,8 +108,6 @@ export async function createOnboardingResume(formData: FormData) {
       },
     });
   }
-
-  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("resumes")
