@@ -4,6 +4,7 @@ import { Item, StringItem, DateRangeItem, LinkItem, RatingItem, TagsItem } from 
 import type { TemplateConfig } from "@/types/template";
 import { useTranslations } from "next-intl";
 import React from "react";
+import { MapPin, Phone, Mail } from "lucide-react";
 import {
   isStringItem,
   isDateRangeItem,
@@ -261,7 +262,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
           fontSize: toCssFontSize(typography.fontSize.connections),
           fontFamily: typography.fontFamily.connections,
         }}>
-          {showIcons ? "\uD83D\uDCCD" : ""}{item.value}
+          {showIcons ? <MapPin size={12} style={{ display: "inline", marginRight: 4 }} /> : null}{item.value}
         </span>
       );
 
@@ -272,7 +273,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
           fontSize: toCssFontSize(typography.fontSize.connections),
           fontFamily: typography.fontFamily.connections,
         }}>
-          {showIcons ? "\uD83D\uDCF1" : ""}{item.value}
+          {showIcons ? <Phone size={12} style={{ display: "inline", marginRight: 4 }} /> : null}{item.value}
         </span>
       );
 
@@ -283,7 +284,7 @@ function StringItemPreview({ item, config }: { item: StringItem; config: Templat
           fontSize: toCssFontSize(typography.fontSize.connections),
           fontFamily: typography.fontFamily.connections,
         }}>
-          {showIcons ? "\uD83D\uDCE7" : ""}{item.value}
+          {showIcons ? <Mail size={12} style={{ display: "inline", marginRight: 4 }} /> : null}{item.value}
         </span>
       );
 
