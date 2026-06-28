@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cancelPremium } from "@/lib/profile/actions";
+import { createAdminClient } from "@/lib/supabase/admin";
 import crypto from "crypto";
 
 async function verifyGumroadSignature(body: string, signature: string | null): Promise<boolean> {
@@ -27,17 +28,18 @@ export async function POST(request: Request) {
 
   const resourceName = body.resource_name as string;
 
-  if (resourceName === "cancellation" || resourceName === "subscription_ended") {
-    const userId = body.user_id as string;
-    if (userId) {
-      await cancelPremium(userId);
-    }
-  }
-
-  if (resourceName === "refund") {
-    const userId = body.user_id as string;
-    if (userId) {
-      await cancelPremium(userId);
+  if (resourceName === "cancellation" || resourceName === "subscription_ended" || resourceName === "refund") {
+    const email = body.email as string;
+    if (email) {
+      const supabase = createAdminClient();
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("email", email)
+        .single();
+      if (profile) {
+        await cancelPremium(profile.id);
+      }
     }
   }
 

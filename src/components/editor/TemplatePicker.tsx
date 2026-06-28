@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { Check, LayoutTemplateIcon } from "lucide-react";
 import { templateRegistry, getAllIndustries, type TemplateEntry } from "@/lib/templates/registry";
 import { useResumeStore } from "@/stores/useResumeStore";
+import { useUser } from "@/contexts/UserContext";
+import { PRO_TEMPLATES } from "@/constants/limits";
 import { Button } from "@/components/ui/button";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import {
@@ -130,14 +132,18 @@ export function TemplatePicker({ isCollapsed }: { isCollapsed: boolean }) {
   const [filter, setFilter] = useState<string | null>(null);
   const currentTemplate = useResumeStore((s) => s.resume.metadata.template);
   const setTemplate = useResumeStore((s) => s.setTemplate);
+  const { isPremium } = useUser();
 
   const allIndustries = useMemo(() => getAllIndustries(), []);
 
   const templates = useMemo(() => {
-    const all = Object.values(templateRegistry);
+    let all = Object.values(templateRegistry);
+    if (!isPremium) {
+      all = all.filter((e) => !PRO_TEMPLATES.includes(e.name.toLowerCase() as never));
+    }
     if (!filter) return all;
     return all.filter((e) => e.industries.includes(filter));
-  }, [filter]);
+  }, [filter, isPremium]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

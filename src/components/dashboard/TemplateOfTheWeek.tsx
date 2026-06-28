@@ -5,17 +5,23 @@ import { templateRegistry } from "@/lib/templates/registry";
 import { Button } from "@/components/ui/button";
 import { LayoutTemplateIcon } from "lucide-react";
 import { useMemo } from "react";
+import { useUser } from "@/contexts/UserContext";
+import { PRO_TEMPLATES } from "@/constants/limits";
 import { tryTemplate } from "@/lib/resumes/actions";
 
 export function TemplateOfTheWeek() {
   const t = useTranslations("dashboard");
+  const { isPremium } = useUser();
 
   const template = useMemo(() => {
-    const entries = Object.entries(templateRegistry);
+    let entries = Object.entries(templateRegistry);
+    if (!isPremium) {
+      entries = entries.filter(([key]) => !PRO_TEMPLATES.includes(key as never));
+    }
     if (entries.length === 0) return null;
     const idx = new Date().getDate() % entries.length;
     return { key: entries[idx][0], entry: entries[idx][1] };
-  }, []);
+  }, [isPremium]);
 
   if (!template) return null;
   const { colors, typography, sectionTitles } = template.entry.config;

@@ -194,7 +194,7 @@ const imageItemRenderer: ItemRenderer = (item, _styles, colors, _customRenderers
   return (
     <View style={{ alignItems: 'center', marginBottom: 8 }}>
       <Text style={{ marginBottom: 4, fontSize: 10, color: colors.connections }}>
-        {'📷'} {translations?.image || 'Image'}: {item.value.alt || 'Untitled'}
+        {translations?.image || 'Image'}: {item.value.alt || 'Untitled'}
       </Text>
       <Text style={{ color: colors.body, fontStyle: 'italic', fontSize: 8 }}>
         {item.value.url}

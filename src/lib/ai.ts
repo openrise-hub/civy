@@ -63,9 +63,29 @@ export async function analyzeATS(resumeText: string): Promise<{
     "You are an ATS expert. Be specific and actionable."
   );
   if (!raw) return null;
-  return {
-    score: 70,
-    issues: [raw],
-    suggestions: [raw],
-  };
+  return parseATSResponse(raw);
+}
+
+function parseATSResponse(raw: string): {
+  score: number;
+  issues: string[];
+  suggestions: string[];
+} {
+  const scoreMatch = raw.match(/(?:Score|Rating)[:\s]*(\d{1,3})/i);
+  const score = scoreMatch ? parseInt(scoreMatch[1], 10) : 70;
+
+  const issuesMatch = raw.match(/(?:Issues?|Problems?|Weaknesses?)[:\s]*\n?([\s\S]*?)(?=(?:Suggestions?|Improvements?|Recommendations?)[:\s]*\n?|$)/i);
+  const suggestionsMatch = raw.match(/(?:Suggestions?|Improvements?|Recommendations?)[:\s]*\n?([\s\S]*?)$/i);
+
+  function extractLines(text: string): string[] {
+    return text
+      .split(/\n/)
+      .map((line) => line.replace(/^\s*(?:\d+[\.\)]\s*|[-\u2022\u2023\u2022]\s*)/, "").trim())
+      .filter((line) => line.length > 5);
+  }
+
+  const issues = issuesMatch ? extractLines(issuesMatch[1]) : [];
+  const suggestions = suggestionsMatch ? extractLines(suggestionsMatch[1]) : [];
+
+  return { score, issues, suggestions };
 }
