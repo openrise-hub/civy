@@ -24,8 +24,8 @@ export const RESUME_LIMITS = {
 } as const;
 
 // Template tiers
-export const FREE_TEMPLATES = ['modern', 'classic', 'minimal', 'professional', 'creative', 'executive', 'academic'] as const;
-export const PRO_TEMPLATES = [] as const;
+export const FREE_TEMPLATES = ['modern', 'classic', 'minimal'] as const;
+export const PRO_TEMPLATES = ['professional', 'creative', 'executive', 'academic'] as const;
 export const ALL_TEMPLATES = [...FREE_TEMPLATES, ...PRO_TEMPLATES] as const;
 
 export type FreeTemplate = (typeof FREE_TEMPLATES)[number];

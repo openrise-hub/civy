@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { trackEvent } from "@/lib/analytics/actions";
+import { PRO_TEMPLATES } from "@/constants/limits";
 
 export type ResumeListItem = {
   id: string;
@@ -127,6 +128,10 @@ export async function tryTemplate(formData: FormData) {
   const template = (formData.get("template") as string) || "modern";
   const profile = await getProfile();
   const isPremium = profile?.is_premium ?? false;
+
+  if (!isPremium && (PRO_TEMPLATES as readonly string[]).includes(template)) {
+    redirect("/upgrade?reason=pro_template");
+  }
 
   if (isPremium || profile === null) {
     const { data, error } = await supabase
