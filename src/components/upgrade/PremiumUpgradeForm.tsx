@@ -13,20 +13,6 @@ import { useUser } from "@/contexts/UserContext";
 
 export type PricingTier = "monthly" | "quarterly" | "yearly";
 
-// Base config for labels and cycles
-const PLAN_CONFIG = {
-  monthly: { label: "Monthly", cycle: "monthly" },
-  quarterly: { label: "3 Months", cycle: "every 3 months" },
-  yearly: { label: "Yearly", cycle: "yearly" },
-} as const;
-
-export const FEATURES = [
-  "Unlimited resumes",
-  "All premium templates",
-  "Resume version history",
-  "Priority support",
-];
-
 type PremiumUpgradeFormProps = {
   isPremium?: boolean;
   currentTier?: PricingTier | null;
@@ -38,6 +24,9 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
   const [selectedTier, setSelectedTier] = useState<PricingTier>("yearly");
   const [isProcessing, setIsProcessing] = useState(false);
   const [pricing, setPricing] = useState<Record<PricingTier, string> | null>(null);
+
+  const planLabels = { monthly: t("monthly"), quarterly: t("quarterly"), yearly: t("yearly") };
+  const features = [t("features.resumes"), t("features.templates"), t("features.history"), t("features.support")];
 
   useEffect(() => {
     let isMounted = true;
@@ -87,8 +76,8 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
 
       toastManager.add({
         type: "success",
-        title: "Welcome to Pro!",
-        description: "Your subscription is now active.",
+        title: t("welcomeToPro"),
+        description: t("subscriptionActive"),
       });
 
       if (onSuccess) {
@@ -99,8 +88,8 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
     } catch {
       toastManager.add({
         type: "error",
-        title: "Subscription failed",
-        description: "Please try again or contact support.",
+        title: t("subscriptionFailed"),
+        description: t("contactSupport"),
       });
     } finally {
       setIsProcessing(false);
@@ -134,8 +123,8 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
     } catch {
       toastManager.add({
         type: "error",
-        title: "Failed to change plan",
-        description: "Please try again.",
+        title: t("failedToChangePlan"),
+        description: t("tryAgain"),
       });
     } finally {
       setIsProcessing(false);
@@ -146,8 +135,8 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
     <div className="space-y-6">
       {/* Pricing Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {(Object.entries(PLAN_CONFIG) as [PricingTier, typeof PLAN_CONFIG.monthly][]).map(
-          ([tier, { label, cycle }]) => (
+        {(Object.entries(planLabels) as [PricingTier, string][]).map(
+          ([tier, label]) => (
             <button
               key={tier}
               onClick={() => setSelectedTier(tier)}
@@ -161,7 +150,7 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
             >
               {tier === "yearly" && (
                 <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-max rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-primary-foreground">
-                  BEST VALUE
+                  {t("bestValue")}
                 </span>
               )}
               {isChangingPlan && tier === currentTier && (
@@ -174,7 +163,7 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
                 {pricing ? `$${pricing[tier]}` : "..."}
               </div>
               <div className="text-xs text-muted-foreground w-max">
-                Billed {cycle}
+                {t("billed", { cycle: label.toLowerCase() })}
               </div>
             </button>
           )
@@ -183,9 +172,9 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
 
       {/* Features */}
       <div className="rounded-lg border bg-muted/30 p-4">
-        <h4 className="mb-3 text-sm font-medium">What you get:</h4>
+        <h4 className="mb-3 text-sm font-medium">{t("whatYouGet")}</h4>
         <ul className="space-y-2">
-          {FEATURES.map((feature) => (
+          {features.map((feature) => (
             <li key={feature} className="flex items-center gap-2 text-sm">
               <CheckIcon className="size-4 text-green-500" />
               {feature}
@@ -202,7 +191,7 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
           className="w-full"
         >
           {isProcessing
-            ? "Processing..."
+            ? t("processing")
             : canChangePlan
               ? t("changePlan")
               : t("currentTier")}
@@ -222,10 +211,10 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               <CreditCardIcon className="size-4" />
-              {t("subscribe")} ${pricing ? pricing[selectedTier] : "..."}/mo
+              {t("subscribe")} ${pricing ? pricing[selectedTier] : "..."}{t("perMonth")}
             </a>
             <p className="text-center text-xs text-muted-foreground">
-              Pay with card, Apple Pay, or Google Pay
+              {t("payWithCard")}
             </p>
           </div>
         );
@@ -269,8 +258,8 @@ export function PremiumUpgradeForm({ isPremium, currentTier, onSuccess }: Premiu
                 console.error("PayPal error:", err);
                 toastManager.add({
                   type: "error",
-                  title: "Payment error",
-                  description: "Please try again.",
+                  title: t("paymentError"),
+                  description: t("tryAgain"),
                 });
               }}
             />

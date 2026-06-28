@@ -29,6 +29,7 @@ export async function getCustomTemplates(): Promise<CustomTemplate[]> {
     .from("custom_templates")
     .select("*")
     .eq("user_id", user.id)
+    .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -110,7 +111,7 @@ export async function deleteCustomTemplate(id: string): Promise<void> {
 
   const { error } = await supabase
     .from("custom_templates")
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq("id", id)
     .eq("user_id", user.id);
 
@@ -119,5 +120,5 @@ export async function deleteCustomTemplate(id: string): Promise<void> {
     throw new Error("Failed to delete custom template");
   }
 
-  revalidatePath("/");
+  revalidatePath("/dashboard");
 }

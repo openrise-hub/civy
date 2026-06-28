@@ -155,7 +155,7 @@ export default function OnboardingPage() {
                 <input
                   name="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={t("emailPlaceholder")}
                   className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
               </div>
@@ -209,7 +209,7 @@ export default function OnboardingPage() {
                 <input
                   name="linkedin"
                   type="url"
-                  placeholder="https://linkedin.com/in/..."
+                  placeholder={t("linkedinPlaceholder")}
                   className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
               </div>
@@ -220,7 +220,7 @@ export default function OnboardingPage() {
                 <input
                   name="website"
                   type="url"
-                  placeholder="https://github.com/..."
+                  placeholder={t("websitePlaceholder")}
                   className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
               </div>
@@ -274,7 +274,7 @@ export default function OnboardingPage() {
                   ) : (
                     <FileEditIcon className="size-3" />
                   )}
-                  Generate
+                  {t("generate")}
                 </button>
               </div>
               <textarea

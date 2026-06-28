@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { cancelPremium } from "@/lib/profile/actions";
+import { cancelPremium, updatePremiumStatus } from "@/lib/profile/actions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import crypto from "crypto";
 
@@ -39,6 +39,25 @@ export async function POST(request: Request) {
         .single();
       if (profile) {
         await cancelPremium(profile.id);
+      }
+    }
+  }
+
+  if (resourceName === "sale" || resourceName === "subscription_restarted") {
+    const email = body.email as string;
+    const permalink = (body.product_permalink || body.permalink) as string;
+    if (email && permalink) {
+      const tier = permalink.includes("monthly") ? "monthly" : permalink.includes("quarterly") ? "quarterly" : permalink.includes("yearly") ? "yearly" : null;
+      if (tier) {
+        const supabase = createAdminClient();
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("email", email)
+          .single();
+        if (profile) {
+          await updatePremiumStatus(profile.id, (body.subscription_id as string) || "", tier);
+        }
       }
     }
   }
