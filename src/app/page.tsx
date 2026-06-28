@@ -337,11 +337,11 @@ export default function Home() {
              <div className="relative z-10 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 h-[420px] flex flex-col">
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
                   <div className="font-bold text-[var(--landing-brand)]">
-                    {activeStep === 1 && "Template Selection"}
-                    {activeStep === 2 && "Fill the Blocks"}
-                    {activeStep === 3 && "Ready to Export"}
+                    {activeStep === 1 && t("howDemoStepTemplate")}
+                    {activeStep === 2 && t("howDemoStepFill")}
+                    {activeStep === 3 && t("howDemoStepExport")}
                   </div>
-                  <div className="text-xs font-bold text-gray-400">Step {activeStep} of 3</div>
+                  <div className="text-xs font-bold text-gray-400">{t("howDemoStepCounter", { step: activeStep, total: 3 })}</div>
                 </div>
 
                 <div className="flex-1 overflow-hidden">
@@ -477,7 +477,7 @@ export default function Home() {
                   onClick={() => setActiveStep(prev => prev === 3 ? 1 : prev + 1)}
                   className="w-full mt-6 py-3 bg-[var(--landing-brand)] text-white font-bold rounded-xl flex justify-center items-center gap-2 shadow-md hover:shadow-lg transition-all"
                 >
-                  {activeStep === 3 ? "Start Over" : "Continue"} 
+                  {activeStep === 3 ? t("howDemoStartOver") : t("howDemoContinue")} 
                   {activeStep !== 3 && <ArrowUpRight size={18} />}
                 </button>
              </div>
