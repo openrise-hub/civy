@@ -50,7 +50,7 @@ export async function GET(request: Request) {
   if (!targetUserId && email) {
     const supabase = await createClient();
     const { data: user } = await supabase
-      .from("users")
+      .from("profiles")
       .select("id")
       .eq("email", email)
       .single();
