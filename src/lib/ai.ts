@@ -1,3 +1,5 @@
+import { LOCALE_LABELS } from "@/i18n";
+
 const OPENROUTER = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "openrouter/free";
 
@@ -30,27 +32,30 @@ async function callAI(prompt: string, system?: string): Promise<string | null> {
   }
 }
 
-export async function generateSummary(jobTitle: string, industry: string): Promise<string | null> {
+export async function generateSummary(jobTitle: string, industry: string, locale = "en"): Promise<string | null> {
+  const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
   return callAI(
-    `Write a professional summary for a ${jobTitle || "professional"} in the ${industry || "general"} industry. Keep it concise, 3-4 sentences.`,
+    `Write a professional summary for a ${jobTitle || "professional"} in the ${industry || "general"} industry. Keep it concise, 3-4 sentences. Respond in ${lang}.`,
     "You are a professional resume writer. Write clear, impactful summaries without fluff."
   );
 }
 
-export async function improveText(text: string): Promise<string | null> {
+export async function improveText(text: string, locale = "en"): Promise<string | null> {
+  const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
   return callAI(
-    `Rewrite the following resume bullet point to be more professional and impactful. Keep it concise and use active language:\n\n${text}`,
+    `Rewrite the following resume bullet point to be more professional and impactful. Keep it concise and use active language. Respond in ${lang}:\n\n${text}`,
     "You are a professional resume editor. Improve bullet points without adding false information."
   );
 }
 
-export async function analyzeATS(resumeText: string): Promise<{
+export async function analyzeATS(resumeText: string, locale = "en"): Promise<{
   score: number;
   issues: string[];
   suggestions: string[];
 } | null> {
+  const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
   const raw = await callAI(
-    `Analyze this resume for ATS (Applicant Tracking System) compatibility. Rate it 1-100. List 3-5 issues and 3-5 improvement suggestions.\n\nResume:\n${resumeText}`,
+    `Analyze this resume for ATS (Applicant Tracking System) compatibility. Rate it 1-100. List 3-5 issues and 3-5 improvement suggestions. Respond in ${lang}.\n\nResume:\n${resumeText}`,
     "You are an ATS expert. Be specific and actionable."
   );
   if (!raw) return null;
