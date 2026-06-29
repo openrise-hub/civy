@@ -25,7 +25,7 @@ import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon, Chevr
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 interface SectionEditorProps {
   section: Section;
@@ -860,6 +860,7 @@ export function SectionEditor({ section }: SectionEditorProps) {
 
 function ImproveTextButton({ text, onImproved }: { text: string; onImproved: (t: string) => void }) {
   const [improving, setImproving] = useState(false);
+  const locale = useLocale();
 
   const handleImprove = async () => {
     if (!text.trim()) return;
@@ -868,7 +869,7 @@ function ImproveTextButton({ text, onImproved }: { text: string; onImproved: (t:
       const res = await fetch("/api/ai/improve-text", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, locale }),
       });
       const data = await res.json();
       if (data.text) onImproved(data.text);
