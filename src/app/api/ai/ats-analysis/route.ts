@@ -5,10 +5,10 @@ import { analyzeATS } from "@/lib/ai";
 export async function POST(request: Request) {
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const { resumeText } = await request.json();
+  const { resumeText, locale = "en" } = await request.json();
   if (!resumeText || typeof resumeText !== "string") {
     return NextResponse.json({ score: 0, issues: [], suggestions: [] });
   }
-  const result = await analyzeATS(resumeText);
+  const result = await analyzeATS(resumeText, locale);
   return NextResponse.json(result || { score: 0, issues: [], suggestions: [] });
 }

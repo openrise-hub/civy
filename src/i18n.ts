@@ -2,18 +2,18 @@ import { getRequestConfig } from "next-intl/server";
 import { getProfile } from "@/lib/profile/actions";
 import { cookies, headers } from "next/headers";
 
-const SUPPORTED_LOCALES = ["en", "es", "fr", "pt", "ru", "zh", "hi", "ar", "bn"];
+const SUPPORTED_LOCALES = ["en", "es", "fr", "pt", "ru", "zh", "hi", "ar", "bn"] as const;
 
 export default getRequestConfig(async () => {
   let locale = "en";
   try {
     const profile = await getProfile();
-    if (profile?.locale && SUPPORTED_LOCALES.includes(profile.locale)) {
+    if (profile?.locale && (SUPPORTED_LOCALES as readonly string[]).includes(profile.locale)) {
       locale = profile.locale;
     } else {
       const cookieStore = await cookies();
       const cookieLocale = cookieStore.get("NEXT_LOCALE")?.value;
-      if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale)) {
+      if (cookieLocale && (SUPPORTED_LOCALES as readonly string[]).includes(cookieLocale)) {
         locale = cookieLocale;
       } else {
         const acceptLanguage = (await headers()).get("accept-language");
@@ -21,7 +21,7 @@ export default getRequestConfig(async () => {
           const preferred = acceptLanguage
             .split(",")
             .map((l) => l.split(";")[0].trim().split("-")[0])
-            .find((l) => SUPPORTED_LOCALES.includes(l));
+            .find((l) => (SUPPORTED_LOCALES as readonly string[]).includes(l));
           if (preferred) locale = preferred;
         }
       }

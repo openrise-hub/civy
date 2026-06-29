@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { DownloadButton } from "@/components/editor/DownloadButton";
@@ -115,6 +115,7 @@ export function PreviewPanel() {
   const [atsOpen, setAtsOpen] = useState(false);
   const resume = useResumeStore((state) => state.resume);
   const t = useTranslations("editor.preview");
+  const locale = useLocale();
   
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.1, 2));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.1, 0.5));
@@ -138,7 +139,7 @@ export function PreviewPanel() {
       const res = await fetch("/api/ai/ats-analysis", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: parts.join("\n") }),
+        body: JSON.stringify({ resumeText: parts.join("\n"), locale }),
       });
       const data = await res.json();
       setAtsResult(data);

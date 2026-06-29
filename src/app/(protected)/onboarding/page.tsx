@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getAllIndustries } from "@/lib/templates/registry";
@@ -18,6 +18,7 @@ import { FileEditIcon, Loader2Icon } from "lucide-react";
 export default function OnboardingPage() {
   const t = useTranslations("onboarding");
   const tInd = useTranslations("industries");
+  const locale = useLocale();
   const router = useRouter();
 
   const industries = useMemo(() => getAllIndustries(), []);
@@ -82,7 +83,7 @@ export default function OnboardingPage() {
       const res = await fetch("/api/ai/generate-summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobTitle: jobTitleValue, industry: industryValue }),
+        body: JSON.stringify({ jobTitle: jobTitleValue, industry: industryValue, locale }),
       });
       const data = await res.json();
       if (data.summary && summaryRef.current) {

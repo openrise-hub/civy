@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, User, Shield, CreditCard, AlertTriangle, Mail, Download } from "lucide-react";
-import { LOCALES, LOCALE_LABELS, type Locale } from "@/components/LanguageToggle";
+import { LOCALE_LABELS, type Locale } from "@/lib/locales";
+
+const SUPPORTED_LOCALES = Object.keys(LOCALE_LABELS) as Locale[];
 import {
   Card,
   CardHeader,
@@ -259,7 +261,7 @@ export default function SettingsPage() {
               <Field className="space-y-3">
                 <FieldLabel>{t("language")}</FieldLabel>
                 <div className="flex flex-wrap gap-3">
-                  {LOCALES.map((locale) => (
+                  {SUPPORTED_LOCALES.map((locale) => (
                     <Button
                       key={locale}
                       variant={profile?.locale === locale ? "default" : "outline"}

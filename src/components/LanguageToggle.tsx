@@ -1,6 +1,7 @@
 "use client";
 
 import { useUser } from "@/contexts/UserContext";
+import { LOCALE_LABELS, type Locale } from "@/lib/locales";
 import { Languages } from "lucide-react";
 import {
   DropdownMenu,
@@ -10,22 +11,7 @@ import {
 } from "@/components/ui/menu";
 import { Button } from "@/components/ui/button";
 
-const LOCALES = ["en", "es", "fr", "pt", "ru", "zh", "hi", "ar", "bn"] as const;
-export type Locale = (typeof LOCALES)[number];
-
-const LOCALE_LABELS: Record<Locale, string> = {
-  en: "English",
-  es: "Español",
-  fr: "Français",
-  pt: "Português",
-  ru: "Русский",
-  zh: "中文",
-  hi: "हिन्दी",
-  ar: "العربية",
-  bn: "বাংলা",
-};
-
-export { LOCALES, LOCALE_LABELS };
+const SUPPORTED_LOCALES = Object.keys(LOCALE_LABELS) as Locale[];
 
 export function LanguageToggle() {
   const { profile } = useUser();
@@ -44,7 +30,7 @@ export function LanguageToggle() {
         <Languages className="size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={8}>
-        {LOCALES.map((locale) => (
+        {SUPPORTED_LOCALES.map((locale) => (
           <DropdownMenuItem key={locale} onClick={() => handleLanguageChange(locale)}>
             {LOCALE_LABELS[locale]} {profile?.locale === locale && "✓"}
           </DropdownMenuItem>
