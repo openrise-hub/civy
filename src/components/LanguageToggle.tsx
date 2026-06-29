@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from "@/contexts/UserContext";
-import { LOCALE_LABELS, type Locale } from "@/i18n";
+import { LOCALE_LABELS, type Locale } from "@/lib/locales";
 import { Languages } from "lucide-react";
 import {
   DropdownMenu,

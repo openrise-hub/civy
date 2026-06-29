@@ -1,4 +1,4 @@
-import { LOCALE_LABELS } from "@/i18n";
+import { LOCALE_LABELS } from "@/lib/locales";
 
 const OPENROUTER = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "openrouter/free";

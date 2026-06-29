@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, User, Shield, CreditCard, AlertTriangle, Mail, Download } from "lucide-react";
-import { LOCALE_LABELS, type Locale } from "@/i18n";
+import { LOCALE_LABELS, type Locale } from "@/lib/locales";
 
 const SUPPORTED_LOCALES = Object.keys(LOCALE_LABELS) as Locale[];
 import {
