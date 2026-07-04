@@ -7,7 +7,7 @@ function getKey(): string | null {
   return process.env.OPENROUTER_API_KEY || null;
 }
 
-async function callAI(prompt: string, system?: string): Promise<string | null> {
+async function callAI(prompt: string, system?: string, maxTokens = 500): Promise<string | null> {
   const key = getKey();
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (key) headers["Authorization"] = `Bearer ${key}`;
@@ -22,7 +22,7 @@ async function callAI(prompt: string, system?: string): Promise<string | null> {
           ...(system ? [{ role: "system", content: system }] : []),
           { role: "user", content: prompt },
         ],
-        max_tokens: 500,
+        max_tokens: maxTokens,
       }),
     });
     const data = await res.json();
@@ -60,6 +60,136 @@ export async function analyzeATS(resumeText: string, locale = "en"): Promise<{
   );
   if (!raw) return null;
   return parseATSResponse(raw);
+}
+
+export interface ResumeInput {
+  fullName: string;
+  jobTitle: string;
+  industry: string;
+  experience: Array<{
+    company: string;
+    title: string;
+    startYear: string;
+    endYear: string;
+    description: string;
+  }>;
+  noExperience: boolean;
+  projectDescription: string;
+  education: Array<{
+    degree: string;
+    field: string;
+    institution: string;
+    year: string;
+  }>;
+  keySkills: string;
+}
+
+export interface ResumeOutput {
+  summary: string;
+  experience: Array<{
+    company: string;
+    title: string;
+    dateRange: string;
+    description: string;
+  }>;
+  education: Array<{
+    degree: string;
+    institution: string;
+    year: string;
+  }>;
+  skills: string[];
+  projects: Array<{
+    name: string;
+    description: string;
+  }>;
+}
+
+const RESUME_SYSTEM_PROMPT = `You are a professional resume writer. Your job is to polish the candidate's real background into professional, impactful resume content. Respond with valid JSON only — no markdown, no code fences, no explanation. Follow this structure:
+{
+  "summary": "A professional 3-4 sentence summary synthesizing the candidate's real background.",
+  "experience": [
+    { "company": "...", "title": "...", "dateRange": "...", "description": "..." }
+  ],
+  "education": [
+    { "degree": "...", "institution": "...", "year": "..." }
+  ],
+  "skills": ["8-12 skills"],
+  "projects": [
+    { "name": "...", "description": "..." }
+  ]
+}
+If the candidate has experience entries: polish their descriptions into 2-4 action-oriented bullet points. Keep ALL company names, titles, and dates EXACTLY as provided.
+If the candidate has NO experience: omit the experience array entirely. Instead, generate a projects array from their project description.
+If the candidate is a new graduate: emphasize education and coursework in the summary.
+If the candidate is a career changer: emphasize transferable skills and projects in the summary.
+Always use exact names, titles, dates, institutions, and degrees as provided. Never invent. Polish language and structure only.`;
+
+function buildResumePrompt(input: ResumeInput, lang: string): string {
+  const lines: string[] = [];
+  lines.push(`Polish this resume for a ${input.jobTitle || "professional"} targeting the ${input.industry || "general"} industry.`);
+  lines.push("");
+  lines.push(`Full Name: ${input.fullName}`);
+  lines.push(`Job Title: ${input.jobTitle}`);
+  lines.push(`Industry: ${input.industry}`);
+  lines.push("");
+
+  if (!input.noExperience && input.experience.length > 0) {
+    lines.push("--- Work Experience (preserve companies, titles, and dates exactly) ---");
+    for (const exp of input.experience) {
+      const dateRange = `${exp.startYear} - ${exp.endYear || "Present"}`;
+      lines.push(`Company: ${exp.company} | Role: ${exp.title} | Dates: ${dateRange}`);
+      lines.push(`What I did: ${exp.description}`);
+      lines.push("---");
+    }
+  } else {
+    lines.push("--- No Professional Experience ---");
+    lines.push(`Project & Background Description: ${input.projectDescription}`);
+  }
+
+  lines.push("");
+  if (input.education.length > 0) {
+    lines.push("--- Education (preserve institutions and degrees exactly) ---");
+    for (const edu of input.education) {
+      lines.push(`Degree: ${edu.degree} | Field: ${edu.field} | Institution: ${edu.institution} | Year: ${edu.year}`);
+    }
+  }
+
+  lines.push("");
+  lines.push(`--- Skills ---`);
+  lines.push(input.keySkills || "Not provided");
+
+  lines.push("");
+  lines.push(`Respond in ${lang}.`);
+
+  return lines.join("\n");
+}
+
+function parseJSON(raw: string): ResumeOutput | null {
+  let json = raw.trim();
+  const fenceMatch = json.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fenceMatch) json = fenceMatch[1].trim();
+  try {
+    return JSON.parse(json) as ResumeOutput;
+  } catch {
+    return null;
+  }
+}
+
+async function callAIWithRetry(prompt: string, system: string, retries = 3): Promise<string | null> {
+  for (let i = 0; i < retries; i++) {
+    const result = await callAI(prompt, system, 1500);
+    if (result) return result;
+    if (i < retries - 1) await new Promise((r) => setTimeout(r, 2000));
+  }
+  return null;
+}
+
+export async function generateResume(input: ResumeInput, locale = "en"): Promise<ResumeOutput | null> {
+  const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
+  const prompt = buildResumePrompt(input, lang);
+  const raw = await callAIWithRetry(prompt, RESUME_SYSTEM_PROMPT, 3);
+  if (!raw) return null;
+  return parseJSON(raw);
 }
 
 function parseATSResponse(raw: string): {
