@@ -2,98 +2,194 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import { getAllIndustries } from "@/lib/templates/registry";
-import { createOnboardingResume } from "./actions";
+import { Loader2Icon, FileEditIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import {
   Combobox,
   ComboboxInput,
   ComboboxPopup,
-  ComboboxItem,
   ComboboxList,
+  ComboboxItem,
   ComboboxEmpty,
 } from "@/components/ui/combobox";
-import { FileEditIcon, Loader2Icon } from "lucide-react";
+import { createOnboardingResume } from "./actions";
+import type { OnboardingPayload } from "./actions";
+
+const YEARS = Array.from({ length: 46 }, (_, i) => String(1980 + i));
+const CURRENT_YEAR = String(new Date().getFullYear());
+const EXPERIENCE_YEARS = ["0-1", "1-3", "3-5", "5-10", "10+"];
+const DEGREES = ["High School", "Associate", "Bachelor", "Master", "PhD"];
+
+function filterItems<T extends string>(items: T[], query: string, limit = 200): T[] {
+  if (!query || query.length < 1) return items.slice(0, limit);
+  const q = query.toLowerCase();
+  return items.filter((item) => item.toLowerCase().includes(q)).slice(0, limit);
+}
+
+interface ExpEntry {
+  company: string;
+  title: string;
+  startYear: string;
+  endYear: string;
+  description: string;
+}
+
+interface EduEntry {
+  degree: string;
+  field: string;
+  institution: string;
+  year: string;
+}
 
 export default function OnboardingPage() {
   const t = useTranslations("onboarding");
   const tInd = useTranslations("industries");
+  const td = useTranslations("dashboard");
   const locale = useLocale();
   const router = useRouter();
+
+  const [step, setStep] = useState(1);
+  const totalSteps = 4;
 
   const industries = useMemo(() => getAllIndustries(), []);
 
   const [cities, setCities] = useState<string[]>([]);
   const [citiesLoaded, setCitiesLoaded] = useState(false);
-  const [locationValue, setLocationValue] = useState("");
-  const [locationSearch, setLocationSearch] = useState("");
-
   const [jobTitles, setJobTitles] = useState<string[]>([]);
   const [titlesLoaded, setTitlesLoaded] = useState(false);
-  const [jobTitleValue, setJobTitleValue] = useState("");
-  const [jobTitleSearch, setJobTitleSearch] = useState("");
 
   const [industryValue, setIndustryValue] = useState("");
   const [industrySearch, setIndustrySearch] = useState("");
-  const [generatingSummary, setGeneratingSummary] = useState(false);
-  const summaryRef = useRef<HTMLTextAreaElement>(null);
+  const [jobTitleValue, setJobTitleValue] = useState("");
+  const [jobTitleSearch, setJobTitleSearch] = useState("");
+  const [locationValue, setLocationValue] = useState("");
+  const [locationSearch, setLocationSearch] = useState("");
 
-  const filteredJobTitles = useMemo(() => {
-    if (!jobTitleSearch) return jobTitles.slice(0, 200);
-    const q = jobTitleSearch.toLowerCase();
-    return jobTitles.filter((t) => t.toLowerCase().includes(q)).slice(0, 200);
-  }, [jobTitleSearch, jobTitles]);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [website, setWebsite] = useState("");
 
-  const filteredCities = useMemo(() => {
-    if (locationSearch.length < 2) return [];
-    const q = locationSearch.toLowerCase();
-    return cities.filter((c) => c.toLowerCase().includes(q)).slice(0, 200);
-  }, [locationSearch, cities]);
+  const [experience, setExperience] = useState<ExpEntry[]>([
+    { company: "", title: "", startYear: CURRENT_YEAR, endYear: "Present", description: "" },
+  ]);
+  const [noExperience, setNoExperience] = useState(false);
+  const [projectDescription, setProjectDescription] = useState("");
 
-  const filteredIndustries = useMemo(() => {
-    if (!industrySearch) return industries;
-    const q = industrySearch.toLowerCase();
-    return industries.filter(
-      (ind) => tInd(ind).toLowerCase().includes(q) || ind.toLowerCase().includes(q)
-    );
-  }, [industrySearch, industries, tInd]);
+  const [education, setEducation] = useState<EduEntry[]>([
+    { degree: "Bachelor", field: "", institution: "", year: CURRENT_YEAR },
+  ]);
+  const [keySkills, setKeySkills] = useState("");
+
+  const [generating, setGenerating] = useState(false);
+  const [generationTip, setGenerationTip] = useState(0);
+  const tipRef = useRef(td.raw("tips") as string[] | undefined);
 
   useEffect(() => {
     fetch("/data/cities.json")
       .then((r) => r.json())
-      .then((d) => {
-        setCities(d);
-        setCitiesLoaded(true);
-      })
-      .catch(() => setCitiesLoaded(true));
-
-    fetch("/data/job-titles.json")
-      .then((r) => r.json())
-      .then((d) => {
-        setJobTitles(d);
-        setTitlesLoaded(true);
-      })
-      .catch(() => setTitlesLoaded(true));
+      .then((d: string[]) => { setCities(d); })
+      .catch(() => {})
+      .finally(() => setCitiesLoaded(true));
   }, []);
 
-  const handleGenerateSummary = async () => {
-    if (!industryValue && !jobTitleValue) return;
-    setGeneratingSummary(true);
-    try {
-      const res = await fetch("/api/ai/generate-summary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobTitle: jobTitleValue, industry: industryValue, locale }),
-      });
-      const data = await res.json();
-      if (data.summary && summaryRef.current) {
-        summaryRef.current.value = data.summary;
-      }
-    } catch {
-    } finally {
-      setGeneratingSummary(false);
-    }
+  useEffect(() => {
+    fetch("/data/job-titles.json")
+      .then((r) => r.json())
+      .then((d: string[]) => { setJobTitles(d); })
+      .catch(() => {})
+      .finally(() => setTitlesLoaded(true));
+  }, []);
+
+  useEffect(() => {
+    if (!generating) return;
+    const tips = tipRef.current;
+    if (!tips || tips.length === 0) return;
+    const interval = setInterval(() => {
+      setGenerationTip((prev) => (prev + 1) % tips.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [generating]);
+
+  const filteredCities = useMemo(() => {
+    const query = locationSearch.trim();
+    if (query.length < 2) return [];
+    return cities.filter((c) => c.toLowerCase().includes(query.toLowerCase())).slice(0, 200);
+  }, [locationSearch, cities]);
+
+  const filteredJobTitles = useMemo(() => filterItems(jobTitles, jobTitleSearch), [jobTitleSearch, jobTitles]);
+  const filteredIndustries = useMemo(() => filterItems(industries as string[], industrySearch), [industrySearch, industries]);
+
+  function getField(name: string, searchText: string): string {
+    return name || searchText;
+  }
+
+  const addExperience = () => setExperience((prev) => [...prev, { company: "", title: "", startYear: CURRENT_YEAR, endYear: "Present", description: "" }]);
+  const removeExperience = (i: number) => setExperience((prev) => prev.filter((_, idx) => idx !== i));
+  const updateExperience = (i: number, field: keyof ExpEntry, value: string) => {
+    setExperience((prev) => prev.map((e, idx) => (idx === i ? { ...e, [field]: value } : e)));
   };
+
+  const addEducation = () => setEducation((prev) => [...prev, { degree: "Bachelor", field: "", institution: "", year: CURRENT_YEAR }]);
+  const removeEducation = (i: number) => setEducation((prev) => prev.filter((_, idx) => idx !== i));
+  const updateEducation = (i: number, field: keyof EduEntry, value: string) => {
+    setEducation((prev) => prev.map((e, idx) => (idx === i ? { ...e, [field]: value } : e)));
+  };
+
+  const handleSkip = () => {
+    createOnboardingResume({ fullName: fullName || "Untitled", jobTitle: "", industry: "", email: "", phone: "", location: "", linkedin: "", website: "", experience: [], noExperience: false, projectDescription: "", education: [], keySkills: "", skipAi: true });
+  };
+
+  const handleGenerate = async () => {
+    setGenerating(true);
+    const payload: OnboardingPayload = {
+      fullName,
+      jobTitle: getField(jobTitleValue, jobTitleSearch),
+      industry: getField(industryValue, industrySearch),
+      email,
+      phone,
+      location: getField(locationValue, locationSearch),
+      linkedin,
+      website,
+      locale,
+      experience: noExperience ? [] : experience.filter((e) => e.company || e.title),
+      noExperience,
+      projectDescription,
+      education: education.filter((e) => e.institution || e.field),
+      keySkills,
+    };
+    createOnboardingResume(payload);
+  };
+
+  const canNext = () => {
+    if (step === 1) return fullName.trim().length > 0;
+    if (step === 2) {
+      if (noExperience) return true;
+      return experience.some((e) => e.company.trim() || e.title.trim());
+    }
+    return true;
+  };
+
+  if (generating) {
+    const tips = tipRef.current;
+    const currentTip = tips && tips.length > 0 ? tips[generationTip % tips.length] : null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/50 p-4">
+        <div className="w-full max-w-md text-center">
+          <Loader2Icon className="size-8 animate-spin mx-auto mb-6 text-primary" />
+          <h2 className="text-xl font-bold mb-4">{t("generating") || "Generating your CV..."}</h2>
+          {currentTip && (
+            <div className="bg-white rounded-xl shadow-sm border p-5">
+              <p className="text-sm text-muted-foreground leading-relaxed">{currentTip}</p>
+            </div>
+          )}
+          <p className="text-xs text-muted-foreground mt-4">{t("generatingHint") || "This may take a few seconds"}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/50 p-4">
@@ -103,206 +199,212 @@ export default function OnboardingPage() {
           <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
 
+        <div className="flex justify-center gap-2 mb-6">
+          {Array.from({ length: totalSteps }).map((_, i) => (
+            <div
+              key={i}
+              className={`h-2 rounded-full transition-all ${i + 1 === step ? "w-8 bg-primary" : i + 1 < step ? "w-2 bg-primary/50" : "w-2 bg-muted"}`}
+            />
+          ))}
+        </div>
+
         <div className="bg-white rounded-xl shadow-sm border p-6">
-          <form action={createOnboardingResume} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1" htmlFor="fullName">
-                  {t("fullName")} <span className="text-destructive">*</span>
-                </label>
-                <input
-                  id="fullName"
-                  name="fullName"
-                  required
-                  placeholder={t("fullNamePlaceholder")}
-                  className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                />
+          <p className="text-xs uppercase tracking-wider font-semibold text-muted-foreground mb-4">
+            {`${t("step") || "Step"} ${step} ${t("of") || "of"} ${totalSteps}`}
+          </p>
+
+          {/* Step 1: Personal Info */}
+          {step === 1 && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-sm font-medium mb-1">{t("fullName")} *</label>
+                  <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={t("fullNamePlaceholder")} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-sm font-medium mb-1">{t("jobTitle")}</label>
+                  <Combobox value={jobTitleValue} onValueChange={(v) => setJobTitleValue(v ?? "")} inputValue={jobTitleSearch} onInputValueChange={setJobTitleSearch}>
+                    <ComboboxInput placeholder={titlesLoaded ? t("jobTitlePlaceholder") : t("loading")} className="w-full" showTrigger={false} />
+                    <ComboboxPopup className="w-[--anchor-width]">
+                      <ComboboxList>{filteredJobTitles.map((title) => (<ComboboxItem key={title} value={title}>{title}</ComboboxItem>))}<ComboboxEmpty>{t("noResults")}</ComboboxEmpty></ComboboxList>
+                    </ComboboxPopup>
+                  </Combobox>
+                </div>
               </div>
-              <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1">
-                  {t("jobTitle")}
-                </label>
-                <Combobox
-                  value={jobTitleValue}
-                  onValueChange={(val) => setJobTitleValue(val ?? "")}
-                  inputValue={jobTitleSearch}
-                  onInputValueChange={setJobTitleSearch}
-                >
-                  <ComboboxInput
-                    placeholder={titlesLoaded ? t("jobTitlePlaceholder") : t("loading")}
-                    className="w-full"
-                    showTrigger={false}
-                  />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-sm font-medium mb-1">{t("email")}</label>
+                  <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder={t("emailPlaceholder")} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-sm font-medium mb-1">{t("phone")}</label>
+                  <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" placeholder={t("phonePlaceholder")} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">{t("location")}</label>
+                <Combobox value={locationValue} onValueChange={(v) => setLocationValue(v ?? "")} inputValue={locationSearch} onInputValueChange={setLocationSearch}>
+                  <ComboboxInput placeholder={citiesLoaded ? t("locationPlaceholder") : t("loading")} className="w-full" showTrigger={false} />
                   <ComboboxPopup className="w-[--anchor-width]">
-                    <ComboboxList>
-                      {filteredJobTitles.map((title) => (
-                        <ComboboxItem key={title} value={title}>
-                          {title}
-                        </ComboboxItem>
-                      ))}
-                      <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
-                    </ComboboxList>
+                    <ComboboxList className="max-h-60">{filteredCities.map((city) => (<ComboboxItem key={city} value={city}>{city}</ComboboxItem>))}<ComboboxEmpty>{t("noResults")}</ComboboxEmpty></ComboboxList>
                   </ComboboxPopup>
                 </Combobox>
-                <input type="hidden" name="jobTitle" value={jobTitleValue} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-sm font-medium mb-1">{t("linkedin")}</label>
+                  <input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} type="url" placeholder={t("linkedinPlaceholder")} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-sm font-medium mb-1">{t("website")}</label>
+                  <input value={website} onChange={(e) => setWebsite(e.target.value)} type="url" placeholder={t("websitePlaceholder")} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">{t("industry")}</label>
+                <Combobox value={industryValue} onValueChange={(v) => setIndustryValue(v ?? "")} inputValue={industrySearch} onInputValueChange={setIndustrySearch}>
+                  <ComboboxInput placeholder={t("industryPlaceholder")} className="w-full" showTrigger={true} />
+                  <ComboboxPopup className="w-[--anchor-width]">
+                    <ComboboxList>{filteredIndustries.map((ind) => (<ComboboxItem key={ind} value={ind}>{tInd(ind)}</ComboboxItem>))}<ComboboxEmpty>{t("noResults")}</ComboboxEmpty></ComboboxList>
+                  </ComboboxPopup>
+                </Combobox>
+                <p className="text-xs text-muted-foreground mt-1">{t("industryHint")}</p>
               </div>
             </div>
+          )}
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1">
-                  {t("email")}
-                </label>
-                <input
-                  name="email"
-                  type="email"
-                  placeholder={t("emailPlaceholder")}
-                  className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                />
-              </div>
-              <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1">
-                  {t("phone")}
-                </label>
-                <input
-                  name="phone"
-                  type="tel"
-                  placeholder={t("phonePlaceholder")}
-                  className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("location")}
+          {/* Step 2: Work Experience */}
+          {step === 2 && (
+            <div className="space-y-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={noExperience} onChange={(e) => setNoExperience(e.target.checked)} className="rounded" />
+                <span className="text-sm">{t("noExperience") || "I have no professional experience"}</span>
               </label>
-              <Combobox
-                value={locationValue}
-                onValueChange={(val) => setLocationValue(val ?? "")}
-                inputValue={locationSearch}
-                onInputValueChange={setLocationSearch}
-              >
-                <ComboboxInput
-                  placeholder={citiesLoaded ? t("locationPlaceholder") : t("loading")}
-                  className="w-full"
-                  showTrigger={false}
-                />
-                <ComboboxPopup className="w-[--anchor-width]">
-                  <ComboboxList className="max-h-60">
-                    {filteredCities.map((city) => (
-                      <ComboboxItem key={city} value={city}>
-                        {city}
-                      </ComboboxItem>
-                    ))}
-                    <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
-                  </ComboboxList>
-                </ComboboxPopup>
-              </Combobox>
-              <input type="hidden" name="location" value={locationValue} />
-            </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1">
-                  {t("linkedin")}
-                </label>
-                <input
-                  name="linkedin"
-                  type="url"
-                  placeholder={t("linkedinPlaceholder")}
-                  className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                />
-              </div>
-              <div className="col-span-2 sm:col-span-1">
-                <label className="block text-sm font-medium mb-1">
-                  {t("website")}
-                </label>
-                <input
-                  name="website"
-                  type="url"
-                  placeholder={t("websitePlaceholder")}
-                  className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("industry")}
-              </label>
-              <Combobox
-                value={industryValue}
-                onValueChange={(val) => setIndustryValue(val ?? "")}
-                inputValue={industrySearch}
-                onInputValueChange={setIndustrySearch}
-              >
-                <ComboboxInput
-                  placeholder={t("industryPlaceholder")}
-                  className="w-full"
-                  showTrigger={true}
-                />
-                <ComboboxPopup className="w-[--anchor-width]">
-                  <ComboboxList>
-                    {filteredIndustries.map((ind) => (
-                      <ComboboxItem key={ind} value={ind}>
-                        {tInd(ind)}
-                      </ComboboxItem>
-                    ))}
-                    <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
-                  </ComboboxList>
-                </ComboboxPopup>
-              </Combobox>
-              <input type="hidden" name="industry" value={industryValue} />
-              <p className="text-xs text-muted-foreground mt-1">
-                {t("industryHint")}
-              </p>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-sm font-medium">
-                  {t("summary")}
-                </label>
-                <button
-                  type="button"
-                  onClick={handleGenerateSummary}
-                  disabled={generatingSummary}
-                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-                >
-                  {generatingSummary ? (
-                    <Loader2Icon className="size-3 animate-spin" />
-                  ) : (
-                    <FileEditIcon className="size-3" />
+              {noExperience ? (
+                <div>
+                  <label className="block text-sm font-medium mb-1">{t("projectDescription") || "Describe your projects, education, or skills"}</label>
+                  <textarea value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} rows={4} placeholder={t("projectDescriptionPlaceholder") || "Built a personal website using React. Completed an online course in data science. Volunteered as a tutor for high school students..."} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none" />
+                </div>
+              ) : (
+                <>
+                  {experience.map((exp, i) => (
+                    <div key={i} className="border rounded-lg p-4 space-y-3 relative">
+                      {experience.length > 1 && (
+                        <button onClick={() => removeExperience(i)} className="absolute top-2 right-2 text-muted-foreground hover:text-destructive"><Trash2Icon size={14} /></button>
+                      )}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium mb-1">{t("company") || "Company"}</label>
+                          <input value={exp.company} onChange={(e) => updateExperience(i, "company", e.target.value)} placeholder={t("companyPlaceholder") || "Acme Corp"} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">{t("role") || "Role"}</label>
+                          <input value={exp.title} onChange={(e) => updateExperience(i, "title", e.target.value)} placeholder={t("rolePlaceholder") || "Software Engineer"} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium mb-1">{t("startYear") || "Start Year"}</label>
+                          <select value={exp.startYear} onChange={(e) => updateExperience(i, "startYear", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white">
+                            {YEARS.map((y) => (<option key={y} value={y}>{y}</option>))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">{t("endYear") || "End Year"}</label>
+                          <select value={exp.endYear} onChange={(e) => updateExperience(i, "endYear", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white">
+                            <option value="Present">{t("present") || "Present"}</option>
+                            {YEARS.map((y) => (<option key={y} value={y}>{y}</option>))}
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium mb-1">{t("whatDid") || "What did you do?"}</label>
+                        <textarea value={exp.description} onChange={(e) => updateExperience(i, "description", e.target.value)} rows={3} placeholder={t("whatDidPlaceholder") || "Led a team of 4 developers. Built customer-facing dashboard. Reduced bugs by improving the testing pipeline."} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none" />
+                      </div>
+                    </div>
+                  ))}
+                  {experience.length < 5 && (
+                    <button type="button" onClick={addExperience} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      <PlusIcon size={14} />{t("addRole") || "Add Another Role"}
+                    </button>
                   )}
-                  {t("generate")}
-                </button>
-              </div>
-              <textarea
-                ref={summaryRef}
-                name="summary"
-                rows={3}
-                placeholder={t("summaryPlaceholder")}
-                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
-              />
+                </>
+              )}
             </div>
+          )}
 
-            <div className="flex items-center justify-between pt-2">
-              <button
-                type="button"
-                onClick={() => router.push("/dashboard")}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {t("skip")}
-              </button>
-              <button
-                type="submit"
-                className="rounded-lg bg-primary text-primary-foreground px-6 py-2 text-sm font-medium hover:bg-primary/90 transition-colors"
-              >
-                {t("submit")}
+          {/* Step 3: Education */}
+          {step === 3 && (
+            <div className="space-y-4">
+              {education.map((edu, i) => (
+                <div key={i} className="border rounded-lg p-4 space-y-3 relative">
+                  {education.length > 1 && (
+                    <button onClick={() => removeEducation(i)} className="absolute top-2 right-2 text-muted-foreground hover:text-destructive"><Trash2Icon size={14} /></button>
+                  )}
+                  <div>
+                    <label className="block text-xs font-medium mb-1">{t("degree") || "Degree"}</label>
+                    <select value={edu.degree} onChange={(e) => updateEducation(i, "degree", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white">
+                      {DEGREES.map((d) => (<option key={d} value={d}>{d}</option>))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1">{t("fieldOfStudy") || "Field of Study"}</label>
+                    <input value={edu.field} onChange={(e) => updateEducation(i, "field", e.target.value)} placeholder={t("fieldPlaceholder") || "Computer Science"} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1">{t("institution") || "Institution"}</label>
+                    <input value={edu.institution} onChange={(e) => updateEducation(i, "institution", e.target.value)} placeholder={t("institutionPlaceholder") || "University of California"} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1">{t("gradYear") || "Graduation Year"}</label>
+                    <select value={edu.year} onChange={(e) => updateEducation(i, "year", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white">
+                      {YEARS.map((y) => (<option key={y} value={y}>{y}</option>))}
+                    </select>
+                  </div>
+                </div>
+              ))}
+              {education.length < 3 && (
+                <button type="button" onClick={addEducation} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <PlusIcon size={14} />{t("addDegree") || "Add Another Degree"}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Step 4: Skills & Generate */}
+          {step === 4 && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">{t("keySkills") || "Key Skills"}</label>
+                <textarea value={keySkills} onChange={(e) => setKeySkills(e.target.value)} rows={2} placeholder={t("keySkillsPlaceholder") || "React, TypeScript, leadership, project management"} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none" />
+                <p className="text-xs text-muted-foreground mt-1">{t("keySkillsHint") || "The AI will expand your skills into a full list."}</p>
+              </div>
+              <button onClick={handleGenerate} className="w-full rounded-lg bg-primary text-primary-foreground px-6 py-3 text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+                <FileEditIcon size={16} />
+                {t("generateCv") || "Generate My CV"}
               </button>
             </div>
-          </form>
+          )}
+
+          {/* Navigation */}
+          <div className="flex items-center justify-between mt-6 pt-4 border-t">
+            <button type="button" onClick={handleSkip} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {t("skip")}
+            </button>
+            <div className="flex gap-2">
+              {step > 1 && (
+                <button type="button" onClick={() => setStep((s) => s - 1)} className="flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors">
+                  <ChevronLeftIcon size={16} />{t("back") || "Back"}
+                </button>
+              )}
+              {step < totalSteps && (
+                <button type="button" onClick={() => setStep((s) => s + 1)} disabled={!canNext()} className="flex items-center gap-1 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50">
+                  {t("next") || "Next"}<ChevronRightIcon size={16} />
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
