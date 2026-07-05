@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { SectionEditor } from "@/components/editor/SectionEditor";
 import { isStringItem } from "@/lib/resume-helpers";
 import { useLocale } from "next-intl";
+import { toastManager } from "@/components/ui/toast";
 import { TrashIcon, GripVertical, EyeIcon, EyeOffIcon, ChevronDownIcon, ChevronUpIcon, WandIcon, Loader2Icon } from "lucide-react";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { DndContext, DragEndEvent, PointerSensor, KeyboardSensor, useSensor, useSensors, type DraggableAttributes } from '@dnd-kit/core';
@@ -78,6 +79,7 @@ function SortableSectionCard({
 
   const [improving, setImproving] = useState(false);
   const locale = useLocale();
+  const ta = useTranslations("ai");
   const jobTitle = useResumeStore((s) => s.resume.personal.jobTitle);
   const industry = useResumeStore((s) => s.resume.metadata.template);
   const updateItem = useResumeStore((s) => s.updateItem);
@@ -100,6 +102,10 @@ function SortableSectionCard({
         }),
       });
       const data = await res.json();
+      if (data.error) {
+        toastManager.add({ type: "error", title: ta(data.error) || data.error });
+        return;
+      }
       if (data.items && Array.isArray(data.items)) {
         data.items.forEach((rewritten: string, idx: number) => {
           if (idx < descItems.length && rewritten) {

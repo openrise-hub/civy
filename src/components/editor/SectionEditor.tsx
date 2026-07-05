@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
 import { useTranslations, useLocale } from "next-intl";
+import { toastManager } from "@/components/ui/toast";
 
 interface SectionEditorProps {
   section: Section;
@@ -861,6 +862,7 @@ export function SectionEditor({ section }: SectionEditorProps) {
 function ImproveTextButton({ text, onImproved }: { text: string; onImproved: (t: string) => void }) {
   const [improving, setImproving] = useState(false);
   const locale = useLocale();
+  const ta = useTranslations("ai");
   const jobTitle = useResumeStore((state) => state.resume.personal.jobTitle);
 
   const handleImprove = async () => {
@@ -873,6 +875,10 @@ function ImproveTextButton({ text, onImproved }: { text: string; onImproved: (t:
         body: JSON.stringify({ text, locale, jobTitle }),
       });
       const data = await res.json();
+      if (data.error) {
+        toastManager.add({ type: "error", title: ta(data.error) || data.error });
+        return;
+      }
       if (data.text) onImproved(data.text);
     } catch {
     } finally {

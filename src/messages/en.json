@@ -624,5 +624,14 @@
     "Education": "Education",
     "Pharmaceuticals": "Pharmaceuticals",
     "Biotech": "Biotech"
+  },
+  "ai": {
+    "aiError": "AI generation failed. Please try again.",
+    "aiErrorImproveText": "Failed to improve text. Please try again.",
+    "aiErrorAtsAnalysis": "Failed to analyze resume. Please try again.",
+    "aiErrorGenerateResume": "Failed to generate resume. Please try again.",
+    "aiErrorImproveSection": "Failed to improve section. Please try again.",
+    "aiErrorSuggestSkills": "Failed to suggest skills. Please try again.",
+    "aiErrorImproveSummary": "Failed to improve summary. Please try again."
   }
 }
