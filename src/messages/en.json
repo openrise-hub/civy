@@ -564,7 +564,11 @@
     "startYear": "Start Year",
     "endYear": "End Year",
     "present": "Present",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "currentRole": "I currently work here",
     "whatDid": "What did you do?",
+    "confirmRemoveExperience": "Are you sure you want to remove this work experience entry?"
     "whatDidPlaceholder": "Led a team of 4 developers. Built customer-facing dashboard. Reduced bugs by improving the testing pipeline.",
     "addRole": "Add Another Role",
     "noExperience": "I have no professional experience",
@@ -632,6 +636,7 @@
     "aiErrorGenerateResume": "Failed to generate resume. Please try again.",
     "aiErrorImproveSection": "Failed to improve section. Please try again.",
     "aiErrorSuggestSkills": "Failed to suggest skills. Please try again.",
-    "aiErrorImproveSummary": "Failed to improve summary. Please try again."
+    "aiErrorImproveSummary": "Failed to improve summary. Please try again.",
+    "suggestSkills": "Suggest Skills"
   }
 }
