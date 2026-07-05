@@ -111,8 +111,15 @@ export function PreviewPanel() {
   const [zoom, setZoom] = useState(1);
   const [showGuides, setShowGuides] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const [atsResult, setAtsResult] = useState<{ score: number; issues: string[]; suggestions: string[] } | null>(null);
+  const [atsResult, setAtsResult] = useState<{
+    score: number;
+    rewrittenResume: string;
+    topIssues: string[];
+    keywordGaps: string[];
+    matchVerdict?: string;
+  } | null>(null);
   const [atsOpen, setAtsOpen] = useState(false);
+  const [jobDescription, setJobDescription] = useState("");
   const resume = useResumeStore((state) => state.resume);
   const t = useTranslations("editor.preview");
   const locale = useLocale();
@@ -125,21 +132,14 @@ export function PreviewPanel() {
   const handleATSCheck = async () => {
     setAnalyzing(true);
     try {
-      const parts: string[] = [resume.personal.fullName, resume.personal.jobTitle || ""].filter(Boolean);
-      for (const section of resume.sections) {
-        if (section.visible === false) continue;
-        const items = section.content.items
-          .filter((i) => i.visible !== false && i.type !== "separator")
-          .map((i) => ("value" in i ? (typeof i.value === "string" ? i.value : JSON.stringify(i.value)) : ""))
-          .filter(Boolean);
-        if (items.length > 0) {
-          parts.push(`\n${section.title.toUpperCase()}\n${items.join("\n")}`);
-        }
-      }
       const res = await fetch("/api/ai/ats-analysis", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: parts.join("\n"), locale }),
+        body: JSON.stringify({
+          resumeText: buildResumeText(),
+          jobDescription: jobDescription.trim() || undefined,
+          locale,
+        }),
       });
       const data = await res.json();
       setAtsResult(data);
@@ -148,6 +148,21 @@ export function PreviewPanel() {
     } finally {
       setAnalyzing(false);
     }
+  };
+
+  const buildResumeText = () => {
+    const parts: string[] = [resume.personal.fullName, resume.personal.jobTitle || ""].filter(Boolean);
+    for (const section of resume.sections) {
+      if (section.visible === false) continue;
+      const items = section.content.items
+        .filter((i) => i.visible !== false && i.type !== "separator")
+        .map((i) => ("value" in i ? (typeof i.value === "string" ? i.value : JSON.stringify(i.value)) : ""))
+        .filter(Boolean);
+      if (items.length > 0) {
+        parts.push(`\n${section.title.toUpperCase()}\n${items.join("\n")}`);
+      }
+    }
+    return parts.join("\n");
   };
 
   return (
@@ -165,36 +180,81 @@ export function PreviewPanel() {
       <PreviewContent zoom={zoom} showGuides={showGuides} />
 
       <Dialog open={atsOpen} onOpenChange={setAtsOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{t("atsAnalysis")}</DialogTitle>
           </DialogHeader>
+
+          <div className="space-y-3">
+            <textarea
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              placeholder={t("atsJobDescriptionPlaceholder")}
+              rows={3}
+              className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
+            />
+            <Button
+              onClick={handleATSCheck}
+              disabled={analyzing}
+              className="w-full"
+              size="sm"
+            >
+              {analyzing ? <Loader2Icon className="size-4 animate-spin mr-2" /> : <SearchCheckIcon className="size-4 mr-2" />}
+              {analyzing ? t("atsCheckRunning") : t("atsCheckRun")}
+            </Button>
+          </div>
+
           {atsResult && (
-            <div className="space-y-4 text-sm">
+            <div className="space-y-4 text-sm mt-4">
               <div className="flex items-center gap-2">
                 <span className="font-semibold">{t("atsScore")}:</span>
-                <span className={atsResult.score >= 70 ? "text-green-600" : "text-amber-600"}>
+                <span className={atsResult.score >= 70 ? "text-green-600 font-bold text-lg" : "text-amber-600 font-bold text-lg"}>
                   {atsResult.score}/100
                 </span>
               </div>
-              {atsResult.issues.length > 0 && (
+
+              {atsResult.matchVerdict && (
+                <div className={`rounded-lg px-3 py-2 text-sm ${atsResult.score >= 70 ? "bg-green-50 text-green-800" : "bg-amber-50 text-amber-800"}`}>
+                  {atsResult.matchVerdict}
+                </div>
+              )}
+
+              {atsResult.keywordGaps.length > 0 && (
                 <div>
-                  <p className="font-semibold mb-1">{t("atsIssues")}</p>
+                  <p className="font-semibold mb-1">{t("atsKeywordGaps")}:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {atsResult.keywordGaps.map((kw, i) => (
+                      <span key={i} className="rounded-full bg-red-50 text-red-700 px-2 py-0.5 text-xs font-medium">{kw}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {atsResult.topIssues.length > 0 && (
+                <div>
+                  <p className="font-semibold mb-1">{t("atsTopIssues")}:</p>
                   <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
-                    {atsResult.issues.map((issue, i) => (
+                    {atsResult.topIssues.map((issue, i) => (
                       <li key={i}>{issue}</li>
                     ))}
                   </ul>
                 </div>
               )}
-              {atsResult.suggestions.length > 0 && (
+
+              {atsResult.rewrittenResume && (
                 <div>
-                  <p className="font-semibold mb-1">{t("atsSuggestions")}</p>
-                  <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
-                    {atsResult.suggestions.map((sug, i) => (
-                      <li key={i}>{sug}</li>
-                    ))}
-                  </ul>
+                  <p className="font-semibold mb-1">{t("atsRewritten")}</p>
+                  <p className="text-xs text-muted-foreground mb-2">{t("atsPreviewNote")}</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-lg border bg-muted/20 p-3 max-h-80 overflow-y-auto">
+                      <p className="text-xs font-semibold text-muted-foreground mb-1 uppercase tracking-wider">{t("atsOriginal")}</p>
+                      <pre className="text-xs whitespace-pre-wrap font-mono text-muted-foreground leading-relaxed">{buildResumeText()}</pre>
+                    </div>
+                    <div className="rounded-lg border bg-primary/5 p-3 max-h-80 overflow-y-auto">
+                      <p className="text-xs font-semibold text-primary mb-1 uppercase tracking-wider">{t("atsRewritten")}</p>
+                      <pre className="text-xs whitespace-pre-wrap font-mono leading-relaxed">{atsResult.rewrittenResume}</pre>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
