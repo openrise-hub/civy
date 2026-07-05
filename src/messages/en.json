@@ -207,10 +207,18 @@
       "showGuides": "Show alignment guides",
       "resetZoom": "Reset Zoom",
       "atsCheck": "ATS Check",
+      "atsCheckRun": "Analyze",
+      "atsCheckRunning": "Analyzing...",
       "atsAnalysis": "ATS Analysis",
       "atsScore": "Score",
       "atsIssues": "Issues",
-      "atsSuggestions": "Suggestions"
+      "atsSuggestions": "Suggestions",
+      "atsTopIssues": "Top Issues",
+      "atsKeywordGaps": "Missing Keywords",
+      "atsRewritten": "Rewritten Resume",
+      "atsOriginal": "Your Version",
+      "atsPreviewNote": "Compare your original with the AI-rewritten version. Changes are for preview only and are not applied automatically.",
+      "atsJobDescriptionPlaceholder": "Paste a job description to get role-specific analysis (optional)..."
     }
   },
   "resume": {
