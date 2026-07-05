@@ -1,4 +1,5 @@
 import { LOCALE_LABELS } from "@/lib/locales";
+import { z } from "zod";
 
 const OPENROUTER = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "openrouter/free";
@@ -32,14 +33,59 @@ async function callAI(prompt: string, system?: string, maxTokens = 500): Promise
   }
 }
 
+async function callAndValidate<T>(
+  schema: z.ZodSchema<T>,
+  prompt: string,
+  system: string,
+  maxTokens = 500,
+  retries = 3,
+): Promise<T | null> {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    const raw = await callAI(prompt, system, maxTokens);
+    if (!raw) continue;
+
+    let json = raw.trim();
+    const m = json.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (m) json = m[1].trim();
+
+    try {
+      const parsed = JSON.parse(json);
+      const result = schema.safeParse(parsed);
+      if (result.success) return result.data;
+    } catch {
+    }
+
+    if (attempt < retries - 1) {
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+  }
+  return null;
+}
+
+const IMPROVE_TEXT_SYSTEM = "You are a professional resume editor. Improve bullet points without adding false information. NEVER fabricate, exaggerate, or add skills, metrics, or experiences not explicitly mentioned in the original text. Everything must be interview-safe.";
+
 export async function improveText(text: string, locale = "en", jobTitle?: string): Promise<string | null> {
   const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
   const context = jobTitle ? ` for a ${jobTitle} role` : "";
-  return callAI(
-    `Rewrite this resume bullet point${context}. Use active language and an action verb. If the original includes numbers or metrics, preserve them. If not, do not invent them. Return ONLY the rewritten bullet point — no explanations, no alternatives, no markdown.\n\nOriginal:\n${text}\n\nRespond in ${lang}.`,
-    "You are a professional resume editor. Improve bullet points without adding false information. NEVER fabricate, exaggerate, or add skills, metrics, or experiences not explicitly mentioned in the original text. Everything must be interview-safe."
-  );
+  const prompt = `Rewrite this resume bullet point${context}. Use active language and an action verb. If the original includes numbers or metrics, preserve them. If not, do not invent them. Return ONLY the rewritten bullet point — no explanations, no alternatives, no markdown.\n\nOriginal:\n${text}\n\nRespond in ${lang}.`;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const result = await callAI(prompt, IMPROVE_TEXT_SYSTEM, 500);
+    if (result && result !== text && !result.includes("```") && result.trim().length > 3) {
+      return result;
+    }
+    if (attempt < 2) await new Promise((r) => setTimeout(r, 2000));
+  }
+  return null;
 }
+
+const atsSchema = z.object({
+  score: z.number().int().min(0).max(100),
+  rewrittenResume: z.string().min(10),
+  topIssues: z.array(z.string().min(1)).min(1).max(10),
+  keywordGaps: z.array(z.string()),
+  matchVerdict: z.string().optional(),
+});
 
 export interface ATSOutput {
   score: number;
@@ -49,31 +95,14 @@ export interface ATSOutput {
   matchVerdict?: string;
 }
 
-const ATS_SYSTEM_PROMPT = `You are an expert resume writer with 20+ years of experience helping professionals get shortlisted at top companies. Respond with valid JSON only — no markdown, no code fences, no explanation.`;
+const ATS_SYSTEM_PROMPT = "You are an expert resume writer with 20+ years of experience helping professionals get shortlisted at top companies. Respond with valid JSON only — no markdown, no code fences, no explanation.";
 
 function buildATSPromptWithoutJD(resumeText: string): string {
-  return `Rewrite this resume for maximum ATS compatibility (target 85+/100). Improve action verbs, phrasing, and keyword optimization. Score it 1-100 based on keyword alignment, structure, and impact. Identify the top 3-5 specific fixes needed. NEVER fabricate, exaggerate, or add skills, metrics, or experiences not explicitly mentioned. Keep everything interview-safe — every line must be defensible. Return this JSON:
-{
-  "score": 80,
-  "rewrittenResume": "FULL rewritten resume text with improved phrasing. Preserve ALL factual information exactly.",
-  "topIssues": ["Specific fix 1", "Specific fix 2"],
-  "keywordGaps": []
-}
-
-Resume:\n${resumeText}`;
+  return `Rewrite this resume for maximum ATS compatibility (target 85+/100). Improve action verbs, phrasing, and keyword optimization. Score it 1-100 based on keyword alignment, structure, and impact. Identify the top 3-5 specific fixes needed. NEVER fabricate, exaggerate, or add skills, metrics, or experiences not explicitly mentioned. Keep everything interview-safe — every line must be defensible. Return this JSON:\n{"score":80,"rewrittenResume":"FULL rewritten resume text with improved phrasing. Preserve ALL factual information exactly.","topIssues":["Specific fix 1","Specific fix 2"],"keywordGaps":[]}\n\nResume:\n${resumeText}`;
 }
 
 function buildATSPromptWithJD(resumeText: string, jobDescription: string): string {
-  return `Compare this resume against the provided Job Description. If the match is poor due to missing core skills or domain mismatch, set matchVerdict to an honest explanation and score accordingly. Add role-specific keyword gaps. Rewrite the resume to better align with the JD while preserving ALL factual information exactly. Score it 1-100. NEVER fabricate, exaggerate, or add skills, metrics, or experiences not explicitly mentioned. Keep everything interview-safe. Return this JSON:
-{
-  "score": 80,
-  "matchVerdict": "Strong match for this role",
-  "rewrittenResume": "FULL rewritten resume text aligned with the JD.",
-  "topIssues": ["Specific fix 1", "Specific fix 2"],
-  "keywordGaps": ["MissingKeyword1", "MissingKeyword2"]
-}
-
-Resume:\n${resumeText}\n\nJob Description:\n${jobDescription}`;
+  return `Compare this resume against the provided Job Description. If the match is poor due to missing core skills or domain mismatch, set matchVerdict to an honest explanation and score accordingly. Add role-specific keyword gaps. Rewrite the resume to better align with the JD while preserving ALL factual information exactly. Score it 1-100. NEVER fabricate, exaggerate, or add skills, metrics, or experiences not explicitly mentioned. Keep everything interview-safe. Return this JSON:\n{"score":80,"matchVerdict":"Strong match for this role","rewrittenResume":"FULL rewritten resume text aligned with the JD.","topIssues":["Specific fix 1","Specific fix 2"],"keywordGaps":["MissingKeyword1","MissingKeyword2"]}\n\nResume:\n${resumeText}\n\nJob Description:\n${jobDescription}`;
 }
 
 export async function analyzeATS(resumeText: string, jobDescription = "", locale = "en"): Promise<ATSOutput | null> {
@@ -81,9 +110,7 @@ export async function analyzeATS(resumeText: string, jobDescription = "", locale
   const prompt = jobDescription
     ? buildATSPromptWithJD(resumeText, jobDescription)
     : buildATSPromptWithoutJD(resumeText);
-  const raw = await callAI(`${prompt}\n\nRespond in ${lang}.`, ATS_SYSTEM_PROMPT, 1500);
-  if (!raw) return null;
-  return parseJSON(raw) as ATSOutput | null;
+  return callAndValidate(atsSchema, `${prompt}\n\nRespond in ${lang}.`, ATS_SYSTEM_PROMPT, 1500);
 }
 
 export interface ResumeInput {
@@ -110,23 +137,37 @@ export interface ResumeInput {
 
 export interface ResumeOutput {
   summary: string;
-  experience: Array<{
+  experience?: Array<{
     company: string;
     title: string;
     dateRange: string;
     description: string;
   }>;
-  education: Array<{
+  education?: Array<{
     degree: string;
     institution: string;
     year: string;
   }>;
-  skills: string[];
-  projects: Array<{
+  skills?: string[];
+  projects?: Array<{
     name: string;
     description: string;
   }>;
 }
+
+const resumeSchema = z.object({
+  summary: z.string().min(10),
+  experience: z.array(z.object({
+    company: z.string(), title: z.string(), dateRange: z.string(), description: z.string().min(5),
+  })).optional(),
+  education: z.array(z.object({
+    degree: z.string(), institution: z.string(), year: z.string(),
+  })).optional(),
+  skills: z.array(z.string()).optional(),
+  projects: z.array(z.object({
+    name: z.string(), description: z.string(),
+  })).optional(),
+});
 
 const RESUME_SYSTEM_PROMPT = `You are a professional resume writer. Your job is to polish the candidate's real background into professional, impactful resume content. Respond with valid JSON only — no markdown, no code fences, no explanation. Follow this structure:
 {
@@ -179,7 +220,7 @@ function buildResumePrompt(input: ResumeInput, lang: string): string {
   }
 
   lines.push("");
-  lines.push(`--- Skills ---`);
+  lines.push("--- Skills ---");
   lines.push(input.keySkills || "Not provided");
 
   lines.push("");
@@ -188,35 +229,16 @@ function buildResumePrompt(input: ResumeInput, lang: string): string {
   return lines.join("\n");
 }
 
-function parseJSON(raw: string): ResumeOutput | null {
-  let json = raw.trim();
-  const fenceMatch = json.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (fenceMatch) json = fenceMatch[1].trim();
-  try {
-    return JSON.parse(json) as ResumeOutput;
-  } catch {
-    return null;
-  }
-}
-
-async function callAIWithRetry(prompt: string, system: string, retries = 3): Promise<string | null> {
-  for (let i = 0; i < retries; i++) {
-    const result = await callAI(prompt, system, 1500);
-    if (result) return result;
-    if (i < retries - 1) await new Promise((r) => setTimeout(r, 2000));
-  }
-  return null;
-}
-
 export async function generateResume(input: ResumeInput, locale = "en"): Promise<ResumeOutput | null> {
   const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
-  const prompt = buildResumePrompt(input, lang);
-  const raw = await callAIWithRetry(prompt, RESUME_SYSTEM_PROMPT, 3);
-  if (!raw) return null;
-  return parseJSON(raw);
+  return callAndValidate(resumeSchema, buildResumePrompt(input, lang), RESUME_SYSTEM_PROMPT, 1500);
 }
 
-const IMPROVE_SECTION_SYSTEM = "You are a professional resume editor with 20+ years of experience helping professionals get shortlisted at top companies. You rewrite resume sections to be cohesive, varied, and ATS-friendly. Respond with valid JSON only — no markdown, no code fences, no explanation. Use this exact structure: {\"items\": [\"Rewritten item 1\", \"Rewritten item 2\", \"...\"]}";
+const improveSectionSchema = z.object({
+  items: z.array(z.string().min(3)),
+});
+
+const IMPROVE_SECTION_SYSTEM = "You are a professional resume editor with 20+ years of experience helping professionals get shortlisted at top companies. You rewrite resume sections to be cohesive, varied, and ATS-friendly. Respond with valid JSON only — no markdown, no code fences, no explanation.";
 
 export async function improveSection(
   sectionItems: string[],
@@ -250,14 +272,17 @@ ${itemsList}
 Respond in ${lang}.
 Return JSON only: {"items": ["...", "...", ...]}`;
 
-  const raw = await callAI(prompt, IMPROVE_SECTION_SYSTEM, 1000);
-  if (!raw) return null;
-  const parsed = parseJSON(raw) as { items?: string[] } | null;
-  if (parsed?.items && Array.isArray(parsed.items) && parsed.items.length === n) return parsed.items;
+  const result = await callAndValidate(improveSectionSchema, prompt, IMPROVE_SECTION_SYSTEM, 1000);
+  if (result && result.items.length === n) return result.items;
   return null;
 }
 
-const SUGGEST_SKILLS_SYSTEM = "You are a senior technical recruiter and career coach with 20+ years of experience evaluating resumes. You identify the skills a candidate should list to pass ATS filters and catch a recruiter's attention. Respond with valid JSON only — no markdown, no code fences, no explanation. Use this exact structure: {\"skills\": [\"Skill 1\", \"Skill 2\", \"...\"], \"reasoning\": \"Brief explanation\"}";
+const suggestSkillsSchema = z.object({
+  skills: z.array(z.string().min(1)).min(8).max(15),
+  reasoning: z.string().min(1),
+});
+
+const SUGGEST_SKILLS_SYSTEM = "You are a senior technical recruiter and career coach with 20+ years of experience evaluating resumes. You identify the skills a candidate should list to pass ATS filters and catch a recruiter's attention. Respond with valid JSON only — no markdown, no code fences, no explanation.";
 
 export async function suggestSkills(
   resumeText: string,
@@ -285,16 +310,15 @@ Rules:
 Respond in ${lang}.
 Return JSON only: {"skills": ["Skill 1", "Skill 2", "..."], "reasoning": "..."}`;
 
-  const raw = await callAI(prompt, SUGGEST_SKILLS_SYSTEM, 800);
-  if (!raw) return null;
-  const parsed = parseJSON(raw) as { skills?: string[]; reasoning?: string } | null;
-  if (parsed?.skills && Array.isArray(parsed.skills)) {
-    return { skills: parsed.skills, reasoning: parsed.reasoning || "" };
-  }
-  return null;
+  return callAndValidate(suggestSkillsSchema, prompt, SUGGEST_SKILLS_SYSTEM, 800);
 }
 
-const IMPROVE_SUMMARY_SYSTEM = "You are a professional resume writer with 20+ years of experience writing executive summaries that get candidates shortlisted. You synthesize a candidate's full background into a compelling 3-4 sentence summary. Respond with valid JSON only — no markdown, no code fences, no explanation. Use this exact structure: {\"summary\": \"The rewritten summary\", \"changedFrom\": \"What was improved\"}";
+const improveSummarySchema = z.object({
+  summary: z.string().min(10),
+  changedFrom: z.string().min(1),
+});
+
+const IMPROVE_SUMMARY_SYSTEM = "You are a professional resume writer with 20+ years of experience writing executive summaries that get candidates shortlisted. You synthesize a candidate's full background into a compelling 3-4 sentence summary. Respond with valid JSON only — no markdown, no code fences, no explanation.";
 
 export async function improveSummary(
   currentSummary: string,
@@ -326,9 +350,5 @@ Rules:
 Respond in ${lang}.
 Return JSON only: {"summary": "...", "changedFrom": "..."}`;
 
-  const raw = await callAI(prompt, IMPROVE_SUMMARY_SYSTEM, 800);
-  if (!raw) return null;
-  const parsed = parseJSON(raw) as { summary?: string; changedFrom?: string } | null;
-  if (parsed?.summary) return { summary: parsed.summary, changedFrom: parsed.changedFrom || "" };
-  return null;
+  return callAndValidate(improveSummarySchema, prompt, IMPROVE_SUMMARY_SYSTEM, 800);
 }
