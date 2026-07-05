@@ -407,7 +407,18 @@
     "loading": "Carregando...",
     "noResults": "Nenhum resultado encontrado",
     "skip": "Pular → Painel",
-    "submit": "Criar meu currículo"
+    "submit": "Criar meu currículo",
+    "startDate": "Data de início",
+    "endDate": "Data de fim",
+    "currentRole": "Atualmente trabalho aqui",
+    "confirmRemoveExperience": "Tem certeza de que deseja remover esta experiência de trabalho?",
+    "generating": "Gerando seu CV...",
+    "generatingHint": "Isso pode levar alguns segundos",
+    "generateCv": "Gerar Meu CV",
+    "step": "Etapa",
+    "of": "de",
+    "back": "Voltar",
+    "next": "Próximo"
   },
   "industries": {
     "Technology": "Tecnologia",
@@ -550,5 +561,15 @@
     "footerPrivacy": "Política de Privacidade",
     "footerCopyright": "2026 Civy. Todos os direitos reservados.",
     "statsResumesDesc": "Veja as alterações enquanto digita"
+  },
+  "ai": {
+    "aiError": "Falha na geração de IA. Tente novamente.",
+    "aiErrorImproveText": "Falha ao melhorar o texto. Tente novamente.",
+    "aiErrorAtsAnalysis": "Falha ao analisar o currículo. Tente novamente.",
+    "aiErrorGenerateResume": "Falha ao gerar o currículo. Tente novamente.",
+    "aiErrorImproveSection": "Falha ao melhorar a seção. Tente novamente.",
+    "aiErrorSuggestSkills": "Falha ao sugerir habilidades. Tente novamente.",
+    "aiErrorImproveSummary": "Falha ao melhorar o resumo. Tente novamente.",
+    "suggestSkills": "Sugerir Habilidades"
   }
 }

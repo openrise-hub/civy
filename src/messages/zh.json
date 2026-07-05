@@ -407,7 +407,18 @@
     "loading": "加载中...",
     "noResults": "未找到结果",
     "skip": "跳过 → 仪表盘",
-    "submit": "创建我的简历"
+    "submit": "创建我的简历",
+    "startDate": "开始日期",
+    "endDate": "结束日期",
+    "currentRole": "我目前在此工作",
+    "confirmRemoveExperience": "确定要删除此工作经历吗？",
+    "generating": "正在生成您的简历...",
+    "generatingHint": "这可能需要几秒钟",
+    "generateCv": "生成我的简历",
+    "step": "步骤",
+    "of": "/",
+    "back": "返回",
+    "next": "下一步"
   },
   "industries": {
     "Technology": "技术",
@@ -550,5 +561,15 @@
     "footerPrivacy": "隐私政策",
     "footerCopyright": "2026 Civy。保留所有权利。",
     "statsResumesDesc": "实时查看您的更改"
+  },
+  "ai": {
+    "aiError": "AI 生成失败。请重试。",
+    "aiErrorImproveText": "文本改进失败。请重试。",
+    "aiErrorAtsAnalysis": "简历分析失败。请重试。",
+    "aiErrorGenerateResume": "简历生成失败。请重试。",
+    "aiErrorImproveSection": "段落改进失败。请重试。",
+    "aiErrorSuggestSkills": "技能建议失败。请重试。",
+    "aiErrorImproveSummary": "摘要改进失败。请重试。",
+    "suggestSkills": "推荐技能"
   }
 }

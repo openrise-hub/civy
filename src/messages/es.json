@@ -525,7 +525,18 @@
     "loading": "Cargando...",
     "noResults": "Sin resultados",
     "skip": "Saltar → Panel",
-    "submit": "Crear Mi Currículum"
+    "submit": "Crear Mi Currículum",
+    "startDate": "Fecha de inicio",
+    "endDate": "Fecha de fin",
+    "currentRole": "Actualmente trabajo aquí",
+    "confirmRemoveExperience": "¿Estás seguro de que quieres eliminar esta experiencia laboral?",
+    "generating": "Generando tu CV...",
+    "generatingHint": "Esto puede tardar unos segundos",
+    "generateCv": "Generar Mi CV",
+    "step": "Paso",
+    "of": "de",
+    "back": "Atrás",
+    "next": "Siguiente"
   },
   "industries": {
     "Technology": "Tecnología",
@@ -567,5 +578,15 @@
     "Education": "Educación",
     "Pharmaceuticals": "Farmacéutica",
     "Biotech": "Biotecnología"
+  },
+  "ai": {
+    "aiError": "Falló la generación de IA. Inténtalo de nuevo.",
+    "aiErrorImproveText": "Error al mejorar el texto. Inténtalo de nuevo.",
+    "aiErrorAtsAnalysis": "Error al analizar el currículum. Inténtalo de nuevo.",
+    "aiErrorGenerateResume": "Error al generar el currículum. Inténtalo de nuevo.",
+    "aiErrorImproveSection": "Error al mejorar la sección. Inténtalo de nuevo.",
+    "aiErrorSuggestSkills": "Error al sugerir habilidades. Inténtalo de nuevo.",
+    "aiErrorImproveSummary": "Error al mejorar el resumen. Inténtalo de nuevo.",
+    "suggestSkills": "Sugerir Habilidades"
   }
 }
