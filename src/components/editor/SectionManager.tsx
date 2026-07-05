@@ -9,7 +9,10 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SectionEditor } from "@/components/editor/SectionEditor";
-import { TrashIcon, GripVertical, EyeIcon, EyeOffIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { isStringItem } from "@/lib/resume-helpers";
+import { useLocale } from "next-intl";
+import { toastManager } from "@/components/ui/toast";
+import { TrashIcon, GripVertical, EyeIcon, EyeOffIcon, ChevronDownIcon, ChevronUpIcon, WandIcon, Loader2Icon } from "lucide-react";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { DndContext, DragEndEvent, PointerSensor, KeyboardSensor, useSensor, useSensors, type DraggableAttributes } from '@dnd-kit/core';
 import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
@@ -74,6 +77,48 @@ function SortableSectionCard({
     zIndex: isDragging ? 50 : 1,
   };
 
+  const [improving, setImproving] = useState(false);
+  const locale = useLocale();
+  const ta = useTranslations("ai");
+  const jobTitle = useResumeStore((s) => s.resume.personal.jobTitle);
+  const industry = useResumeStore((s) => s.resume.metadata.template);
+  const updateItem = useResumeStore((s) => s.updateItem);
+
+  const handleImproveSection = async () => {
+    const descItems = section.content.items.filter(
+      (item) => isStringItem(item) && item.type === "description" && item.visible !== false,
+    );
+    if (descItems.length === 0) return;
+    setImproving(true);
+    try {
+      const res = await fetch("/api/ai/improve-section", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: descItems.map((i) => ("value" in i ? i.value : "")),
+          sectionType: section.title,
+          locale,
+          jobTitle,
+        }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        toastManager.add({ type: "error", title: ta(data.error) || data.error });
+        return;
+      }
+      if (data.items && Array.isArray(data.items)) {
+        data.items.forEach((rewritten: string, idx: number) => {
+          if (idx < descItems.length && rewritten) {
+            updateItem(section.id, descItems[idx].id, { value: rewritten } as Partial<typeof descItems[0]>);
+          }
+        });
+      }
+    } catch {
+    } finally {
+      setImproving(false);
+    }
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -99,9 +144,19 @@ function SortableSectionCard({
               <Button
                 variant="ghost"
                 size="icon-sm"
+                onClick={handleImproveSection}
+                disabled={improving}
+                className="text-muted-foreground hover:text-primary"
+                title={t("formEditor.improveSection")}
+              >
+                {improving ? <Loader2Icon className="size-4 animate-spin" /> : <WandIcon className="size-4" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-sm"
                 onClick={() => onToggleVisibility(section.id)}
                 className="text-muted-foreground hover:text-primary"
-                title={section.visible === false ? "Show Section" : "Hide Section"}
+                title={section.visible === false ? t("formEditor.showSection") : t("formEditor.hideSection")}
               >
                 {section.visible === false ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
               </Button>
@@ -110,7 +165,7 @@ function SortableSectionCard({
                 size="icon-sm"
                 onClick={(e) => onRemove(section.id, e)}
                 className="text-muted-foreground hover:text-destructive"
-                title="Remove Section"
+                title={t("formEditor.removeSection")}
               >
                 <TrashIcon className="size-4" />
               </Button>
@@ -119,7 +174,7 @@ function SortableSectionCard({
                 size="icon-sm"
                 onClick={onToggleExpand}
                 className="text-muted-foreground hover:text-foreground"
-                title={isExpanded ? "Collapse" : "Expand"}
+                title={isExpanded ? t("formEditor.collapseSection") : t("formEditor.expandSection")}
               >
                 {isExpanded ? <ChevronUpIcon className="size-4" /> : <ChevronDownIcon className="size-4" />}
               </Button>

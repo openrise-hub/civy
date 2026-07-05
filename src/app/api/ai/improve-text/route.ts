@@ -10,5 +10,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ text: "" });
   }
   const improved = await improveText(text, locale, jobTitle);
-  return NextResponse.json({ text: improved || "" });
+  if (!improved) return NextResponse.json({ error: "aiErrorImproveText" }, { status: 500 });
+  return NextResponse.json({ text: improved });
 }

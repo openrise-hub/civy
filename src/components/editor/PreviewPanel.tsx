@@ -8,6 +8,7 @@ import { ResumePreview } from "@/components/preview/ResumePreview";
 import { ZoomInIcon, ZoomOutIcon, RulerIcon, SearchCheckIcon, Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { toastManager } from "@/components/ui/toast";
 
 function PreviewHeader({ 
   zoom, 
@@ -122,6 +123,7 @@ export function PreviewPanel() {
   const [jobDescription, setJobDescription] = useState("");
   const resume = useResumeStore((state) => state.resume);
   const t = useTranslations("editor.preview");
+  const ta = useTranslations("ai");
   const locale = useLocale();
   
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.1, 2));
@@ -142,6 +144,10 @@ export function PreviewPanel() {
         }),
       });
       const data = await res.json();
+      if (data.error) {
+        toastManager.add({ type: "error", title: ta(data.error) || data.error });
+        return;
+      }
       setAtsResult(data);
       setAtsOpen(true);
     } catch {
