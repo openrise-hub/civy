@@ -215,3 +215,120 @@ export async function generateResume(input: ResumeInput, locale = "en"): Promise
   if (!raw) return null;
   return parseJSON(raw);
 }
+
+const IMPROVE_SECTION_SYSTEM = "You are a professional resume editor with 20+ years of experience helping professionals get shortlisted at top companies. You rewrite resume sections to be cohesive, varied, and ATS-friendly. Respond with valid JSON only — no markdown, no code fences, no explanation. Use this exact structure: {\"items\": [\"Rewritten item 1\", \"Rewritten item 2\", \"...\"]}";
+
+export async function improveSection(
+  sectionItems: string[],
+  sectionType: string,
+  locale = "en",
+  jobTitle?: string,
+  industry?: string,
+): Promise<string[] | null> {
+  const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
+  const roleContext = jobTitle ? ` for a ${jobTitle} role` : "";
+  const industryContext = industry ? ` targeting the ${industry} industry` : "";
+  const itemsList = sectionItems.map((item, i) => `${i + 1}. ${item}`).join("\n");
+  const n = sectionItems.length;
+  const prompt = `Rewrite the ${sectionType} section${roleContext}${industryContext}.
+
+Section Type: ${sectionType}
+Number of Items: ${n}
+
+Rules:
+1. Rewrite ALL ${n} items. Return exactly ${n} items in the same order.
+2. Use strong action verbs — no two items should start with the same verb.
+3. If an item has numbers or metrics, preserve them exactly. If not, do NOT invent them.
+4. Vary sentence structure across items — avoid repeating the same pattern.
+5. NEVER fabricate, exaggerate, or add skills, responsibilities, or achievements not explicitly mentioned in the original items.
+6. Everything must be interview-safe — the candidate must be able to defend every rewritten line.
+7. Preserve all company names, job titles, dates, degree names, and institution names exactly as provided — do not change them.
+
+Original Items:
+${itemsList}
+
+Respond in ${lang}.
+Return JSON only: {"items": ["...", "...", ...]}`;
+
+  const raw = await callAI(prompt, IMPROVE_SECTION_SYSTEM, 1000);
+  if (!raw) return null;
+  const parsed = parseJSON(raw) as { items?: string[] } | null;
+  if (parsed?.items && Array.isArray(parsed.items) && parsed.items.length === n) return parsed.items;
+  return null;
+}
+
+const SUGGEST_SKILLS_SYSTEM = "You are a senior technical recruiter and career coach with 20+ years of experience evaluating resumes. You identify the skills a candidate should list to pass ATS filters and catch a recruiter's attention. Respond with valid JSON only — no markdown, no code fences, no explanation. Use this exact structure: {\"skills\": [\"Skill 1\", \"Skill 2\", \"...\"], \"reasoning\": \"Brief explanation\"}";
+
+export async function suggestSkills(
+  resumeText: string,
+  locale = "en",
+  jobTitle?: string,
+  industry?: string,
+): Promise<{ skills: string[]; reasoning: string } | null> {
+  const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
+  const roleText = jobTitle || "professional";
+  const industryText = industry || "general";
+  const prompt = `Suggest 8-12 skills for a ${roleText} targeting the ${industryText} industry. Analyze the resume content below to determine what the candidate likely knows and what complementary skills would strengthen their profile.
+
+Candidate Profile:
+${resumeText}
+
+Rules:
+1. Include skills the candidate's experience implies they have (e.g., if they mention building APIs, include REST and backend frameworks).
+2. Add high-demand skills for a ${roleText} in ${industryText} that would fill obvious gaps in their profile.
+3. Mix technical skills, tools, methodologies, and 2-3 soft skills relevant to the role.
+4. Order by relevance — most important skills first.
+5. NEVER suggest skills the candidate could not reasonably possess based on their experience level.
+6. Do NOT list skills already explicitly mentioned in their resume unless expanding to a more specific or adjacent version.
+7. Return 8-12 skills total. No more, no less.
+
+Respond in ${lang}.
+Return JSON only: {"skills": ["Skill 1", "Skill 2", "..."], "reasoning": "..."}`;
+
+  const raw = await callAI(prompt, SUGGEST_SKILLS_SYSTEM, 800);
+  if (!raw) return null;
+  const parsed = parseJSON(raw) as { skills?: string[]; reasoning?: string } | null;
+  if (parsed?.skills && Array.isArray(parsed.skills)) {
+    return { skills: parsed.skills, reasoning: parsed.reasoning || "" };
+  }
+  return null;
+}
+
+const IMPROVE_SUMMARY_SYSTEM = "You are a professional resume writer with 20+ years of experience writing executive summaries that get candidates shortlisted. You synthesize a candidate's full background into a compelling 3-4 sentence summary. Respond with valid JSON only — no markdown, no code fences, no explanation. Use this exact structure: {\"summary\": \"The rewritten summary\", \"changedFrom\": \"What was improved\"}";
+
+export async function improveSummary(
+  currentSummary: string,
+  resumeText: string,
+  locale = "en",
+  jobTitle?: string,
+  industry?: string,
+): Promise<{ summary: string; changedFrom: string } | null> {
+  const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
+  const roleText = jobTitle || "professional";
+  const industryText = industry || "general";
+  const prompt = `Rewrite the professional summary for a ${roleText} targeting the ${industryText} industry. Use the candidate's full resume below as source material — the summary must reflect what the resume actually demonstrates, not what it claims.
+
+Current Summary:
+${currentSummary}
+
+Full Resume for Context:
+${resumeText}
+
+Rules:
+1. Keep it 3-4 sentences.
+2. Lead with the candidate's strongest differentiator — what makes them hireable at a glance.
+3. Mention years of experience and industry focus if present in the resume.
+4. Highlight 2-3 concrete skills or achievements from the resume that are most relevant to a ${roleText} role.
+5. NEVER fabricate, exaggerate, or claim experience, skills, or achievements not present in the resume content.
+6. Do NOT repeat the job title as the first sentence — start with value.
+7. Everything must be interview-safe.
+
+Respond in ${lang}.
+Return JSON only: {"summary": "...", "changedFrom": "..."}`;
+
+  const raw = await callAI(prompt, IMPROVE_SUMMARY_SYSTEM, 800);
+  if (!raw) return null;
+  const parsed = parseJSON(raw) as { summary?: string; changedFrom?: string } | null;
+  if (parsed?.summary) return { summary: parsed.summary, changedFrom: parsed.changedFrom || "" };
+  return null;
+}
