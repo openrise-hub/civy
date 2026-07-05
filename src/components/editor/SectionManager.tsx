@@ -89,29 +89,50 @@ function SortableSectionCard({
       (item) => isStringItem(item) && item.type === "description" && item.visible !== false,
     );
     if (descItems.length === 0) return;
+
+    const isSummary = section.title.toLowerCase().includes("summary");
     setImproving(true);
     try {
-      const res = await fetch("/api/ai/improve-section", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: descItems.map((i) => ("value" in i ? i.value : "")),
-          sectionType: section.title,
-          locale,
-          jobTitle,
-        }),
-      });
-      const data = await res.json();
-      if (data.error) {
-        toastManager.add({ type: "error", title: ta(data.error) || data.error });
-        return;
-      }
-      if (data.items && Array.isArray(data.items)) {
-        data.items.forEach((rewritten: string, idx: number) => {
-          if (idx < descItems.length && rewritten) {
-            updateItem(section.id, descItems[idx].id, { value: rewritten } as Partial<typeof descItems[0]>);
-          }
+      if (isSummary) {
+        const resume = useResumeStore.getState().resume;
+        const parts: string[] = [resume.personal.fullName, resume.personal.jobTitle || ""].filter(Boolean);
+        for (const s of resume.sections) {
+          if (s.visible === false) continue;
+          const its = s.content.items
+            .filter((i) => i.visible !== false && i.type !== "separator")
+            .map((i) => ("value" in i ? (typeof i.value === "string" ? i.value : JSON.stringify(i.value)) : ""))
+            .filter(Boolean);
+          if (its.length > 0) parts.push(`\n${s.title.toUpperCase()}\n${its.join("\n")}`);
+        }
+        const summaryText = "value" in descItems[0] && typeof descItems[0].value === "string" ? descItems[0].value : "";
+        const res = await fetch("/api/ai/improve-summary", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ currentSummary: summaryText, resumeText: parts.join("\n"), locale, jobTitle }),
         });
+        const data = await res.json();
+        if (data.error) { toastManager.add({ type: "error", title: ta(data.error) || data.error }); return; }
+        if (data.summary) updateItem(section.id, descItems[0].id, { value: data.summary } as Partial<typeof descItems[0]>);
+      } else {
+        const res = await fetch("/api/ai/improve-section", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: descItems.map((i) => ("value" in i ? i.value : "")),
+            sectionType: section.title,
+            locale,
+            jobTitle,
+          }),
+        });
+        const data = await res.json();
+        if (data.error) { toastManager.add({ type: "error", title: ta(data.error) || data.error }); return; }
+        if (data.items && Array.isArray(data.items)) {
+          data.items.forEach((rewritten: string, idx: number) => {
+            if (idx < descItems.length && rewritten) {
+              updateItem(section.id, descItems[idx].id, { value: rewritten } as Partial<typeof descItems[0]>);
+            }
+          });
+        }
       }
     } catch {
     } finally {

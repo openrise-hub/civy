@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import { getAllIndustries } from "@/lib/templates/registry";
+import { toastManager } from "@/components/ui/toast";
 import { Loader2Icon, FileEditIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import {
   Combobox,
@@ -16,10 +17,8 @@ import {
 import { createOnboardingResume } from "./actions";
 import type { OnboardingPayload } from "./actions";
 
-const YEARS = Array.from({ length: 46 }, (_, i) => String(1980 + i));
-const CURRENT_YEAR = String(new Date().getFullYear());
-const EXPERIENCE_YEARS = ["0-1", "1-3", "3-5", "5-10", "10+"];
 const DEGREES = ["High School", "Associate", "Bachelor", "Master", "PhD"];
+const CURRENT_MONTH = new Date().toISOString().slice(0, 7);
 
 function filterItems<T extends string>(items: T[], query: string, limit = 200): T[] {
   if (!query || query.length < 1) return items.slice(0, limit);
@@ -30,8 +29,9 @@ function filterItems<T extends string>(items: T[], query: string, limit = 200): 
 interface ExpEntry {
   company: string;
   title: string;
-  startYear: string;
-  endYear: string;
+  startDate: string;
+  endDate: string;
+  currentRole: boolean;
   description: string;
 }
 
@@ -46,6 +46,7 @@ export default function OnboardingPage() {
   const t = useTranslations("onboarding");
   const tInd = useTranslations("industries");
   const td = useTranslations("dashboard");
+  const ta = useTranslations("ai");
   const locale = useLocale();
   const router = useRouter();
 
@@ -73,13 +74,13 @@ export default function OnboardingPage() {
   const [website, setWebsite] = useState("");
 
   const [experience, setExperience] = useState<ExpEntry[]>([
-    { company: "", title: "", startYear: CURRENT_YEAR, endYear: "Present", description: "" },
+    { company: "", title: "", startDate: "2022-01", endDate: CURRENT_MONTH, currentRole: true, description: "" },
   ]);
   const [noExperience, setNoExperience] = useState(false);
   const [projectDescription, setProjectDescription] = useState("");
 
   const [education, setEducation] = useState<EduEntry[]>([
-    { degree: "Bachelor", field: "", institution: "", year: CURRENT_YEAR },
+    { degree: "Bachelor", field: "", institution: "", year: "" },
   ]);
   const [keySkills, setKeySkills] = useState("");
 
@@ -126,20 +127,27 @@ export default function OnboardingPage() {
     return name || searchText;
   }
 
-  const addExperience = () => setExperience((prev) => [...prev, { company: "", title: "", startYear: CURRENT_YEAR, endYear: "Present", description: "" }]);
+  const addExperience = () => setExperience((prev) => [...prev, { company: "", title: "", startDate: CURRENT_MONTH, endDate: CURRENT_MONTH, currentRole: false, description: "" }]);
   const removeExperience = (i: number) => setExperience((prev) => prev.filter((_, idx) => idx !== i));
   const updateExperience = (i: number, field: keyof ExpEntry, value: string) => {
     setExperience((prev) => prev.map((e, idx) => (idx === i ? { ...e, [field]: value } : e)));
   };
 
-  const addEducation = () => setEducation((prev) => [...prev, { degree: "Bachelor", field: "", institution: "", year: CURRENT_YEAR }]);
+  const addEducation = () => setEducation((prev) => [...prev, { degree: "Bachelor", field: "", institution: "", year: "" }]);
   const removeEducation = (i: number) => setEducation((prev) => prev.filter((_, idx) => idx !== i));
   const updateEducation = (i: number, field: keyof EduEntry, value: string) => {
     setEducation((prev) => prev.map((e, idx) => (idx === i ? { ...e, [field]: value } : e)));
   };
 
-  const handleSkip = () => {
-    createOnboardingResume({ fullName: fullName || "Untitled", jobTitle: "", industry: "", email: "", phone: "", location: "", linkedin: "", website: "", experience: [], noExperience: false, projectDescription: "", education: [], keySkills: "", skipAi: true });
+  const handleSkip = async () => {
+    setGenerating(true);
+    const result = await createOnboardingResume({ fullName: fullName || "Untitled", jobTitle: "", industry: "", email: "", phone: "", location: "", linkedin: "", website: "", experience: [], noExperience: false, projectDescription: "", education: [], keySkills: "", skipAi: true });
+    setGenerating(false);
+    if (result.error) {
+      toastManager.add({ type: "error", title: ta(result.error) || result.error });
+      return;
+    }
+    if (result.editorId) router.push(`/editor/${result.editorId}`);
   };
 
   const handleGenerate = async () => {
@@ -154,13 +162,19 @@ export default function OnboardingPage() {
       linkedin,
       website,
       locale,
-      experience: noExperience ? [] : experience.filter((e) => e.company || e.title),
+      experience: noExperience ? [] : experience.filter((e) => e.company || e.title).map((e) => ({ ...e, endDate: e.currentRole ? "Present" : e.endDate })),
       noExperience,
       projectDescription,
       education: education.filter((e) => e.institution || e.field),
       keySkills,
     };
-    createOnboardingResume(payload);
+    const result = await createOnboardingResume(payload);
+    setGenerating(false);
+    if (result.error) {
+      toastManager.add({ type: "error", title: ta(result.error) || result.error });
+      return;
+    }
+    if (result.editorId) router.push(`/editor/${result.editorId}`);
   };
 
   const canNext = () => {
@@ -291,7 +305,7 @@ export default function OnboardingPage() {
                   {experience.map((exp, i) => (
                     <div key={i} className="border rounded-lg p-4 space-y-3 relative">
                       {experience.length > 1 && (
-                        <button onClick={() => removeExperience(i)} className="absolute top-2 right-2 text-muted-foreground hover:text-destructive"><Trash2Icon size={14} /></button>
+                        <button onClick={() => { if (window.confirm(t("confirmRemoveExperience") || "Remove this entry?")) removeExperience(i); }} className="absolute top-2 right-2 text-muted-foreground hover:text-destructive"><Trash2Icon size={14} /></button>
                       )}
                       <div className="grid grid-cols-2 gap-3">
                         <div>
@@ -305,17 +319,16 @@ export default function OnboardingPage() {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-medium mb-1">{t("startYear") || "Start Year"}</label>
-                          <select value={exp.startYear} onChange={(e) => updateExperience(i, "startYear", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white">
-                            {YEARS.map((y) => (<option key={y} value={y}>{y}</option>))}
-                          </select>
+                          <label className="block text-xs font-medium mb-1">{t("startDate") || "Start Date"}</label>
+                          <input type="month" value={exp.startDate} onChange={(e) => updateExperience(i, "startDate", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white" />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium mb-1">{t("endYear") || "End Year"}</label>
-                          <select value={exp.endYear} onChange={(e) => updateExperience(i, "endYear", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white">
-                            <option value="Present">{t("present") || "Present"}</option>
-                            {YEARS.map((y) => (<option key={y} value={y}>{y}</option>))}
-                          </select>
+                          <label className="block text-xs font-medium mb-1">{t("endDate") || "End Date"}</label>
+                          <input type="month" value={exp.currentRole ? "" : exp.endDate} disabled={exp.currentRole} onChange={(e) => updateExperience(i, "endDate", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white disabled:opacity-50" />
+                          <label className="flex items-center gap-1 mt-1 cursor-pointer">
+                            <input type="checkbox" checked={exp.currentRole} onChange={(e) => updateExperience(i, "currentRole", String(e.target.checked) as never as string)} className="rounded" />
+                            <span className="text-xs text-muted-foreground">{t("currentRole") || "I currently work here"}</span>
+                          </label>
                         </div>
                       </div>
                       <div>
@@ -359,7 +372,8 @@ export default function OnboardingPage() {
                   <div>
                     <label className="block text-xs font-medium mb-1">{t("gradYear") || "Graduation Year"}</label>
                     <select value={edu.year} onChange={(e) => updateEducation(i, "year", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white">
-                      {YEARS.map((y) => (<option key={y} value={y}>{y}</option>))}
+                      <option value="">--</option>
+                      {Array.from({ length: 50 }, (_, n) => String(2026 - n)).map((y) => (<option key={y} value={y}>{y}</option>))}
                     </select>
                   </div>
                 </div>

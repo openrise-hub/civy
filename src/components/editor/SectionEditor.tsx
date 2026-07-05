@@ -616,6 +616,11 @@ function ImageItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVis
 
 function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisibility, onAddItem }: ItemEditorProps) {
   const [inputValue, setInputValue] = useState("");
+  const [suggesting, setSuggesting] = useState(false);
+  const locale = useLocale();
+  const ta = useTranslations("ai");
+  const jobTitle = useResumeStore((state) => state.resume.personal.jobTitle);
+  const industry = useResumeStore((state) => state.resume.metadata.template);
 
   if (!isTagsItem(item)) return null;
 
@@ -683,6 +688,41 @@ function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisi
           className="flex-1 min-w-[140px] h-7 border-none bg-transparent px-0 text-xs focus-visible:ring-0"
         />
       </div>
+
+      <button
+        type="button"
+        onClick={async () => {
+          setSuggesting(true);
+          try {
+            const resume = useResumeStore.getState().resume;
+            const parts: string[] = [resume.personal.fullName, resume.personal.jobTitle || ""].filter(Boolean);
+            for (const s of resume.sections) {
+              if (s.visible === false) continue;
+              const its = s.content.items
+                .filter((i) => i.visible !== false && i.type !== "separator")
+                .map((i) => ("value" in i ? (typeof i.value === "string" ? i.value : JSON.stringify(i.value)) : ""))
+                .filter(Boolean);
+              if (its.length > 0) parts.push(`\n${s.title.toUpperCase()}\n${its.join("\n")}`);
+            }
+            const res = await fetch("/api/ai/suggest-skills", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ resumeText: parts.join("\n"), locale, jobTitle, industry }),
+            });
+            const data = await res.json();
+            if (data.error) { toastManager.add({ type: "error", title: ta(data.error) || data.error }); return; }
+            if (data.skills) onUpdate({ value: { ...item.value, items: data.skills } });
+          } catch {
+          } finally {
+            setSuggesting(false);
+          }
+        }}
+        disabled={suggesting}
+        className="w-full flex items-center justify-center gap-1 py-1.5 rounded-lg border border-dashed text-xs text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
+      >
+        {suggesting ? <Loader2Icon className="size-3 animate-spin" /> : <WandIcon className="size-3" />}
+        {ta("suggestSkills")}
+      </button>
 
       <div className="flex items-center gap-2">
         <Label className="text-xs text-muted-foreground shrink-0">Display</Label>

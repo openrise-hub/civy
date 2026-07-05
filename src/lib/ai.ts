@@ -120,8 +120,8 @@ export interface ResumeInput {
   experience: Array<{
     company: string;
     title: string;
-    startYear: string;
-    endYear: string;
+    startDate: string;
+    endDate: string;
     description: string;
   }>;
   noExperience: boolean;
@@ -201,7 +201,7 @@ function buildResumePrompt(input: ResumeInput, lang: string): string {
   if (!input.noExperience && input.experience.length > 0) {
     lines.push("--- Work Experience (preserve companies, titles, and dates exactly) ---");
     for (const exp of input.experience) {
-      const dateRange = `${exp.startYear} - ${exp.endYear || "Present"}`;
+      const dateRange = `${exp.startDate} - ${exp.endDate || "Present"}`;
       lines.push(`Company: ${exp.company} | Role: ${exp.title} | Dates: ${dateRange}`);
       lines.push(`What I did: ${exp.description}`);
       lines.push("---");

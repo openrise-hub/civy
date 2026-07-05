@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getTemplateList } from "@/lib/templates/registry";
 import { getProfile } from "@/lib/profile/actions";
 import { RESUME_LIMITS, FREE_TEMPLATES } from "@/constants/limits";
-import { redirect } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import type { Item } from "@/types/resume";
 import { generateResume, type ResumeInput, type ResumeOutput } from "@/lib/ai";
@@ -127,8 +126,8 @@ export interface OnboardingPayload {
   experience: Array<{
     company: string;
     title: string;
-    startYear: string;
-    endYear: string;
+    startDate: string;
+    endDate: string;
     description: string;
   }>;
   noExperience: boolean;
@@ -143,16 +142,16 @@ export interface OnboardingPayload {
   skipAi?: boolean;
 }
 
-export async function createOnboardingResume(payload: OnboardingPayload) {
+export async function createOnboardingResume(payload: OnboardingPayload): Promise<{ editorId?: string; error?: string }> {
   const user = await getUser();
   if (!user) {
-    redirect("/login");
+    return { error: "auth" };
   }
 
   const { fullName, jobTitle, industry, email, phone, location, linkedin, website, locale = "en", skipAi } = payload;
 
   if (!fullName) {
-    throw new Error("Full name is required");
+    return { error: "missingName" };
   }
 
   const supabase = await createClient();
@@ -167,11 +166,11 @@ export async function createOnboardingResume(payload: OnboardingPayload) {
     .is("deleted_at", null);
 
   if (countError) {
-    throw new Error("Failed to check resume limits");
+    return { error: "limitCheckFailed" };
   }
 
   if (count !== null && count >= maxResumes) {
-    throw new Error(isPremium ? "LIMIT_PRO" : "LIMIT_FREE");
+    return { error: isPremium ? "limitPro" : "limitFree" };
   }
 
   const suggestedTemplate = suggestTemplate(industry);
@@ -223,9 +222,8 @@ export async function createOnboardingResume(payload: OnboardingPayload) {
     };
 
     const aiOutput = await generateResume(aiInput, locale);
-    if (aiOutput) {
-      sections = buildSections(aiOutput, aiInput);
-    }
+    if (!aiOutput) return { error: "aiErrorGenerateResume" };
+    sections = buildSections(aiOutput, aiInput);
   }
 
   const { data, error } = await supabase
@@ -253,8 +251,8 @@ export async function createOnboardingResume(payload: OnboardingPayload) {
     .single();
 
   if (error) {
-    throw new Error("Failed to create resume");
+    return { error: "dbError" };
   }
 
-  redirect(`/editor/${data.id}`);
+  return { editorId: data.id };
 }

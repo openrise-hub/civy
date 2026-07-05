@@ -407,7 +407,18 @@
     "loading": "Chargement...",
     "noResults": "Aucun résultat trouvé",
     "skip": "Passer → Tableau de bord",
-    "submit": "Créer mon CV"
+    "submit": "Créer mon CV",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "currentRole": "J'y travaille actuellement",
+    "confirmRemoveExperience": "Êtes-vous sûr de vouloir supprimer cette expérience professionnelle ?",
+    "generating": "Génération de votre CV...",
+    "generatingHint": "Cela peut prendre quelques secondes",
+    "generateCv": "Générer Mon CV",
+    "step": "Étape",
+    "of": "sur",
+    "back": "Retour",
+    "next": "Suivant"
   },
   "industries": {
     "Technology": "Technologie",
@@ -550,5 +561,15 @@
     "footerPrivacy": "Politique de Confidentialité",
     "footerCopyright": "2026 Civy. Tous droits réservés.",
     "statsResumesDesc": "Visualisez les modifications en temps réel"
+  },
+  "ai": {
+    "aiError": "Échec de la génération IA. Veuillez réessayer.",
+    "aiErrorImproveText": "Échec de l'amélioration du texte. Veuillez réessayer.",
+    "aiErrorAtsAnalysis": "Échec de l'analyse du CV. Veuillez réessayer.",
+    "aiErrorGenerateResume": "Échec de la génération du CV. Veuillez réessayer.",
+    "aiErrorImproveSection": "Échec de l'amélioration de la section. Veuillez réessayer.",
+    "aiErrorSuggestSkills": "Échec de la suggestion de compétences. Veuillez réessayer.",
+    "aiErrorImproveSummary": "Échec de l'amélioration du résumé. Veuillez réessayer.",
+    "suggestSkills": "Suggérer des Compétences"
   }
 }
