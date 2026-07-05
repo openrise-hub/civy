@@ -32,14 +32,6 @@ async function callAI(prompt: string, system?: string, maxTokens = 500): Promise
   }
 }
 
-export async function generateSummary(jobTitle: string, industry: string, locale = "en"): Promise<string | null> {
-  const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
-  return callAI(
-    `Write a professional summary for a ${jobTitle || "professional"} in the ${industry || "general"} industry. Keep it concise, 3-4 sentences. Respond in ${lang}.`,
-    "You are a professional resume writer. Write clear, impactful summaries without fluff."
-  );
-}
-
 export async function improveText(text: string, locale = "en"): Promise<string | null> {
   const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
   return callAI(
