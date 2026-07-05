@@ -8,9 +8,10 @@ export async function POST(request: Request) {
 
   const { currentSummary, resumeText, locale = "en", jobTitle, industry } = await request.json();
   if (!currentSummary || typeof currentSummary !== "string") {
-    return NextResponse.json({ summary: "", changedFrom: "" });
+    return NextResponse.json({ error: "aiErrorImproveSummary" }, { status: 400 });
   }
 
   const result = await improveSummary(currentSummary, resumeText, locale, jobTitle, industry);
-  return NextResponse.json(result || { summary: "", changedFrom: "" });
+  if (!result) return NextResponse.json({ error: "aiErrorImproveSummary" }, { status: 500 });
+  return NextResponse.json(result);
 }

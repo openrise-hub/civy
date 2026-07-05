@@ -8,9 +8,10 @@ export async function POST(request: Request) {
 
   const { resumeText, locale = "en", jobTitle, industry } = await request.json();
   if (!resumeText || typeof resumeText !== "string") {
-    return NextResponse.json({ skills: [], reasoning: "" });
+    return NextResponse.json({ error: "aiErrorSuggestSkills" }, { status: 400 });
   }
 
   const result = await suggestSkills(resumeText, locale, jobTitle, industry);
-  return NextResponse.json(result || { skills: [], reasoning: "" });
+  if (!result) return NextResponse.json({ error: "aiErrorSuggestSkills" }, { status: 500 });
+  return NextResponse.json(result);
 }

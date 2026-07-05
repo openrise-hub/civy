@@ -8,9 +8,10 @@ export async function POST(request: Request) {
 
   const { items, sectionType, locale = "en", jobTitle, industry } = await request.json();
   if (!items || !Array.isArray(items) || items.length === 0) {
-    return NextResponse.json({ items: [] });
+    return NextResponse.json({ error: "aiErrorImproveSection" }, { status: 400 });
   }
 
   const result = await improveSection(items, sectionType || "", locale, jobTitle, industry);
-  return NextResponse.json({ items: result || [] });
+  if (!result) return NextResponse.json({ error: "aiErrorImproveSection" }, { status: 500 });
+  return NextResponse.json({ items: result });
 }

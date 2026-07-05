@@ -10,12 +10,12 @@ export async function POST(request: Request) {
   const { locale = "en", ...input } = body as ResumeInput & { locale?: string };
 
   if (!input.fullName || !input.jobTitle) {
-    return NextResponse.json({ error: "Full name and job title are required" }, { status: 400 });
+    return NextResponse.json({ error: "aiErrorGenerateResume" }, { status: 400 });
   }
 
   const result = await generateResume(input, locale);
   if (!result) {
-    return NextResponse.json({ error: "Failed to generate resume" }, { status: 500 });
+    return NextResponse.json({ error: "aiErrorGenerateResume" }, { status: 500 });
   }
 
   return NextResponse.json(result);
