@@ -5,10 +5,10 @@ import { improveText } from "@/lib/ai";
 export async function POST(request: Request) {
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const { text, locale = "en" } = await request.json();
+  const { text, locale = "en", jobTitle } = await request.json();
   if (!text || typeof text !== "string") {
     return NextResponse.json({ text: "" });
   }
-  const improved = await improveText(text, locale);
+  const improved = await improveText(text, locale, jobTitle);
   return NextResponse.json({ text: improved || "" });
 }

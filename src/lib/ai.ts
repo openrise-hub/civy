@@ -32,11 +32,12 @@ async function callAI(prompt: string, system?: string, maxTokens = 500): Promise
   }
 }
 
-export async function improveText(text: string, locale = "en"): Promise<string | null> {
+export async function improveText(text: string, locale = "en", jobTitle?: string): Promise<string | null> {
   const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
+  const context = jobTitle ? ` for a ${jobTitle} role` : "";
   return callAI(
-    `Rewrite the following resume bullet point to be more professional and impactful. Keep it concise and use active language. Respond in ${lang}:\n\n${text}`,
-    "You are a professional resume editor. Improve bullet points without adding false information."
+    `Rewrite this resume bullet point${context}. Use active language and an action verb. If the original includes numbers or metrics, preserve them. If not, do not invent them. Return ONLY the rewritten bullet point — no explanations, no alternatives, no markdown.\n\nOriginal:\n${text}\n\nRespond in ${lang}.`,
+    "You are a professional resume editor. Improve bullet points without adding false information. NEVER fabricate, exaggerate, or add skills, metrics, or experiences not explicitly mentioned in the original text. Everything must be interview-safe."
   );
 }
 

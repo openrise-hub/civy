@@ -861,6 +861,7 @@ export function SectionEditor({ section }: SectionEditorProps) {
 function ImproveTextButton({ text, onImproved }: { text: string; onImproved: (t: string) => void }) {
   const [improving, setImproving] = useState(false);
   const locale = useLocale();
+  const jobTitle = useResumeStore((state) => state.resume.personal.jobTitle);
 
   const handleImprove = async () => {
     if (!text.trim()) return;
@@ -869,7 +870,7 @@ function ImproveTextButton({ text, onImproved }: { text: string; onImproved: (t:
       const res = await fetch("/api/ai/improve-text", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, locale }),
+        body: JSON.stringify({ text, locale, jobTitle }),
       });
       const data = await res.json();
       if (data.text) onImproved(data.text);
