@@ -48,18 +48,49 @@ export async function improveText(text: string, locale = "en"): Promise<string |
   );
 }
 
-export async function analyzeATS(resumeText: string, locale = "en"): Promise<{
+export interface ATSOutput {
   score: number;
-  issues: string[];
-  suggestions: string[];
-} | null> {
+  rewrittenResume: string;
+  topIssues: string[];
+  keywordGaps: string[];
+  matchVerdict?: string;
+}
+
+const ATS_SYSTEM_PROMPT = `You are an expert resume writer with 20+ years of experience helping professionals get shortlisted at top companies. Respond with valid JSON only — no markdown, no code fences, no explanation.`;
+
+function buildATSPromptWithoutJD(resumeText: string): string {
+  return `Rewrite this resume for maximum ATS compatibility (target 85+/100). Improve action verbs, phrasing, and keyword optimization. Score it 1-100 based on keyword alignment, structure, and impact. Identify the top 3-5 specific fixes needed. NEVER fabricate, exaggerate, or add skills, metrics, or experiences not explicitly mentioned. Keep everything interview-safe — every line must be defensible. Return this JSON:
+{
+  "score": 80,
+  "rewrittenResume": "FULL rewritten resume text with improved phrasing. Preserve ALL factual information exactly.",
+  "topIssues": ["Specific fix 1", "Specific fix 2"],
+  "keywordGaps": []
+}
+
+Resume:\n${resumeText}`;
+}
+
+function buildATSPromptWithJD(resumeText: string, jobDescription: string): string {
+  return `Compare this resume against the provided Job Description. If the match is poor due to missing core skills or domain mismatch, set matchVerdict to an honest explanation and score accordingly. Add role-specific keyword gaps. Rewrite the resume to better align with the JD while preserving ALL factual information exactly. Score it 1-100. NEVER fabricate, exaggerate, or add skills, metrics, or experiences not explicitly mentioned. Keep everything interview-safe. Return this JSON:
+{
+  "score": 80,
+  "matchVerdict": "Strong match for this role",
+  "rewrittenResume": "FULL rewritten resume text aligned with the JD.",
+  "topIssues": ["Specific fix 1", "Specific fix 2"],
+  "keywordGaps": ["MissingKeyword1", "MissingKeyword2"]
+}
+
+Resume:\n${resumeText}\n\nJob Description:\n${jobDescription}`;
+}
+
+export async function analyzeATS(resumeText: string, jobDescription = "", locale = "en"): Promise<ATSOutput | null> {
   const lang = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] || "English";
-  const raw = await callAI(
-    `Analyze this resume for ATS (Applicant Tracking System) compatibility. Rate it 1-100. List 3-5 issues and 3-5 improvement suggestions. Respond in ${lang}.\n\nResume:\n${resumeText}`,
-    "You are an ATS expert. Be specific and actionable."
-  );
+  const prompt = jobDescription
+    ? buildATSPromptWithJD(resumeText, jobDescription)
+    : buildATSPromptWithoutJD(resumeText);
+  const raw = await callAI(`${prompt}\n\nRespond in ${lang}.`, ATS_SYSTEM_PROMPT, 1500);
   if (!raw) return null;
-  return parseATSResponse(raw);
+  return parseJSON(raw) as ATSOutput | null;
 }
 
 export interface ResumeInput {
@@ -190,28 +221,4 @@ export async function generateResume(input: ResumeInput, locale = "en"): Promise
   const raw = await callAIWithRetry(prompt, RESUME_SYSTEM_PROMPT, 3);
   if (!raw) return null;
   return parseJSON(raw);
-}
-
-function parseATSResponse(raw: string): {
-  score: number;
-  issues: string[];
-  suggestions: string[];
-} {
-  const scoreMatch = raw.match(/(?:Score|Rating)[:\s]*(\d{1,3})/i);
-  const score = scoreMatch ? parseInt(scoreMatch[1], 10) : 70;
-
-  const issuesMatch = raw.match(/(?:Issues?|Problems?|Weaknesses?)[:\s]*\n?([\s\S]*?)(?=(?:Suggestions?|Improvements?|Recommendations?)[:\s]*\n?|$)/i);
-  const suggestionsMatch = raw.match(/(?:Suggestions?|Improvements?|Recommendations?)[:\s]*\n?([\s\S]*?)$/i);
-
-  function extractLines(text: string): string[] {
-    return text
-      .split(/\r?\n/)
-      .map((line) => line.replace(/^\s*(?:\d+[\.\)]\s*|[-\u2022\u2023\u2022]\s*)/, "").trim())
-      .filter((line) => line.length > 5);
-  }
-
-  const issues = issuesMatch ? extractLines(issuesMatch[1]) : [];
-  const suggestions = suggestionsMatch ? extractLines(suggestionsMatch[1]) : [];
-
-  return { score, issues, suggestions };
 }
