@@ -188,7 +188,15 @@
       "education": "Education",
       "skills": "Skills",
       "summary": "Professional Summary",
-      "custom": "Custom Section"
+      "custom": "Custom Section",
+      "improveSection": "Improve Section",
+      "suggestSkills": "Suggest Skills",
+      "improveSummary": "Improve Summary",
+      "showSection": "Show Section",
+      "hideSection": "Hide Section",
+      "expandSection": "Expand",
+      "collapseSection": "Collapse",
+      "removeSection": "Remove Section"
     },
     "placeholders": {
       "fullName": "John Doe",
