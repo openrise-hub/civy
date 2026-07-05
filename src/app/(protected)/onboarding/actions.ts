@@ -8,6 +8,7 @@ import { RESUME_LIMITS, FREE_TEMPLATES } from "@/constants/limits";
 import { redirect } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import type { Item } from "@/types/resume";
+import { generateResume, type ResumeInput, type ResumeOutput } from "@/lib/ai";
 
 function suggestTemplate(industry: string): string {
   const entries = getTemplateList();
@@ -20,21 +21,135 @@ function makeId(): string {
   return uuidv4();
 }
 
-export async function createOnboardingResume(formData: FormData) {
+function buildSections(aiOutput: ResumeOutput, input: ResumeInput): Array<{
+  id: string;
+  title: string;
+  visible: boolean;
+  content: { layout: string; items: Item[] };
+}> {
+  const sections: Array<{
+    id: string;
+    title: string;
+    visible: boolean;
+    content: { layout: string; items: Item[] };
+  }> = [];
+
+  if (aiOutput.summary) {
+    sections.push({
+      id: makeId(),
+      title: "Professional Summary",
+      visible: true,
+      content: {
+        layout: "list",
+        items: [
+          { id: makeId(), visible: true, type: "description", value: aiOutput.summary } as Item,
+        ],
+      },
+    });
+  }
+
+  if (aiOutput.experience && aiOutput.experience.length > 0) {
+    const items: Item[] = aiOutput.experience.map((exp) => {
+      const heading = `${exp.title} at ${exp.company}`;
+      return {
+        id: makeId(),
+        visible: true,
+        type: "description",
+        value: `${heading}\n${exp.dateRange}\n${exp.description}`,
+      } as Item;
+    });
+    sections.push({
+      id: makeId(),
+      title: "Experience",
+      visible: true,
+      content: { layout: "list", items },
+    });
+  }
+
+  if (aiOutput.projects && aiOutput.projects.length > 0) {
+    const items: Item[] = aiOutput.projects.map((proj) => ({
+      id: makeId(),
+      visible: true,
+      type: "description",
+      value: `${proj.name}\n${proj.description}`,
+    } as Item));
+    sections.push({
+      id: makeId(),
+      title: "Projects",
+      visible: true,
+      content: { layout: "list", items },
+    });
+  }
+
+  if (aiOutput.education && aiOutput.education.length > 0) {
+    const items: Item[] = aiOutput.education.map((edu) => ({
+      id: makeId(),
+      visible: true,
+      type: "description",
+      value: `${edu.degree} - ${edu.institution} (${edu.year})`,
+    } as Item));
+    sections.push({
+      id: makeId(),
+      title: "Education",
+      visible: true,
+      content: { layout: "list", items },
+    });
+  }
+
+  if (aiOutput.skills && aiOutput.skills.length > 0) {
+    const items: Item[] = [{
+      id: makeId(),
+      visible: true,
+      type: "tags",
+      value: { name: "Skills", items: aiOutput.skills, display: "pill" },
+    } as Item];
+    sections.push({
+      id: makeId(),
+      title: "Skills",
+      visible: true,
+      content: { layout: "grid", items },
+    });
+  }
+
+  return sections;
+}
+
+export interface OnboardingPayload {
+  fullName: string;
+  jobTitle: string;
+  industry: string;
+  email: string;
+  phone: string;
+  location: string;
+  linkedin: string;
+  website: string;
+  locale?: string;
+  experience: Array<{
+    company: string;
+    title: string;
+    startYear: string;
+    endYear: string;
+    description: string;
+  }>;
+  noExperience: boolean;
+  projectDescription: string;
+  education: Array<{
+    degree: string;
+    field: string;
+    institution: string;
+    year: string;
+  }>;
+  keySkills: string;
+  skipAi?: boolean;
+}
+
+export async function createOnboardingResume(payload: OnboardingPayload) {
   const user = await getUser();
   if (!user) {
     redirect("/login");
   }
 
-  const fullName = (formData.get("fullName") as string) || "";
-  const jobTitle = (formData.get("jobTitle") as string) || "";
-  const email = (formData.get("email") as string) || "";
-  const phone = (formData.get("phone") as string) || "";
-  const location = (formData.get("location") as string) || "";
-  const linkedin = (formData.get("linkedin") as string) || "";
-  const website = (formData.get("website") as string) || "";
-  const summary = (formData.get("summary") as string) || "";
-  const industry = (formData.get("industry") as string) || "";
+  const { fullName, jobTitle, industry, email, phone, location, linkedin, website, locale = "en", skipAi } = payload;
 
   if (!fullName) {
     throw new Error("Full name is required");
@@ -88,25 +203,29 @@ export async function createOnboardingResume(formData: FormData) {
     } as Item);
   }
 
-  const sections: Array<{
+  let sections: Array<{
     id: string;
     title: string;
     visible: boolean;
     content: { layout: string; items: Item[] };
   }> = [];
 
-  if (summary) {
-    sections.push({
-      id: makeId(),
-      title: "Professional Summary",
-      visible: true,
-      content: {
-        layout: "list",
-        items: [
-          { id: makeId(), visible: true, type: "description", value: summary } as Item,
-        ],
-      },
-    });
+  if (!skipAi) {
+    const aiInput: ResumeInput = {
+      fullName,
+      jobTitle,
+      industry,
+      experience: payload.experience || [],
+      noExperience: payload.noExperience || false,
+      projectDescription: payload.projectDescription || "",
+      education: payload.education || [],
+      keySkills: payload.keySkills || "",
+    };
+
+    const aiOutput = await generateResume(aiInput, locale);
+    if (aiOutput) {
+      sections = buildSections(aiOutput, aiInput);
+    }
   }
 
   const { data, error } = await supabase
