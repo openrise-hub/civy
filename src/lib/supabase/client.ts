@@ -1,9 +1,5 @@
 import { createBrowserClient } from "@supabase/ssr";
 
-function parseCookieValue(cookie: string) {
-  return cookie.includes("%") ? decodeURIComponent(cookie) : cookie;
-}
-
 function cookieToString({ name, value, options }: {
   name: string;
   value: string;
@@ -13,8 +9,11 @@ function cookieToString({ name, value, options }: {
   if (options?.path) cookie += `; path=${options.path}`;
   if (options?.maxAge) cookie += `; max-age=${options.maxAge}`;
   if (options?.domain) cookie += `; domain=${options.domain}`;
-  if (options?.sameSite) cookie += `; samesite=${String(options.sameSite).toLowerCase()}`;
   if (options?.secure) cookie += `; secure`;
+  if (options?.sameSite) {
+    const ss = typeof options.sameSite === "boolean" ? "lax" : options.sameSite.toLowerCase();
+    cookie += `; samesite=${ss}`;
+  }
   return cookie;
 }
 
@@ -32,9 +31,7 @@ export function createClient() {
             .map((c) => {
               const eq = c.indexOf("=");
               if (eq === -1) return { name: c.trim(), value: "" };
-              const name = c.substring(0, eq).trim();
-              const rawValue = c.substring(eq + 1);
-              return { name, value: parseCookieValue(rawValue) };
+              return { name: c.substring(0, eq).trim(), value: c.substring(eq + 1) };
             });
         },
         setAll(cookiesToSet) {

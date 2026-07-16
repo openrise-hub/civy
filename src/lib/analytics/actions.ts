@@ -65,11 +65,14 @@ export async function getResumeStats(
 ): Promise<Record<string, number>> {
   try {
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return {};
 
     const { data, error } = await supabase
       .from("resume_events")
       .select("event_type")
-      .eq("resume_id", resumeId);
+      .eq("resume_id", resumeId)
+      .eq("user_id", user.id);
 
     if (error || !data) return {};
 
