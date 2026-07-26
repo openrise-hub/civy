@@ -12,8 +12,8 @@ import {
   signInWithEmail, 
   signUpWithEmail,
   resendVerification,
+  signInWithOAuthProvider,
 } from "@/lib/auth/actions";
-import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { LoginIllustration } from "@/components/auth/LoginIllustration";
 
@@ -105,25 +105,12 @@ function LoginForm() {
   const handleOAuth = async (provider: OAuthProvider) => {
     setLoading(true);
     setError(null);
-    try {
-      const supabase = createClient();
-      const origin = window.location.origin;
-      const redirectTo = next
-        ? `${origin}/callback?next=${encodeURIComponent(next)}`
-        : `${origin}/callback`;
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: { redirectTo },
-      });
-
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-      }
-    } catch {
-      setError("Failed to initiate sign in");
+    const result = await signInWithOAuthProvider(provider, next);
+    if (result.error) {
+      setError(result.error);
       setLoading(false);
+    } else if (result.url) {
+      window.location.href = result.url;
     }
   };
 
