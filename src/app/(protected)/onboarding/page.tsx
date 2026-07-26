@@ -230,9 +230,11 @@ export default function OnboardingPage() {
             {`${t("step") || "Step"} ${step} ${t("of") || "of"} ${totalSteps}`}
           </p>
 
-          {/* Step 1: Personal Info */}
-          {step === 1 && (
-            <div className="space-y-4">
+          <div className="t-page-slide" data-page={step}>
+
+            {/* Step 1: Personal Info */}
+            {step === 1 && (
+              <div className="t-page space-y-4" data-page-id="1">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 sm:col-span-1">
                   <label className="block text-sm font-medium mb-1">{t("fullName")} *</label>
@@ -304,7 +306,7 @@ export default function OnboardingPage() {
 
           {/* Step 2: Work Experience */}
           {step === 2 && (
-            <div className="space-y-4">
+            <div className="t-page space-y-4" data-page-id="2">
               <label className="flex items-center gap-2 cursor-pointer">
                 <span
                   className="t-check"
@@ -386,7 +388,7 @@ export default function OnboardingPage() {
 
           {/* Step 3: Education */}
           {step === 3 && (
-            <div className="space-y-4">
+            <div className="t-page space-y-4" data-page-id="3">
               {education.map((edu, i) => (
                 <div key={i} className="border rounded-lg p-4 space-y-3 relative">
                   {education.length > 1 && (
@@ -425,7 +427,7 @@ export default function OnboardingPage() {
 
           {/* Step 4: Skills & Generate */}
           {step === 4 && (
-            <div className="space-y-4">
+            <div className="t-page space-y-4" data-page-id="4">
               <div>
                 <label className="block text-sm font-medium mb-1">{t("keySkills") || "Key Skills"}</label>
                 <textarea value={keySkills} onChange={(e) => setKeySkills(e.target.value)} rows={2} placeholder={t("keySkillsPlaceholder") || "React, TypeScript, leadership, project management"} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none" />
@@ -437,6 +439,7 @@ export default function OnboardingPage() {
               </button>
             </div>
           )}
+          </div>
 
           {/* Navigation */}
           <div className="flex items-center justify-between mt-6 pt-4 border-t">
