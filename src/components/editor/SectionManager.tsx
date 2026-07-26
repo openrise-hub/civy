@@ -12,7 +12,8 @@ import { SectionEditor } from "@/components/editor/SectionEditor";
 import { isStringItem } from "@/lib/resume-helpers";
 import { useLocale } from "next-intl";
 import { toastManager } from "@/components/ui/toast";
-import { TrashIcon, GripVertical, EyeIcon, EyeOffIcon, ChevronDownIcon, ChevronUpIcon, WandIcon, Loader2Icon } from "lucide-react";
+import { TrashIcon, GripVertical, EyeIcon, EyeOffIcon, ChevronDownIcon, ChevronUpIcon, WandIcon } from "lucide-react";
+import { ThinkingOrb } from "thinking-orbs";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { DndContext, DragEndEvent, PointerSensor, KeyboardSensor, useSensor, useSensors, type DraggableAttributes } from '@dnd-kit/core';
 import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
@@ -171,7 +172,7 @@ function SortableSectionCard({
                 className="text-muted-foreground hover:text-primary"
                 title={t("formEditor.improveSection")}
               >
-                {improving ? <Loader2Icon className="size-4 animate-spin" /> : <WandIcon className="size-4" />}
+                {improving ? <ThinkingOrb state="solving" size={20} aria-label="Improving section" /> : <WandIcon className="size-4" />}
               </Button>
               <Button
                 variant="ghost"
