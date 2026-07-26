@@ -12,7 +12,7 @@ import { SectionEditor } from "@/components/editor/SectionEditor";
 import { isStringItem } from "@/lib/resume-helpers";
 import { useLocale } from "next-intl";
 import { toastManager } from "@/components/ui/toast";
-import { TrashIcon, GripVertical, EyeIcon, EyeOffIcon, ChevronDownIcon, ChevronUpIcon, WandIcon } from "lucide-react";
+import { TrashIcon, GripVertical, EyeIcon, EyeOffIcon, ChevronDownIcon, WandIcon } from "lucide-react";
 import { ThinkingOrb } from "thinking-orbs";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { DndContext, DragEndEvent, PointerSensor, KeyboardSensor, useSensor, useSensors, type DraggableAttributes } from '@dnd-kit/core';
@@ -199,16 +199,20 @@ function SortableSectionCard({
                 className="text-muted-foreground hover:text-foreground"
                 title={isExpanded ? t("formEditor.collapseSection") : t("formEditor.expandSection")}
               >
-                {isExpanded ? <ChevronUpIcon className="size-4" /> : <ChevronDownIcon className="size-4" />}
+                <span className="t-acc-chevron"><ChevronDownIcon className="size-4" /></span>
               </Button>
             </div>
           </div>
         </CardHeader>
-        {isExpanded && (
-          <CardContent className="p-0 border-t">
-            <SectionEditor section={section} />
-          </CardContent>
-        )}
+        <div className="t-acc" data-open={isExpanded ? "true" : "false"}>
+          <div className="t-acc-panel">
+            <div className="t-acc-panel-inner">
+              <CardContent className="p-0 border-t">
+                <SectionEditor section={section} />
+              </CardContent>
+            </div>
+          </div>
+        </div>
       </Card>
     </div>
   );
