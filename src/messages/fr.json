@@ -99,7 +99,8 @@
       "atsAnalysis": "Analyse ATS",
       "atsScore": "Score",
       "atsIssues": "Problèmes",
-      "atsSuggestions": "Suggestions"
+      "atsSuggestions": "Suggestions",
+      "atsPreviewNote": "Comparez votre version originale avec la version réécrite. Les modifications sont en aperçu uniquement et ne sont pas appliquées automatiquement."
     }
   },
   "resume": {
@@ -418,7 +419,8 @@
     "step": "Étape",
     "of": "sur",
     "back": "Retour",
-    "next": "Suivant"
+    "next": "Suivant",
+    "keySkillsHint": "Nous élargirons vos compétences en une liste complète."
   },
   "industries": {
     "Technology": "Technologie",
@@ -563,7 +565,7 @@
     "statsResumesDesc": "Visualisez les modifications en temps réel"
   },
   "ai": {
-    "aiError": "Échec de la génération IA. Veuillez réessayer.",
+    "aiError": "Échec de la génération. Veuillez réessayer.",
     "aiErrorImproveText": "Échec de l'amélioration du texte. Veuillez réessayer.",
     "aiErrorAtsAnalysis": "Échec de l'analyse du CV. Veuillez réessayer.",
     "aiErrorGenerateResume": "Échec de la génération du CV. Veuillez réessayer.",

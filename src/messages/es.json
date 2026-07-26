@@ -202,7 +202,8 @@
       "atsAnalysis": "Análisis ATS",
       "atsScore": "Puntaje",
       "atsIssues": "Problemas",
-      "atsSuggestions": "Sugerencias"
+      "atsSuggestions": "Sugerencias",
+      "atsPreviewNote": "Compara tu versión original con la reescrita. Los cambios son solo para vista previa y no se aplican automáticamente."
     }
   },
   "resume": {
@@ -536,7 +537,8 @@
     "step": "Paso",
     "of": "de",
     "back": "Atrás",
-    "next": "Siguiente"
+    "next": "Siguiente",
+    "keySkillsHint": "Expandiremos tus habilidades en una lista completa."
   },
   "industries": {
     "Technology": "Tecnología",
@@ -580,7 +582,7 @@
     "Biotech": "Biotecnología"
   },
   "ai": {
-    "aiError": "Falló la generación de IA. Inténtalo de nuevo.",
+    "aiError": "Falló la generación. Inténtalo de nuevo.",
     "aiErrorImproveText": "Error al mejorar el texto. Inténtalo de nuevo.",
     "aiErrorAtsAnalysis": "Error al analizar el currículum. Inténtalo de nuevo.",
     "aiErrorGenerateResume": "Error al generar el currículum. Inténtalo de nuevo.",

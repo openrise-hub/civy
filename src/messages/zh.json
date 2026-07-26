@@ -99,7 +99,8 @@
       "atsAnalysis": "ATS 分析",
       "atsScore": "评分",
       "atsIssues": "问题",
-      "atsSuggestions": "建议"
+      "atsSuggestions": "建议",
+      "atsPreviewNote": "将您的原始版本与重写版本进行比较。更改仅供预览，不会自动应用。"
     }
   },
   "resume": {
@@ -418,7 +419,8 @@
     "step": "步骤",
     "of": "/",
     "back": "返回",
-    "next": "下一步"
+    "next": "下一步",
+    "keySkillsHint": "我们会将您的技能扩展为完整列表。"
   },
   "industries": {
     "Technology": "技术",
@@ -563,7 +565,7 @@
     "statsResumesDesc": "实时查看您的更改"
   },
   "ai": {
-    "aiError": "AI 生成失败。请重试。",
+    "aiError": "生成失败。请重试。",
     "aiErrorImproveText": "文本改进失败。请重试。",
     "aiErrorAtsAnalysis": "简历分析失败。请重试。",
     "aiErrorGenerateResume": "简历生成失败。请重试。",

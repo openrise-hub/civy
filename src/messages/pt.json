@@ -99,7 +99,8 @@
       "atsAnalysis": "Análise ATS",
       "atsScore": "Pontuação",
       "atsIssues": "Problemas",
-      "atsSuggestions": "Sugestões"
+      "atsSuggestions": "Sugestões",
+      "atsPreviewNote": "Compare sua versão original com a reescrita. As alterações são apenas para visualização e não são aplicadas automaticamente."
     }
   },
   "resume": {
@@ -418,7 +419,8 @@
     "step": "Etapa",
     "of": "de",
     "back": "Voltar",
-    "next": "Próximo"
+    "next": "Próximo",
+    "keySkillsHint": "Vamos expandir suas habilidades em uma lista completa."
   },
   "industries": {
     "Technology": "Tecnologia",
@@ -563,7 +565,7 @@
     "statsResumesDesc": "Veja as alterações enquanto digita"
   },
   "ai": {
-    "aiError": "Falha na geração de IA. Tente novamente.",
+    "aiError": "Falha na geração. Tente novamente.",
     "aiErrorImproveText": "Falha ao melhorar o texto. Tente novamente.",
     "aiErrorAtsAnalysis": "Falha ao analisar o currículo. Tente novamente.",
     "aiErrorGenerateResume": "Falha ao gerar o currículo. Tente novamente.",
