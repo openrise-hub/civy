@@ -6,7 +6,8 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import type { Resume } from "@/types/resume";
 import type { PublicResumeData } from "@/lib/resumes/actions";
-import { DownloadIcon, EyeIcon, ZoomInIcon, ZoomOutIcon, Loader2Icon } from "lucide-react";
+import { DownloadIcon, EyeIcon, ZoomInIcon, ZoomOutIcon } from "lucide-react";
+import { ThinkingOrb } from "thinking-orbs";
 import { pdf } from "@react-pdf/renderer";
 import { UniversalPdf } from "@/components/pdf/UniversalPdf";
 import { ResumePreview } from "@/components/preview/ResumePreview";
@@ -134,7 +135,7 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
               </Button>
             </div>
             <Button size="sm" variant="outline" onClick={handleDownload} disabled={downloading}>
-              {downloading ? <Loader2Icon className="size-4 animate-spin" /> : <DownloadIcon className="size-4" />}
+              {downloading ? <ThinkingOrb state="working" size={20} aria-label="Generating PDF" /> : <DownloadIcon className="size-4" />}
               {downloading ? "Generating..." : tResume("downloadPdf")}
             </Button>
           </div>

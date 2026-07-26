@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import { getAllIndustries } from "@/lib/templates/registry";
 import { toastManager } from "@/components/ui/toast";
-import { Loader2Icon, FileEditIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { ThinkingOrb } from "thinking-orbs";
+import { FileEditIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import {
   Combobox,
   ComboboxInput,
@@ -194,7 +195,7 @@ export default function OnboardingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/50 p-4">
         <div className="w-full max-w-md text-center">
-          <Loader2Icon className="size-8 animate-spin mx-auto mb-6 text-primary" />
+          <ThinkingOrb state="composing" size={64} aria-label="Generating CV" />
           <h2 className="text-xl font-bold mb-4">{t("generating") || "Generating your CV..."}</h2>
           {currentTip && (
             <div className="bg-white rounded-xl shadow-sm border p-5">
