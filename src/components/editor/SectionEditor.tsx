@@ -21,7 +21,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverTrigger, PopoverPopup } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon, XIcon, WandIcon, Loader2Icon } from "lucide-react";
+import { TrashIcon, TypeIcon, CalendarIcon, EyeIcon, EyeOffIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon, XIcon, WandIcon } from "lucide-react";
+import { ThinkingOrb } from "thinking-orbs";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -713,6 +714,7 @@ function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisi
             if (data.error) { toastManager.add({ type: "error", title: ta(data.error) || data.error }); return; }
             if (data.skills) onUpdate({ value: { ...item.value, items: data.skills } });
           } catch {
+            toastManager.add({ type: "error", title: ta("aiErrorSuggestSkills") });
           } finally {
             setSuggesting(false);
           }
@@ -720,7 +722,7 @@ function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisi
         disabled={suggesting}
         className="w-full flex items-center justify-center gap-1 py-1.5 rounded-lg border border-dashed text-xs text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
       >
-        {suggesting ? <Loader2Icon className="size-3 animate-spin" /> : <WandIcon className="size-3" />}
+        {suggesting ? <ThinkingOrb state="solving" size={20} aria-label="Suggesting skills" /> : <WandIcon className="size-3" />}
         {ta("suggestSkills")}
       </button>
 
@@ -921,6 +923,7 @@ function ImproveTextButton({ text, onImproved }: { text: string; onImproved: (t:
       }
       if (data.text) onImproved(data.text);
     } catch {
+      toastManager.add({ type: "error", title: ta("aiErrorImproveText") });
     } finally {
       setImproving(false);
     }
@@ -933,7 +936,7 @@ function ImproveTextButton({ text, onImproved }: { text: string; onImproved: (t:
       disabled={improving || !text.trim()}
       className="mt-1 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
     >
-      {improving ? <Loader2Icon className="size-3 animate-spin" /> : <WandIcon className="size-3" />}
+      {improving ? <ThinkingOrb state="solving" size={20} aria-label="Improving text" /> : <WandIcon className="size-3" />}
       Improve
     </button>
   );

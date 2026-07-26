@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ArrowLeft, EyeIcon, DownloadIcon, CrownIcon, BarChart3 } from "lucide-react";
 import Link from "next/link";
-import { getUser } from "@/lib/auth/actions";
 import { getProfile } from "@/lib/profile/actions";
 import { getResumes } from "@/lib/resumes/actions";
 import { getAnalyticsSummary } from "@/lib/analytics/actions";
@@ -11,12 +10,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { UpgradeModal } from "@/components/upgrade/UpgradeModal";
 
 export default async function AnalyticsPage() {
-  const user = await getUser();
   const t = await getTranslations("analytics");
-
-  if (!user) {
-    redirect("/login");
-  }
 
   const profile = await getProfile();
   const isPremium = profile?.is_premium ?? false;

@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import { getAllIndustries } from "@/lib/templates/registry";
 import { toastManager } from "@/components/ui/toast";
-import { Loader2Icon, FileEditIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { ThinkingOrb } from "thinking-orbs";
+import { FileEditIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import {
   Combobox,
   ComboboxInput,
@@ -122,8 +123,8 @@ export default function OnboardingPage() {
     return cities.filter((c) => c.toLowerCase().includes(query.toLowerCase())).slice(0, 200);
   }, [locationSearch, cities]);
 
-  const filteredJobTitles = useMemo(() => filterItems(jobTitles, jobTitleSearch), [jobTitleSearch, jobTitles]);
-  const filteredIndustries = useMemo(() => filterItems(industries as string[], industrySearch), [industrySearch, industries]);
+  const filteredJobTitles = useMemo(() => jobTitleSearch ? filterItems(jobTitles, jobTitleSearch) : [], [jobTitleSearch, jobTitles]);
+  const filteredIndustries = useMemo(() => industrySearch ? filterItems(industries as string[], industrySearch) : [], [industrySearch, industries]);
 
   function getField(name: string, searchText: string, typed?: string): string {
     return name || typed || searchText;
@@ -194,7 +195,7 @@ export default function OnboardingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/50 p-4">
         <div className="w-full max-w-md text-center">
-          <Loader2Icon className="size-8 animate-spin mx-auto mb-6 text-primary" />
+          <ThinkingOrb state="composing" size={64} aria-label="Generating CV" />
           <h2 className="text-xl font-bold mb-4">{t("generating") || "Generating your CV..."}</h2>
           {currentTip && (
             <div className="bg-white rounded-xl shadow-sm border p-5">
@@ -239,14 +240,14 @@ export default function OnboardingPage() {
                 </div>
                 <div className="col-span-2 sm:col-span-1">
                   <label className="block text-sm font-medium mb-1">{t("jobTitle")}</label>
-                  <Combobox value={jobTitleValue} onValueChange={(v) => setJobTitleValue(v ?? "")} inputValue={jobTitleSearch} onInputValueChange={(v) => { setJobTitleSearch(v); if (v) setJobTitleTyped(v); }}>
+                  <Combobox value={jobTitleValue} onValueChange={(v) => setJobTitleValue(v ?? "")} inputValue={jobTitleSearch || jobTitleTyped} onInputValueChange={(v) => { setJobTitleSearch(v); if (v) setJobTitleTyped(v); }}>
                     <ComboboxInput placeholder={titlesLoaded ? t("jobTitlePlaceholder") : t("loading")} className="w-full" showTrigger={true} />
                     <ComboboxPopup className="w-[--anchor-width]">
                       {filteredJobTitles.length > 0 ? (
                         <ComboboxList>{filteredJobTitles.map((title) => (<ComboboxItem key={title} value={title}>{title}</ComboboxItem>))}</ComboboxList>
-                      ) : (
+                      ) : jobTitleSearch ? (
                         <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
-                      )}
+                      ) : null}
                     </ComboboxPopup>
                   </Combobox>
                 </div>
@@ -263,14 +264,14 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">{t("location")}</label>
-                <Combobox value={locationValue} onValueChange={(v) => setLocationValue(v ?? "")} inputValue={locationSearch} onInputValueChange={(v) => { setLocationSearch(v); if (v) setLocationTyped(v); }}>
+                <Combobox value={locationValue} onValueChange={(v) => setLocationValue(v ?? "")} inputValue={locationSearch || locationTyped} onInputValueChange={(v) => { setLocationSearch(v); if (v) setLocationTyped(v); }}>
                   <ComboboxInput placeholder={citiesLoaded ? t("locationPlaceholder") : t("loading")} className="w-full" showTrigger={true} />
                   <ComboboxPopup className="w-[--anchor-width]">
                     {filteredCities.length > 0 ? (
                       <ComboboxList className="max-h-60">{filteredCities.map((city) => (<ComboboxItem key={city} value={city}>{city}</ComboboxItem>))}</ComboboxList>
-                    ) : (
+                    ) : locationSearch.length >= 2 ? (
                       <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
-                    )}
+                    ) : null}
                   </ComboboxPopup>
                 </Combobox>
               </div>
@@ -291,9 +292,9 @@ export default function OnboardingPage() {
                 <ComboboxPopup className="w-[--anchor-width]">
                   {filteredIndustries.length > 0 ? (
                     <ComboboxList>{filteredIndustries.map((ind) => (<ComboboxItem key={ind} value={ind}>{ind === "Other" ? "Other" : tInd(ind)}</ComboboxItem>))}</ComboboxList>
-                  ) : (
+                  ) : industrySearch ? (
                     <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
-                  )}
+                  ) : null}
                 </ComboboxPopup>
                 </Combobox>
                 <p className="text-xs text-muted-foreground mt-1">{t("industryHint")}</p>

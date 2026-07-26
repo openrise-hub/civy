@@ -1,9 +1,7 @@
-import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Plus, FileText, Lock, Trash2, Settings, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { getResumes, createResume } from "@/lib/resumes/actions";
-import { getUser } from "@/lib/auth/actions";
 import { getProfile } from "@/lib/profile/actions";
 import { getAllResumeViewCounts } from "@/lib/analytics/actions";
 import { Button } from "@/components/ui/button";
@@ -24,12 +22,7 @@ export default async function DashboardPage({
 }) {
   const params = await searchParams;
   const confirmed = params.confirmed === "true";
-  const user = await getUser();
   const t = await getTranslations("dashboard");
-
-  if (!user) {
-    redirect("/login");
-  }
 
   const [resumes, profile, viewCounts, folders] = await Promise.all([
     getResumes(),

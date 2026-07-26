@@ -225,7 +225,7 @@
       "atsKeywordGaps": "Missing Keywords",
       "atsRewritten": "Rewritten Resume",
       "atsOriginal": "Your Version",
-      "atsPreviewNote": "Compare your original with the AI-rewritten version. Changes are for preview only and are not applied automatically.",
+      "atsPreviewNote": "Compare your original with the rewritten version. Changes are for preview only and are not applied automatically.",
       "atsJobDescriptionPlaceholder": "Paste a job description to get role-specific analysis (optional)..."
     }
   },
@@ -583,7 +583,7 @@
     "addDegree": "Add Another Degree",
     "keySkills": "Key Skills",
     "keySkillsPlaceholder": "React, TypeScript, leadership, project management",
-    "keySkillsHint": "The AI will expand your skills into a full list.",
+    "keySkillsHint": "We will expand your skills into a full list.",
     "generateCv": "Generate My CV",
     "generating": "Generating your CV...",
     "generatingHint": "This may take a few seconds"
@@ -630,7 +630,7 @@
     "Biotech": "Biotech"
   },
   "ai": {
-    "aiError": "AI generation failed. Please try again.",
+    "aiError": "Generation failed. Please try again.",
     "aiErrorImproveText": "Failed to improve text. Please try again.",
     "aiErrorAtsAnalysis": "Failed to analyze resume. Please try again.",
     "aiErrorGenerateResume": "Failed to generate resume. Please try again.",

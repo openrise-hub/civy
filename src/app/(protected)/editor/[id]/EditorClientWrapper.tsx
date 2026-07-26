@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Loader2 } from "lucide-react";
+import { ThinkingOrb } from "thinking-orbs";
 
 const EditorClient = dynamic(
   () => import("./EditorClient").then((mod) => ({ default: mod.EditorClient })),
@@ -9,7 +9,7 @@ const EditorClient = dynamic(
     ssr: false,
     loading: () => (
       <div className="flex items-center justify-center h-dvh bg-background">
-        <Loader2 className="size-8 animate-spin text-muted-foreground" />
+        <ThinkingOrb state="working" size={64} aria-label="Loading editor" />
       </div>
     ),
   }

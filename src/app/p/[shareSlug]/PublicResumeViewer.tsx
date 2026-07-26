@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import type { Resume } from "@/types/resume";
 import type { PublicResumeData } from "@/lib/resumes/actions";
 import { DownloadIcon, EyeIcon, ZoomInIcon, ZoomOutIcon } from "lucide-react";
+import { ThinkingOrb } from "thinking-orbs";
 import { pdf } from "@react-pdf/renderer";
 import { UniversalPdf } from "@/components/pdf/UniversalPdf";
 import { ResumePreview } from "@/components/preview/ResumePreview";
@@ -19,6 +20,7 @@ type Props = {
 export function PublicResumeViewer({ resume, viewCount }: Props) {
   const tResume = useTranslations("resume");
   const [zoom, setZoom] = useState(0);
+  const [downloading, setDownloading] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const initialized = useRef(false);
 
@@ -26,12 +28,11 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
     if (initialized.current) return;
     const el = contentRef.current;
     if (!el) return;
-    const availHeight = el.clientHeight;
-    if (availHeight <= 0) return;
-    const pageSizes: Record<string, number> = { "a4": 1123, "us-letter": 1056 };
-    const pageH = pageSizes["a4"];
-    const fitScale = (availHeight - 32) / pageH;
-    setZoom(Math.min(fitScale, 1.5));
+    const availWidth = el.clientWidth;
+    if (availWidth <= 0) return;
+    const pageW = 794;
+    const fitScale = (availWidth - 32) / pageW;
+    setZoom(Math.max(Math.min(fitScale, 1.5), 0.5));
     initialized.current = true;
   }, []);
 
@@ -74,25 +75,31 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
   }, [resume]);
 
   const handleDownload = async () => {
-    const pdfDocument = (
-      <UniversalPdf 
-        resume={resumeData} 
-        templateName={resumeData.metadata.template} 
-        templateConfig={resumeData.metadata.templateConfig}
-        translations={translations} 
-      />
-    );
+    setDownloading(true);
+    try {
+      const pdfDocument = (
+        <UniversalPdf 
+          resume={resumeData} 
+          templateName={resumeData.metadata.template} 
+          templateConfig={resumeData.metadata.templateConfig}
+          translations={translations} 
+        />
+      );
 
-    const blob = await pdf(pdfDocument).toBlob();
-    const url = URL.createObjectURL(blob);
-    
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${resumeData.personal.fullName || "resume"}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+      const blob = await pdf(pdfDocument).toBlob();
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${resumeData.personal.fullName || "resume"}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch {
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const handleZoomIn = () => setZoom(p => Math.min(p + 0.1, 2));
@@ -127,9 +134,9 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
                 <ZoomInIcon className="size-4" />
               </Button>
             </div>
-            <Button size="sm" variant="outline" onClick={handleDownload}>
-              <DownloadIcon className="size-4" />
-              {tResume("downloadPdf")}
+            <Button size="sm" variant="outline" onClick={handleDownload} disabled={downloading}>
+              {downloading ? <ThinkingOrb state="working" size={20} aria-label="Generating PDF" /> : <DownloadIcon className="size-4" />}
+              {downloading ? "Generating..." : tResume("downloadPdf")}
             </Button>
           </div>
         </div>

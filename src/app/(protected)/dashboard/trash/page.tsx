@@ -2,18 +2,12 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { ArrowLeft, Trash2 } from "lucide-react";
-import { getUser } from "@/lib/auth/actions";
 import { getDeletedResumes } from "@/lib/resumes/actions";
 import { Button } from "@/components/ui/button";
 import { TrashCard } from "./TrashCard";
 
 export default async function TrashPage() {
-  const user = await getUser();
   const t = await getTranslations("dashboard");
-
-  if (!user) {
-    redirect("/login");
-  }
 
   const deletedResumes = await getDeletedResumes();
 

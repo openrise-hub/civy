@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { DownloadButton } from "@/components/editor/DownloadButton";
 import { ResumePreview } from "@/components/preview/ResumePreview";
-import { ZoomInIcon, ZoomOutIcon, RulerIcon, SearchCheckIcon, Loader2Icon } from "lucide-react";
+import { ZoomInIcon, ZoomOutIcon, RulerIcon, SearchCheckIcon } from "lucide-react";
+import { ThinkingOrb } from "thinking-orbs";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toastManager } from "@/components/ui/toast";
@@ -80,7 +81,7 @@ function PreviewHeader({
           aria-label={t("atsCheck")}
           title={t("atsCheck")}
         >
-          {analyzing ? <Loader2Icon className="size-4 animate-spin" /> : <SearchCheckIcon className="size-4" />}
+          {analyzing ? <ThinkingOrb state="searching" size={20} aria-label="Analyzing resume" /> : <SearchCheckIcon className="size-4" />}
         </Button>
       </div>
     </div>
@@ -151,6 +152,7 @@ export function PreviewPanel() {
       setAtsResult(data);
       setAtsOpen(true);
     } catch {
+      toastManager.add({ type: "error", title: ta("aiErrorAtsAnalysis") });
     } finally {
       setAnalyzing(false);
     }
@@ -205,7 +207,7 @@ export function PreviewPanel() {
               className="w-full"
               size="sm"
             >
-              {analyzing ? <Loader2Icon className="size-4 animate-spin mr-2" /> : <SearchCheckIcon className="size-4 mr-2" />}
+              {analyzing ? <ThinkingOrb state="searching" size={20} aria-label="Analyzing resume" /> : <SearchCheckIcon className="size-4 mr-2" />}
               {analyzing ? t("atsCheckRunning") : t("atsCheckRun")}
             </Button>
           </div>
