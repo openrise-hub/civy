@@ -240,7 +240,11 @@ export default function OnboardingPage() {
                   <Combobox value={jobTitleValue} onValueChange={(v) => setJobTitleValue(v ?? "")} inputValue={jobTitleSearch} onInputValueChange={setJobTitleSearch}>
                     <ComboboxInput placeholder={titlesLoaded ? t("jobTitlePlaceholder") : t("loading")} className="w-full" showTrigger={false} />
                     <ComboboxPopup className="w-[--anchor-width]">
-                      <ComboboxList>{filteredJobTitles.map((title) => (<ComboboxItem key={title} value={title}>{title}</ComboboxItem>))}<ComboboxEmpty>{t("noResults")}</ComboboxEmpty></ComboboxList>
+                      {filteredJobTitles.length > 0 ? (
+                        <ComboboxList>{filteredJobTitles.map((title) => (<ComboboxItem key={title} value={title}>{title}</ComboboxItem>))}</ComboboxList>
+                      ) : (
+                        <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                      )}
                     </ComboboxPopup>
                   </Combobox>
                 </div>
@@ -260,7 +264,11 @@ export default function OnboardingPage() {
                 <Combobox value={locationValue} onValueChange={(v) => setLocationValue(v ?? "")} inputValue={locationSearch} onInputValueChange={setLocationSearch}>
                   <ComboboxInput placeholder={citiesLoaded ? t("locationPlaceholder") : t("loading")} className="w-full" showTrigger={false} />
                   <ComboboxPopup className="w-[--anchor-width]">
-                    <ComboboxList className="max-h-60">{filteredCities.map((city) => (<ComboboxItem key={city} value={city}>{city}</ComboboxItem>))}<ComboboxEmpty>{t("noResults")}</ComboboxEmpty></ComboboxList>
+                    {filteredCities.length > 0 ? (
+                      <ComboboxList className="max-h-60">{filteredCities.map((city) => (<ComboboxItem key={city} value={city}>{city}</ComboboxItem>))}</ComboboxList>
+                    ) : (
+                      <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                    )}
                   </ComboboxPopup>
                 </Combobox>
               </div>
@@ -278,9 +286,13 @@ export default function OnboardingPage() {
                 <label className="block text-sm font-medium mb-1">{t("industry")}</label>
                 <Combobox value={industryValue} onValueChange={(v) => setIndustryValue(v ?? "")} inputValue={industrySearch} onInputValueChange={setIndustrySearch}>
                   <ComboboxInput placeholder={t("industryPlaceholder")} className="w-full" showTrigger={true} />
-                  <ComboboxPopup className="w-[--anchor-width]">
-                    <ComboboxList>{filteredIndustries.map((ind) => (<ComboboxItem key={ind} value={ind}>{tInd(ind)}</ComboboxItem>))}<ComboboxEmpty>{t("noResults")}</ComboboxEmpty></ComboboxList>
-                  </ComboboxPopup>
+                <ComboboxPopup className="w-[--anchor-width]">
+                  {filteredIndustries.length > 0 ? (
+                    <ComboboxList>{filteredIndustries.map((ind) => (<ComboboxItem key={ind} value={ind}>{tInd(ind)}</ComboboxItem>))}</ComboboxList>
+                  ) : (
+                    <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                  )}
+                </ComboboxPopup>
                 </Combobox>
                 <p className="text-xs text-muted-foreground mt-1">{t("industryHint")}</p>
               </div>
