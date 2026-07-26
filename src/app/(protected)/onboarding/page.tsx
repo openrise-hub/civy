@@ -53,7 +53,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const totalSteps = 4;
 
-  const industries = useMemo(() => getAllIndustries(), []);
+  const industries = useMemo(() => [...getAllIndustries(), "Other"], []);
 
   const [cities, setCities] = useState<string[]>([]);
   const [citiesLoaded, setCitiesLoaded] = useState(false);
@@ -64,8 +64,10 @@ export default function OnboardingPage() {
   const [industrySearch, setIndustrySearch] = useState("");
   const [jobTitleValue, setJobTitleValue] = useState("");
   const [jobTitleSearch, setJobTitleSearch] = useState("");
+  const [jobTitleTyped, setJobTitleTyped] = useState("");
   const [locationValue, setLocationValue] = useState("");
   const [locationSearch, setLocationSearch] = useState("");
+  const [locationTyped, setLocationTyped] = useState("");
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -123,8 +125,8 @@ export default function OnboardingPage() {
   const filteredJobTitles = useMemo(() => filterItems(jobTitles, jobTitleSearch), [jobTitleSearch, jobTitles]);
   const filteredIndustries = useMemo(() => filterItems(industries as string[], industrySearch), [industrySearch, industries]);
 
-  function getField(name: string, searchText: string): string {
-    return name || searchText;
+  function getField(name: string, searchText: string, typed?: string): string {
+    return name || typed || searchText;
   }
 
   const addExperience = () => setExperience((prev) => [...prev, { company: "", title: "", startDate: CURRENT_MONTH, endDate: CURRENT_MONTH, currentRole: false, description: "" }]);
@@ -154,11 +156,11 @@ export default function OnboardingPage() {
     setGenerating(true);
     const payload: OnboardingPayload = {
       fullName,
-      jobTitle: getField(jobTitleValue, jobTitleSearch),
+      jobTitle: getField(jobTitleValue, jobTitleSearch, jobTitleTyped),
       industry: getField(industryValue, industrySearch),
       email,
       phone,
-      location: getField(locationValue, locationSearch),
+      location: getField(locationValue, locationSearch, locationTyped),
       linkedin,
       website,
       locale,
@@ -237,10 +239,14 @@ export default function OnboardingPage() {
                 </div>
                 <div className="col-span-2 sm:col-span-1">
                   <label className="block text-sm font-medium mb-1">{t("jobTitle")}</label>
-                  <Combobox value={jobTitleValue} onValueChange={(v) => setJobTitleValue(v ?? "")} inputValue={jobTitleSearch} onInputValueChange={setJobTitleSearch}>
-                    <ComboboxInput placeholder={titlesLoaded ? t("jobTitlePlaceholder") : t("loading")} className="w-full" showTrigger={false} />
+                  <Combobox value={jobTitleValue} onValueChange={(v) => setJobTitleValue(v ?? "")} inputValue={jobTitleSearch} onInputValueChange={(v) => { setJobTitleSearch(v); if (v) setJobTitleTyped(v); }}>
+                    <ComboboxInput placeholder={titlesLoaded ? t("jobTitlePlaceholder") : t("loading")} className="w-full" showTrigger={true} />
                     <ComboboxPopup className="w-[--anchor-width]">
-                      <ComboboxList>{filteredJobTitles.map((title) => (<ComboboxItem key={title} value={title}>{title}</ComboboxItem>))}<ComboboxEmpty>{t("noResults")}</ComboboxEmpty></ComboboxList>
+                      {filteredJobTitles.length > 0 ? (
+                        <ComboboxList>{filteredJobTitles.map((title) => (<ComboboxItem key={title} value={title}>{title}</ComboboxItem>))}</ComboboxList>
+                      ) : (
+                        <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                      )}
                     </ComboboxPopup>
                   </Combobox>
                 </div>
@@ -257,10 +263,14 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">{t("location")}</label>
-                <Combobox value={locationValue} onValueChange={(v) => setLocationValue(v ?? "")} inputValue={locationSearch} onInputValueChange={setLocationSearch}>
-                  <ComboboxInput placeholder={citiesLoaded ? t("locationPlaceholder") : t("loading")} className="w-full" showTrigger={false} />
+                <Combobox value={locationValue} onValueChange={(v) => setLocationValue(v ?? "")} inputValue={locationSearch} onInputValueChange={(v) => { setLocationSearch(v); if (v) setLocationTyped(v); }}>
+                  <ComboboxInput placeholder={citiesLoaded ? t("locationPlaceholder") : t("loading")} className="w-full" showTrigger={true} />
                   <ComboboxPopup className="w-[--anchor-width]">
-                    <ComboboxList className="max-h-60">{filteredCities.map((city) => (<ComboboxItem key={city} value={city}>{city}</ComboboxItem>))}<ComboboxEmpty>{t("noResults")}</ComboboxEmpty></ComboboxList>
+                    {filteredCities.length > 0 ? (
+                      <ComboboxList className="max-h-60">{filteredCities.map((city) => (<ComboboxItem key={city} value={city}>{city}</ComboboxItem>))}</ComboboxList>
+                    ) : (
+                      <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                    )}
                   </ComboboxPopup>
                 </Combobox>
               </div>
@@ -278,9 +288,13 @@ export default function OnboardingPage() {
                 <label className="block text-sm font-medium mb-1">{t("industry")}</label>
                 <Combobox value={industryValue} onValueChange={(v) => setIndustryValue(v ?? "")} inputValue={industrySearch} onInputValueChange={setIndustrySearch}>
                   <ComboboxInput placeholder={t("industryPlaceholder")} className="w-full" showTrigger={true} />
-                  <ComboboxPopup className="w-[--anchor-width]">
-                    <ComboboxList>{filteredIndustries.map((ind) => (<ComboboxItem key={ind} value={ind}>{tInd(ind)}</ComboboxItem>))}<ComboboxEmpty>{t("noResults")}</ComboboxEmpty></ComboboxList>
-                  </ComboboxPopup>
+                <ComboboxPopup className="w-[--anchor-width]">
+                  {filteredIndustries.length > 0 ? (
+                    <ComboboxList>{filteredIndustries.map((ind) => (<ComboboxItem key={ind} value={ind}>{ind === "Other" ? "Other" : tInd(ind)}</ComboboxItem>))}</ComboboxList>
+                  ) : (
+                    <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                  )}
+                </ComboboxPopup>
                 </Combobox>
                 <p className="text-xs text-muted-foreground mt-1">{t("industryHint")}</p>
               </div>
@@ -320,13 +334,13 @@ export default function OnboardingPage() {
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className="block text-xs font-medium mb-1">{t("startDate") || "Start Date"}</label>
-                          <input type="month" value={exp.startDate} onChange={(e) => updateExperience(i, "startDate", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white" />
+                          <input type="month" value={exp.startDate} onChange={(e) => setExperience(prev => prev.map((ex, idx) => { if (idx !== i) return ex; const u = { ...ex, startDate: e.target.value }; if (!ex.currentRole && ex.endDate && e.target.value > ex.endDate) u.endDate = e.target.value; return u; }))} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white" />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">{t("endDate") || "End Date"}</label>
-                          <input type="month" value={exp.currentRole ? "" : exp.endDate} disabled={exp.currentRole} onChange={(e) => updateExperience(i, "endDate", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white disabled:opacity-50" />
+                          <input type="month" value={exp.currentRole ? "" : exp.endDate} disabled={exp.currentRole} onChange={(e) => { if (exp.startDate && e.target.value < exp.startDate) return; updateExperience(i, "endDate", e.target.value); }} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white disabled:opacity-50" />
                           <label className="flex items-center gap-1 mt-1 cursor-pointer">
-                            <input type="checkbox" checked={exp.currentRole} onChange={(e) => updateExperience(i, "currentRole", String(e.target.checked) as never as string)} className="rounded" />
+                            <input type="checkbox" checked={exp.currentRole} onChange={(e) => setExperience(prev => prev.map((ex, idx) => idx === i ? { ...ex, currentRole: e.target.checked, endDate: e.target.checked ? "" : ex.endDate || CURRENT_MONTH } : ex))} className="rounded" />
                             <span className="text-xs text-muted-foreground">{t("currentRole") || "I currently work here"}</span>
                           </label>
                         </div>
