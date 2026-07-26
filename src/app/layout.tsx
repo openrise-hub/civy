@@ -4,7 +4,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { getProfile } from "@/lib/profile/actions";
 import { cookies } from "next/headers";
 import { AriaLiveRegion } from "@/components/AriaLiveRegion";
 import { Analytics } from "@vercel/analytics/next";
@@ -40,20 +39,14 @@ export default async function RootLayout({
   const locale = await getLocale();
   const messages = await getMessages();
 
-  // Determine initial theme
   let initialTheme: "light" | "dark" | "system" = "system";
   try {
-    const profile = await getProfile();
     const cookieStore = await cookies();
     const cookieTheme = cookieStore.get("NEXT_THEME")?.value;
-    
-    // Prefer profile theme if authenticated, otherwise cookie, otherwise system
-    const th = profile?.theme || cookieTheme;
-    if (th === "light" || th === "dark" || th === "system") {
-      initialTheme = th;
+    if (cookieTheme === "light" || cookieTheme === "dark" || cookieTheme === "system") {
+      initialTheme = cookieTheme;
     }
   } catch {
-    // Ignore error, fallback to system
   }
 
   // Determine text direction based on locale
