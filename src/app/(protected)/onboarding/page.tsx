@@ -230,9 +230,11 @@ export default function OnboardingPage() {
             {`${t("step") || "Step"} ${step} ${t("of") || "of"} ${totalSteps}`}
           </p>
 
-          {/* Step 1: Personal Info */}
-          {step === 1 && (
-            <div className="space-y-4">
+          <div className="t-page-slide" data-page={step}>
+
+            {/* Step 1: Personal Info */}
+            {step === 1 && (
+              <div className="t-page space-y-4" data-page-id="1">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 sm:col-span-1">
                   <label className="block text-sm font-medium mb-1">{t("fullName")} *</label>
@@ -304,9 +306,20 @@ export default function OnboardingPage() {
 
           {/* Step 2: Work Experience */}
           {step === 2 && (
-            <div className="space-y-4">
+            <div className="t-page space-y-4" data-page-id="2">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={noExperience} onChange={(e) => setNoExperience(e.target.checked)} className="rounded" />
+                <span
+                  className="t-check"
+                  role="checkbox"
+                  aria-checked={noExperience}
+                  tabIndex={0}
+                  onClick={() => setNoExperience(!noExperience)}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setNoExperience(!noExperience); } }}
+                >
+                  <svg viewBox="0 0 10 8" aria-hidden="true">
+                    <path d="M1.5 4.5L3.5 6.5L8.5 1.5" />
+                  </svg>
+                </span>
                 <span className="text-sm">{t("noExperience") || "I have no professional experience"}</span>
               </label>
 
@@ -341,7 +354,18 @@ export default function OnboardingPage() {
                           <label className="block text-xs font-medium mb-1">{t("endDate") || "End Date"}</label>
                           <input type="month" value={exp.currentRole ? "" : exp.endDate} disabled={exp.currentRole} onChange={(e) => { if (exp.startDate && e.target.value < exp.startDate) return; updateExperience(i, "endDate", e.target.value); }} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white disabled:opacity-50" />
                           <label className="flex items-center gap-1 mt-1 cursor-pointer">
-                            <input type="checkbox" checked={exp.currentRole} onChange={(e) => setExperience(prev => prev.map((ex, idx) => idx === i ? { ...ex, currentRole: e.target.checked, endDate: e.target.checked ? "" : ex.endDate || CURRENT_MONTH } : ex))} className="rounded" />
+                            <span
+                              className="t-check"
+                              role="checkbox"
+                              aria-checked={exp.currentRole}
+                              tabIndex={0}
+                              onClick={() => setExperience(prev => prev.map((ex, idx) => idx === i ? { ...ex, currentRole: !ex.currentRole, endDate: !ex.currentRole ? "" : ex.endDate || CURRENT_MONTH } : ex))}
+                              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExperience(prev => prev.map((ex, idx) => idx === i ? { ...ex, currentRole: !ex.currentRole, endDate: !ex.currentRole ? "" : ex.endDate || CURRENT_MONTH } : ex)); } }}
+                            >
+                              <svg viewBox="0 0 10 8" aria-hidden="true">
+                                <path d="M1.5 4.5L3.5 6.5L8.5 1.5" />
+                              </svg>
+                            </span>
                             <span className="text-xs text-muted-foreground">{t("currentRole") || "I currently work here"}</span>
                           </label>
                         </div>
@@ -364,7 +388,7 @@ export default function OnboardingPage() {
 
           {/* Step 3: Education */}
           {step === 3 && (
-            <div className="space-y-4">
+            <div className="t-page space-y-4" data-page-id="3">
               {education.map((edu, i) => (
                 <div key={i} className="border rounded-lg p-4 space-y-3 relative">
                   {education.length > 1 && (
@@ -403,7 +427,7 @@ export default function OnboardingPage() {
 
           {/* Step 4: Skills & Generate */}
           {step === 4 && (
-            <div className="space-y-4">
+            <div className="t-page space-y-4" data-page-id="4">
               <div>
                 <label className="block text-sm font-medium mb-1">{t("keySkills") || "Key Skills"}</label>
                 <textarea value={keySkills} onChange={(e) => setKeySkills(e.target.value)} rows={2} placeholder={t("keySkillsPlaceholder") || "React, TypeScript, leadership, project management"} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none" />
@@ -415,6 +439,7 @@ export default function OnboardingPage() {
               </button>
             </div>
           )}
+          </div>
 
           {/* Navigation */}
           <div className="flex items-center justify-between mt-6 pt-4 border-t">

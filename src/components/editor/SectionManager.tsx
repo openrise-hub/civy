@@ -169,8 +169,8 @@ function SortableSectionCard({
                 size="icon-sm"
                 onClick={handleImproveSection}
                 disabled={improving}
-                className="text-muted-foreground hover:text-primary"
-                title={t("formEditor.improveSection")}
+                className="text-muted-foreground hover:text-primary t-tt"
+                data-tooltip={t("formEditor.improveSection")}
               >
                 {improving ? <ThinkingOrb state="solving" size={20} aria-label="Improving section" /> : <WandIcon className="size-4" />}
               </Button>
@@ -178,8 +178,8 @@ function SortableSectionCard({
                 variant="ghost"
                 size="icon-sm"
                 onClick={() => onToggleVisibility(section.id)}
-                className="text-muted-foreground hover:text-primary"
-                title={section.visible === false ? t("formEditor.showSection") : t("formEditor.hideSection")}
+                className="text-muted-foreground hover:text-primary t-tt"
+                data-tooltip={section.visible === false ? t("formEditor.showSection") : t("formEditor.hideSection")}
               >
                 {section.visible === false ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
               </Button>
@@ -187,8 +187,8 @@ function SortableSectionCard({
                 variant="ghost"
                 size="icon-sm"
                 onClick={(e) => onRemove(section.id, e)}
-                className="text-muted-foreground hover:text-destructive"
-                title={t("formEditor.removeSection")}
+                className="text-muted-foreground hover:text-destructive t-tt"
+                data-tooltip={t("formEditor.removeSection")}
               >
                 <TrashIcon className="size-4" />
               </Button>
@@ -196,8 +196,8 @@ function SortableSectionCard({
                 variant="ghost"
                 size="icon-sm"
                 onClick={onToggleExpand}
-                className="text-muted-foreground hover:text-foreground"
-                title={isExpanded ? t("formEditor.collapseSection") : t("formEditor.expandSection")}
+                className="text-muted-foreground hover:text-foreground t-tt"
+                data-tooltip={isExpanded ? t("formEditor.collapseSection") : t("formEditor.expandSection")}
               >
                 <span className="t-acc-chevron"><ChevronDownIcon className="size-4" /></span>
               </Button>

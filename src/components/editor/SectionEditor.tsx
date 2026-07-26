@@ -88,7 +88,7 @@ function ItemActions({
         size="icon-sm"
         onClick={onToggleVisibility}
         className="text-muted-foreground hover:text-primary"
-        title={visible === false ? "Show on PDF" : "Hide from PDF"}
+        data-tooltip={visible === false ? "Show on PDF" : "Hide from PDF"}
       >
         {visible === false ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
       </Button>
@@ -97,7 +97,7 @@ function ItemActions({
         size="icon-sm"
         onClick={onDuplicate}
         className="text-muted-foreground hover:text-primary"
-        title="Duplicate"
+        data-tooltip="Duplicate"
       >
         <CopyIcon className="size-4" />
       </Button>
@@ -106,7 +106,7 @@ function ItemActions({
         size="icon-sm"
         onClick={onRemove}
         className="text-muted-foreground hover:text-destructive"
-        title="Remove"
+        data-tooltip="Remove"
       >
         <TrashIcon className="size-4" />
       </Button>
@@ -794,7 +794,7 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
     <div className="flex items-center justify-center gap-1 p-1.5 rounded-lg border border-dashed bg-muted/30 add-item-toolbar">
       <button
         onClick={() => onAdd("heading")}
-        title="Heading"
+        data-tooltip="Heading"
         className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
       >
         <TypeIcon className="size-3.5" />
@@ -802,7 +802,7 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
       </button>
       <button
         onClick={() => onAdd("sub-heading")}
-        title="Subtitle"
+        data-tooltip="Subtitle"
         className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
       >
         <TypeIcon className="size-3.5" />
@@ -810,7 +810,7 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
       </button>
       <button
         onClick={() => onAdd("description")}
-        title="Description"
+        data-tooltip="Description"
         className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
       >
         <TypeIcon className="size-3.5" />
@@ -818,7 +818,7 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
       </button>
       <button
         onClick={() => onAdd("date-range")}
-        title="Date Range"
+        data-tooltip="Date Range"
         className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
       >
         <CalendarIcon className="size-3.5" />
@@ -826,7 +826,7 @@ function AddItemToolbar({ onAdd, disabled }: { onAdd: (type: ItemType) => void; 
       </button>
       <button
         onClick={() => onAdd("tags")}
-        title="Tags"
+        data-tooltip="Tags"
         className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
       >
         <TypeIcon className="size-3.5" />

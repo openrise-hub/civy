@@ -1,3 +1,5 @@
+"use client";
+
 import { ThinkingOrb } from "thinking-orbs";
 
 const ORB_SIZES = { sm: 20, md: 20, lg: 64 } as const;
