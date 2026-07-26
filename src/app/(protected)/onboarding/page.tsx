@@ -64,8 +64,10 @@ export default function OnboardingPage() {
   const [industrySearch, setIndustrySearch] = useState("");
   const [jobTitleValue, setJobTitleValue] = useState("");
   const [jobTitleSearch, setJobTitleSearch] = useState("");
+  const [jobTitleTyped, setJobTitleTyped] = useState("");
   const [locationValue, setLocationValue] = useState("");
   const [locationSearch, setLocationSearch] = useState("");
+  const [locationTyped, setLocationTyped] = useState("");
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -123,8 +125,8 @@ export default function OnboardingPage() {
   const filteredJobTitles = useMemo(() => filterItems(jobTitles, jobTitleSearch), [jobTitleSearch, jobTitles]);
   const filteredIndustries = useMemo(() => filterItems(industries as string[], industrySearch), [industrySearch, industries]);
 
-  function getField(name: string, searchText: string): string {
-    return name || searchText;
+  function getField(name: string, searchText: string, typed?: string): string {
+    return name || typed || searchText;
   }
 
   const addExperience = () => setExperience((prev) => [...prev, { company: "", title: "", startDate: CURRENT_MONTH, endDate: CURRENT_MONTH, currentRole: false, description: "" }]);
@@ -154,11 +156,11 @@ export default function OnboardingPage() {
     setGenerating(true);
     const payload: OnboardingPayload = {
       fullName,
-      jobTitle: getField(jobTitleValue, jobTitleSearch),
+      jobTitle: getField(jobTitleValue, jobTitleSearch, jobTitleTyped),
       industry: getField(industryValue, industrySearch),
       email,
       phone,
-      location: getField(locationValue, locationSearch),
+      location: getField(locationValue, locationSearch, locationTyped),
       linkedin,
       website,
       locale,
@@ -237,8 +239,8 @@ export default function OnboardingPage() {
                 </div>
                 <div className="col-span-2 sm:col-span-1">
                   <label className="block text-sm font-medium mb-1">{t("jobTitle")}</label>
-                  <Combobox value={jobTitleValue} onValueChange={(v) => setJobTitleValue(v ?? "")} inputValue={jobTitleSearch} onInputValueChange={setJobTitleSearch}>
-                    <ComboboxInput placeholder={titlesLoaded ? t("jobTitlePlaceholder") : t("loading")} className="w-full" showTrigger={false} />
+                  <Combobox value={jobTitleValue} onValueChange={(v) => setJobTitleValue(v ?? "")} inputValue={jobTitleSearch} onInputValueChange={(v) => { setJobTitleSearch(v); if (v) setJobTitleTyped(v); }}>
+                    <ComboboxInput placeholder={titlesLoaded ? t("jobTitlePlaceholder") : t("loading")} className="w-full" showTrigger={true} />
                     <ComboboxPopup className="w-[--anchor-width]">
                       {filteredJobTitles.length > 0 ? (
                         <ComboboxList>{filteredJobTitles.map((title) => (<ComboboxItem key={title} value={title}>{title}</ComboboxItem>))}</ComboboxList>
@@ -261,8 +263,8 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">{t("location")}</label>
-                <Combobox value={locationValue} onValueChange={(v) => setLocationValue(v ?? "")} inputValue={locationSearch} onInputValueChange={setLocationSearch}>
-                  <ComboboxInput placeholder={citiesLoaded ? t("locationPlaceholder") : t("loading")} className="w-full" showTrigger={false} />
+                <Combobox value={locationValue} onValueChange={(v) => setLocationValue(v ?? "")} inputValue={locationSearch} onInputValueChange={(v) => { setLocationSearch(v); if (v) setLocationTyped(v); }}>
+                  <ComboboxInput placeholder={citiesLoaded ? t("locationPlaceholder") : t("loading")} className="w-full" showTrigger={true} />
                   <ComboboxPopup className="w-[--anchor-width]">
                     {filteredCities.length > 0 ? (
                       <ComboboxList className="max-h-60">{filteredCities.map((city) => (<ComboboxItem key={city} value={city}>{city}</ComboboxItem>))}</ComboboxList>
