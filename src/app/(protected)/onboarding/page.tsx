@@ -53,7 +53,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const totalSteps = 4;
 
-  const industries = useMemo(() => getAllIndustries(), []);
+  const industries = useMemo(() => [...getAllIndustries(), "Other"], []);
 
   const [cities, setCities] = useState<string[]>([]);
   const [citiesLoaded, setCitiesLoaded] = useState(false);
@@ -290,7 +290,7 @@ export default function OnboardingPage() {
                   <ComboboxInput placeholder={t("industryPlaceholder")} className="w-full" showTrigger={true} />
                 <ComboboxPopup className="w-[--anchor-width]">
                   {filteredIndustries.length > 0 ? (
-                    <ComboboxList>{filteredIndustries.map((ind) => (<ComboboxItem key={ind} value={ind}>{tInd(ind)}</ComboboxItem>))}</ComboboxList>
+                    <ComboboxList>{filteredIndustries.map((ind) => (<ComboboxItem key={ind} value={ind}>{ind === "Other" ? "Other" : tInd(ind)}</ComboboxItem>))}</ComboboxList>
                   ) : (
                     <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
                   )}
