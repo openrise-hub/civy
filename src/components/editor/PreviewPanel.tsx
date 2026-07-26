@@ -48,8 +48,8 @@ function PreviewHeader({
           </Button>
           <button 
             onClick={onZoomReset}
-            className="text-[10px] font-medium w-12 hover:text-primary transition-colors text-center"
-            title={t("resetZoom")}
+            className="text-[10px] font-medium w-12 hover:text-primary transition-colors text-center t-tt"
+            data-tooltip={t("resetZoom")}
           >
            {Math.round(zoom * 100)}%
           </button>
@@ -68,7 +68,8 @@ function PreviewHeader({
           variant={showGuides ? "secondary" : "ghost"}
           onClick={onToggleGuides}
           aria-label={t("showGuides")}
-          title={t("showGuides")}
+          data-tooltip={t("showGuides")}
+          className="t-tt"
         >
           <RulerIcon className="size-4" />
         </Button>
@@ -79,7 +80,8 @@ function PreviewHeader({
           onClick={onATSCheck}
           disabled={analyzing}
           aria-label={t("atsCheck")}
-          title={t("atsCheck")}
+          data-tooltip={t("atsCheck")}
+          className="t-tt"
         >
           {analyzing ? <ThinkingOrb state="searching" size={20} aria-label="Analyzing resume" /> : <SearchCheckIcon className="size-4" />}
         </Button>

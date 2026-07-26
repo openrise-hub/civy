@@ -301,3 +301,48 @@
 @media (prefers-reduced-motion: reduce) {
   .t-check, .t-check svg path { transition: none !important; }
 }
+
+/* transitions.dev — tooltip open / close */
+:root {
+  --tt-enter: 250ms;
+  --tt-leave: 150ms;
+  --tt-distance: 6px;
+  --tt-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.t-tt {
+  position: relative;
+}
+.t-tt::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%) translateY(var(--tt-distance));
+  padding: 4px 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  border-radius: 6px;
+  background: #0f0f0f;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--tt-enter) var(--tt-ease),
+    transform var(--tt-enter) var(--tt-ease);
+  z-index: 100;
+}
+.t-tt:hover::after,
+.t-tt:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 300ms;
+}
+.t-tt:not(:hover):not(:focus-visible)::after {
+  transition-delay: 0ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-tt::after { transition: none !important; }
+}
