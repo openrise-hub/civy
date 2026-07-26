@@ -713,6 +713,7 @@ function TagsItemEditor({ item, t, onUpdate, onRemove, onDuplicate, onToggleVisi
             if (data.error) { toastManager.add({ type: "error", title: ta(data.error) || data.error }); return; }
             if (data.skills) onUpdate({ value: { ...item.value, items: data.skills } });
           } catch {
+            toastManager.add({ type: "error", title: ta("aiErrorSuggestSkills") });
           } finally {
             setSuggesting(false);
           }
@@ -921,6 +922,7 @@ function ImproveTextButton({ text, onImproved }: { text: string; onImproved: (t:
       }
       if (data.text) onImproved(data.text);
     } catch {
+      toastManager.add({ type: "error", title: ta("aiErrorImproveText") });
     } finally {
       setImproving(false);
     }

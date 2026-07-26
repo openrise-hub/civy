@@ -135,6 +135,7 @@ function SortableSectionCard({
         }
       }
     } catch {
+      toastManager.add({ type: "error", title: ta("aiErrorImproveSection") });
     } finally {
       setImproving(false);
     }

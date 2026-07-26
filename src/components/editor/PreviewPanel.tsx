@@ -151,6 +151,7 @@ export function PreviewPanel() {
       setAtsResult(data);
       setAtsOpen(true);
     } catch {
+      toastManager.add({ type: "error", title: ta("aiErrorAtsAnalysis") });
     } finally {
       setAnalyzing(false);
     }
