@@ -334,13 +334,13 @@ export default function OnboardingPage() {
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className="block text-xs font-medium mb-1">{t("startDate") || "Start Date"}</label>
-                          <input type="month" value={exp.startDate} onChange={(e) => updateExperience(i, "startDate", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white" />
+                          <input type="month" value={exp.startDate} onChange={(e) => setExperience(prev => prev.map((ex, idx) => { if (idx !== i) return ex; const u = { ...ex, startDate: e.target.value }; if (!ex.currentRole && ex.endDate && e.target.value > ex.endDate) u.endDate = e.target.value; return u; }))} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white" />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">{t("endDate") || "End Date"}</label>
-                          <input type="month" value={exp.currentRole ? "" : exp.endDate} disabled={exp.currentRole} onChange={(e) => updateExperience(i, "endDate", e.target.value)} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white disabled:opacity-50" />
+                          <input type="month" value={exp.currentRole ? "" : exp.endDate} disabled={exp.currentRole} onChange={(e) => { if (exp.startDate && e.target.value < exp.startDate) return; updateExperience(i, "endDate", e.target.value); }} className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white disabled:opacity-50" />
                           <label className="flex items-center gap-1 mt-1 cursor-pointer">
-                            <input type="checkbox" checked={exp.currentRole} onChange={(e) => updateExperience(i, "currentRole", String(e.target.checked) as never as string)} className="rounded" />
+                            <input type="checkbox" checked={exp.currentRole} onChange={(e) => setExperience(prev => prev.map((ex, idx) => idx === i ? { ...ex, currentRole: e.target.checked, endDate: e.target.checked ? "" : ex.endDate || CURRENT_MONTH } : ex))} className="rounded" />
                             <span className="text-xs text-muted-foreground">{t("currentRole") || "I currently work here"}</span>
                           </label>
                         </div>
