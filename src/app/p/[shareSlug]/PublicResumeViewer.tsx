@@ -26,12 +26,11 @@ export function PublicResumeViewer({ resume, viewCount }: Props) {
     if (initialized.current) return;
     const el = contentRef.current;
     if (!el) return;
-    const availHeight = el.clientHeight;
-    if (availHeight <= 0) return;
-    const pageSizes: Record<string, number> = { "a4": 1123, "us-letter": 1056 };
-    const pageH = pageSizes["a4"];
-    const fitScale = (availHeight - 32) / pageH;
-    setZoom(Math.min(fitScale, 1.5));
+    const availWidth = el.clientWidth;
+    if (availWidth <= 0) return;
+    const pageW = 794;
+    const fitScale = (availWidth - 32) / pageW;
+    setZoom(Math.max(Math.min(fitScale, 1.5), 0.5));
     initialized.current = true;
   }, []);
 
