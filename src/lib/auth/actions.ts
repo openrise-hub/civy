@@ -60,6 +60,23 @@ export async function signUpWithEmail(email: string, password: string, displayNa
   return { success: "Check your email to confirm your account." };
 }
 
+export async function signInWithOAuthProvider(provider: string, next?: string): Promise<{ error?: string; url?: string }> {
+  const supabase = await createClient();
+  const origin = await getOrigin();
+  const redirectTo = next
+    ? `${origin}/callback?next=${encodeURIComponent(next)}`
+    : `${origin}/callback`;
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: provider as any,
+    options: { redirectTo },
+  });
+
+  if (error) return { error: error.message };
+  if (data.url) return { url: data.url };
+  return { error: "Failed to generate OAuth URL" };
+}
+
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
