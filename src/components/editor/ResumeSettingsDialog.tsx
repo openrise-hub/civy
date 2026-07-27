@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { SettingsIcon, Trash2, Check, Save, Loader2, TriangleAlert } from "lucide-react";
+import { SettingsIcon, Trash2, Check, Save, TriangleAlert } from "lucide-react";
+import { ThinkingOrb } from "thinking-orbs";
 import { useResumeStore } from "@/stores/useResumeStore";
 import { getCustomTemplates, saveCustomTemplate, deleteCustomTemplate, type CustomTemplate } from "@/lib/templates/actions";
 import { getContrastRatio } from "@/lib/color-utils";
@@ -230,7 +231,7 @@ export function ResumeSettingsDialog({ isCollapsed }: { isCollapsed: boolean }) 
                   disabled={!newTemplateName.trim() || isPending}
                   variant="secondary"
                 >
-                  {isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+                  {isPending ? <ThinkingOrb state="solving" size={20} aria-label="Saving" /> : <Save className="size-4" />}
                   {t("save")}
                 </Button>
               </div>
@@ -243,7 +244,7 @@ export function ResumeSettingsDialog({ isCollapsed }: { isCollapsed: boolean }) 
               
               {isFetching ? (
                 <div className="mt-4 flex justify-center py-4 text-muted-foreground">
-                  <Loader2 className="size-6 animate-spin" />
+                  <ThinkingOrb state="solving" size={20} aria-label="Loading templates" />
                 </div>
               ) : templates.length > 0 ? (
                 <div className="mt-4 flex flex-col gap-2">

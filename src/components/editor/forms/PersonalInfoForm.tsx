@@ -72,7 +72,7 @@ export function PersonalInfoForm() {
 
   return (
     <Card>
-      <CardHeader className="p-3 pb-0">
+      <CardHeader className="py-3 px-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-semibold">Personal Information</CardTitle>
           <Button variant="ghost" size="icon-sm" onClick={() => setCollapsed(!collapsed)}>
