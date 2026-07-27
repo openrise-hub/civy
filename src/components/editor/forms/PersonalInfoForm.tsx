@@ -8,7 +8,7 @@ import type { Item, ItemType } from "@/types/resume";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PhoneIcon, MailIcon, MapPinIcon, LinkIcon, TrashIcon, ChevronUpIcon, ChevronDownIcon } from "lucide-react";
+import { PhoneIcon, MailIcon, MapPinIcon, LinkIcon, TrashIcon, ChevronDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -71,17 +71,18 @@ export function PersonalInfoForm() {
   };
 
   return (
-    <Card>
+    <Card className="t-acc" data-open={!collapsed ? "true" : "false"}>
       <CardHeader className="py-3 px-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-semibold">Personal Information</CardTitle>
           <Button variant="ghost" size="icon-sm" onClick={() => setCollapsed(!collapsed)}>
-            {collapsed ? <ChevronDownIcon className="size-4" /> : <ChevronUpIcon className="size-4" />}
+            <span className="t-acc-chevron"><ChevronDownIcon className="size-4" /></span>
           </Button>
         </div>
       </CardHeader>
-      {!collapsed && (
-      <CardContent className="space-y-3 p-3 pt-2">
+      <div className="t-acc-panel">
+        <div className="t-acc-panel-inner">
+          <CardContent className="space-y-3 p-3 pt-2">
         <div className="space-y-1.5">
           <Label htmlFor="fullName" className="text-xs text-muted-foreground">Full Name</Label>
           <Input
@@ -177,7 +178,8 @@ export function PersonalInfoForm() {
           </div>
         )}
       </CardContent>
-      )}
+        </div>
+      </div>
     </Card>
   );
 }

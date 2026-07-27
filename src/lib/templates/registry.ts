@@ -6,6 +6,10 @@ import { professionalTemplate } from "./professional";
 import { creativeTemplate } from "./creative";
 import { executiveTemplate } from "./executive";
 import { academicTemplate } from "./academic";
+import { darkTemplate } from "./dark";
+import { tealTemplate } from "./teal";
+import { compactTemplate } from "./compact";
+import { warmTemplate } from "./warm";
 
 export interface TemplateEntry {
   name: string;
@@ -56,6 +60,30 @@ export const templateRegistry: Record<string, TemplateEntry> = {
     description: "Compact 9pt body, US Letter, tight spacing, small-caps section titles, and page-numbered footer. High-density for CVs.",
     industries: ["Academia", "Research", "Science", "Education", "Healthcare", "Pharmaceuticals", "Biotech"],
     config: academicTemplate,
+  },
+  dark: {
+    name: "Dark",
+    description: "Dark background, light text, full-width section lines. Distinctive and modern for tech and creative roles.",
+    industries: ["Technology", "Design", "Startups", "Media", "Entertainment", "CreativeArts", "SaaS"],
+    config: darkTemplate,
+  },
+  teal: {
+    name: "Teal",
+    description: "Teal accents with centered section titles, bold entry headings, and clean typography.",
+    industries: ["Technology", "Consulting", "Marketing", "Management", "Business", "Operations", "Sales"],
+    config: tealTemplate,
+  },
+  compact: {
+    name: "Compact",
+    description: "Tight margins, small fonts, justified text. Maximum content in minimum space — fits everything on one page.",
+    industries: ["Technology", "Engineering", "Finance", "Academia", "Science", "Research", "Consulting"],
+    config: compactTemplate,
+  },
+  warm: {
+    name: "Warm",
+    description: "Amber accents, em-dash bullets, centered section titles, and warm stone-gray body text.",
+    industries: ["Design", "Marketing", "CreativeArts", "Education", "Nonprofit", "HumanResources", "SocialImpact"],
+    config: warmTemplate,
   },
 };
 
